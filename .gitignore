@@ -13,5 +13,9 @@
 # Claude Code
 .claude/
 
+# Scores with unclear or third-party licensing
+public/scores/mozart-k622-adagio.musicxml
+public/scores/mozart-k581-trio.musicxml
+
 # Proposal / private documents
 *.pdf

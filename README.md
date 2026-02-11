@@ -104,11 +104,15 @@ Allow performers to edit Lead/Follow roles and Wait/Listen directives directly i
 
 ## Sample Scores
 
-- **Mozart K.622 Adagio** — Clarinet Concerto 2nd movement (solo + piano reduction)
-- **Mozart K.581 Trio** — Clarinet Quintet arrangement
-- **Sample Duet** — Clarinet + Piano
+| Score | Licence | Included in repo |
+|-------|---------|------------------|
+| **Sample Duet** (Clarinet + Piano) | CC0 1.0 (Public Domain) | Yes |
+| Mozart K.622 Adagio | Derived from Mutopia Project (CC BY 3.0) — not redistributed | No (gitignored) |
+| Mozart K.581 Trio | MakeMusic, Inc. sample — not redistributed | No (gitignored) |
 
-Scores are in `public/scores/` as standard MusicXML with ConvoCerto annotations (Lead/Follow/Wait/Listen via rehearsal marks).
+Only `sample-duet.musicxml` is included in the repository. The Mozart scores must be obtained separately and placed in `public/scores/`.
+
+Scores use standard MusicXML with ConvoCerto annotations (Lead/Follow/Wait/Listen via rehearsal marks).
 
 ## Development
 
