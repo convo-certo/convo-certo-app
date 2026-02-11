@@ -210,6 +210,35 @@ describe("parseMusicXML", () => {
     });
   });
 
+  describe("transposition", () => {
+    it("applies -3 semitone transpose to K.581 Clarinet notes", () => {
+      const xml = loadFixture("mozart-k581-trio.musicxml");
+      const score = parseMusicXML(xml);
+      const clarinetNotes = score.parts[0].notes;
+      const firstNote = clarinetNotes[0];
+      expect(firstNote.pitch).toBe(69);
+    });
+
+    it("applies -3 semitone transpose to K.622 Clarinet notes", () => {
+      const xml = loadFixture("mozart-k622-adagio.musicxml");
+      const score = parseMusicXML(xml);
+      const clarinetNotes = score.parts[0].notes;
+      const firstNote = clarinetNotes[0];
+      expect(firstNote.pitch).toBe(75);
+    });
+
+    it("does not transpose non-transposing parts", () => {
+      const xml = loadFixture("mozart-k581-trio.musicxml");
+      const score = parseMusicXML(xml);
+      const violinPart = score.parts.find((p) =>
+        p.name.includes("violino I")
+      );
+      expect(violinPart).toBeDefined();
+      const firstNote = violinPart!.notes[0];
+      expect(firstNote.pitch).toBe(69);
+    });
+  });
+
   describe("sample-duet.musicxml", () => {
     const xml = loadFixture("sample-duet.musicxml");
     const score = parseMusicXML(xml);

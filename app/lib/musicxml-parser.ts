@@ -163,6 +163,7 @@ export function parseMusicXML(xmlString: string): ParsedScore {
     const measureEls = partEl.querySelectorAll("measure");
     let currentBeat = 0;
     let divisions = 1;
+    let transposeChromatic = 0;
 
     measureEls.forEach((measureEl, slotIndex) => {
       const rawNum = measureEl.getAttribute("number") ?? "1";
@@ -191,6 +192,13 @@ export function parseMusicXML(xmlString: string): ParsedScore {
       const divEl = measureEl.querySelector("attributes divisions");
       if (divEl?.textContent) {
         divisions = parseInt(divEl.textContent);
+      }
+
+      const chromaticEl = measureEl.querySelector(
+        "attributes transpose chromatic"
+      );
+      if (chromaticEl?.textContent) {
+        transposeChromatic = parseInt(chromaticEl.textContent);
       }
 
       if (partIndex === 0) {
@@ -259,7 +267,7 @@ export function parseMusicXML(xmlString: string): ParsedScore {
               : 80;
 
             notes.push({
-              pitch: midiNoteFromStep(step, octave, alter),
+              pitch: midiNoteFromStep(step, octave, alter) + transposeChromatic,
               startBeat: isChord
                 ? currentBeat + measureBeatOffset - durationBeats
                 : currentBeat + measureBeatOffset,
