@@ -60,10 +60,86 @@ def _extract_time_signature(score: pt.score.Score) -> TimeSignatureOut:
     return TimeSignatureOut(numerator=4, denominator=4)
 
 
+DYNAMICS_VELOCITY_MAP: dict[str, int] = {
+    "pppp": 16, "ppp": 24, "pp": 36, "p": 49, "mp": 64,
+    "mf": 80, "f": 96, "ff": 112, "fff": 120, "ffff": 127,
+    "sfz": 112, "sf": 112, "fp": 96, "fz": 112,
+}
+
+DEFAULT_VELOCITY = 80
+
+
+class _DynamicsResolver:
+    def __init__(self, part):
+        self._constant: list[tuple[int, int]] = []
+        self._ramps: list[tuple[int, int, int, int]] = []
+
+        for dyn in part.iter_all(pt.score.Dynamic):
+            vel = getattr(dyn, "velocity", None)
+            if vel is not None:
+                self._constant.append((dyn.start.t, int(round(vel))))
+
+        for cld in part.iter_all(pt.score.ConstantLoudnessDirection):
+            text = getattr(cld, "text", "")
+            if text and text.lower() in DYNAMICS_VELOCITY_MAP:
+                self._constant.append((cld.start.t, DYNAMICS_VELOCITY_MAP[text.lower()]))
+
+        self._constant.sort(key=lambda e: e[0])
+        seen: set[int] = set()
+        unique: list[tuple[int, int]] = []
+        for t_val, v in self._constant:
+            if t_val not in seen:
+                seen.add(t_val)
+                unique.append((t_val, v))
+        self._constant = unique
+
+        for inc in part.iter_all(pt.score.IncreasingLoudnessDirection):
+            if inc.end is None:
+                continue
+            start_vel = self._base_velocity_at(inc.start.t)
+            end_vel = self._next_velocity_after(inc.end.t, start_vel + 20)
+            self._ramps.append((inc.start.t, inc.end.t, start_vel, end_vel))
+
+        for dec in part.iter_all(pt.score.DecreasingLoudnessDirection):
+            if dec.end is None:
+                continue
+            start_vel = self._base_velocity_at(dec.start.t)
+            end_vel = self._next_velocity_after(dec.end.t, max(start_vel - 20, 20))
+            self._ramps.append((dec.start.t, dec.end.t, start_vel, end_vel))
+
+        self._ramps.sort(key=lambda r: r[0])
+
+    def velocity_at(self, time_point: int) -> int:
+        for start_t, end_t, start_vel, end_vel in self._ramps:
+            if start_t <= time_point <= end_t:
+                duration = end_t - start_t
+                if duration <= 0:
+                    return start_vel
+                progress = (time_point - start_t) / duration
+                return int(round(start_vel + (end_vel - start_vel) * progress))
+        return self._base_velocity_at(time_point)
+
+    def _base_velocity_at(self, time_point: int) -> int:
+        active = DEFAULT_VELOCITY
+        for t_val, v in self._constant:
+            if t_val <= time_point:
+                active = v
+            else:
+                break
+        return active
+
+    def _next_velocity_after(self, time_point: int, fallback: int) -> int:
+        for t_val, v in self._constant:
+            if t_val >= time_point:
+                return v
+        return fallback
+
+
 def _extract_notes(score: pt.score.Score) -> list[NoteOut]:
     notes: list[NoteOut] = []
     for part_idx, part in enumerate(score.parts):
         beat_map = part.beat_map
+        dynamics = _DynamicsResolver(part)
         for note in part.notes_tied:
             onset_beat = float(beat_map(note.start.t))
             offset_beat = float(beat_map(note.end_tied.t))
@@ -74,7 +150,7 @@ def _extract_notes(score: pt.score.Score) -> list[NoteOut]:
                     pitch=note.midi_pitch,
                     onset_beat=onset_beat,
                     duration_beat=max(duration_beat, 0.01),
-                    velocity=64,
+                    velocity=dynamics.velocity_at(note.start.t),
                     part_index=part_idx,
                     part_name=part.part_name or f"Part {part_idx + 1}",
                 )

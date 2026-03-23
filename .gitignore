@@ -16,6 +16,8 @@
 # Scores with unclear or third-party licensing
 public/scores/mozart-k622-adagio.musicxml
 public/scores/mozart-k581-trio.musicxml
+public/scores/mozart-k622-adagio.score.json
+public/scores/mozart-k581-trio.score.json
 
 # Proposal / private documents
 *.pdf
