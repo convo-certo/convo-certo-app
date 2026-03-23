@@ -5,7 +5,7 @@ import { MidiDeviceSelector } from "./MidiDeviceSelector";
 import { LeadFollowIndicator } from "./LeadFollowIndicator";
 import { AccompanimentEngine } from "~/lib/accompaniment-engine";
 import { MidiManager, midiToNoteName } from "~/lib/midi-manager";
-import { parseMusicXML } from "~/lib/musicxml-parser";
+import { loadScore as loadScoreFromPath, parseUploadedScore } from "~/lib/score-loader";
 import type {
   AccompanimentState,
   MidiDeviceInfo,
@@ -88,40 +88,40 @@ export function Step3AdaptiveView() {
     []
   );
 
-  const loadScore = useCallback(
-    async (xmlString: string) => {
-      await initAudio();
-      const parsed = parseMusicXML(xmlString);
+  const applyScore = useCallback(
+    (parsed: ParsedScore, xml: string) => {
       setScore(parsed);
-      setMusicXML(xmlString);
+      setMusicXML(xml);
       const defaultPartIndex = parsed.parts.findIndex((p) => p.isSolo);
       const idx = defaultPartIndex >= 0 ? defaultPartIndex : 0;
       loadScoreWithPart(parsed, idx);
     },
-    [initAudio, loadScoreWithPart]
+    [loadScoreWithPart]
   );
 
   const loadSampleScore = useCallback(
     async (path = "/scores/mozart-k622-adagio.musicxml") => {
       try {
-        const response = await fetch(path);
-        const xml = await response.text();
-        await loadScore(xml);
+        await initAudio();
+        const { score, musicXML } = await loadScoreFromPath(path);
+        applyScore(score, musicXML);
       } catch (err) {
         console.error("Failed to load sample score:", err);
       }
     },
-    [loadScore]
+    [initAudio, applyScore]
   );
 
   const handleFileUpload = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (!file) return;
+      await initAudio();
       const text = await file.text();
-      await loadScore(text);
+      const parsed = parseUploadedScore(text);
+      applyScore(parsed, text);
     },
-    [loadScore]
+    [initAudio, applyScore]
   );
 
   const handleStart = useCallback(async () => {

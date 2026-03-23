@@ -53,6 +53,13 @@ export interface ScorePart {
   notes: NoteEvent[];
 }
 
+export interface ExpressionProfile {
+  beatPeriod: number[];
+  velocity: number[];
+  timing: number[];
+  articulationLog: number[];
+}
+
 export interface ParsedScore {
   title: string;
   tempo: number;
@@ -65,6 +72,8 @@ export interface ParsedScore {
   playbackOrder: number[];
   /** Maps slot index → physical measure number */
   measureNumbers: number[];
+  /** Expression parameters from performance analysis (optional) */
+  expressionParams?: ExpressionProfile;
 }
 
 // --- HMM Score Follower ---

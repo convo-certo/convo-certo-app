@@ -5,7 +5,7 @@ import { StageLayout } from "./StageLayout";
 import { PlaybackEngine } from "~/lib/playback-engine";
 import type { PlaybackState } from "~/lib/playback-engine";
 import { MidiManager } from "~/lib/midi-manager";
-import { parseMusicXML } from "~/lib/musicxml-parser";
+import { loadScore as loadScoreFromPath, parseUploadedScore } from "~/lib/score-loader";
 import type { ParsedScore, TempoEvent } from "~/lib/types";
 import { t } from "~/lib/i18n";
 import type { Locale } from "~/lib/i18n";
@@ -56,39 +56,39 @@ export function Step1PlaybackView() {
     setAudioInitialized(true);
   }, [audioInitialized]);
 
-  const loadScore = useCallback(
-    async (xmlString: string) => {
-      await initAudio();
-      const parsed = parseMusicXML(xmlString);
+  const applyScore = useCallback(
+    (parsed: ParsedScore, xml: string) => {
       setScore(parsed);
-      setMusicXML(xmlString);
+      setMusicXML(xml);
       setMutedParts(new Set());
       engineRef.current?.loadScore(parsed);
     },
-    [initAudio]
+    []
   );
 
   const loadSampleScore = useCallback(
     async (path = "/scores/mozart-k622-adagio.musicxml") => {
       try {
-        const response = await fetch(path);
-        const xml = await response.text();
-        await loadScore(xml);
+        await initAudio();
+        const { score, musicXML } = await loadScoreFromPath(path);
+        applyScore(score, musicXML);
       } catch (err) {
         console.error("Failed to load sample score:", err);
       }
     },
-    [loadScore]
+    [initAudio, applyScore]
   );
 
   const handleFileUpload = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (!file) return;
+      await initAudio();
       const text = await file.text();
-      await loadScore(text);
+      const parsed = parseUploadedScore(text);
+      applyScore(parsed, text);
     },
-    [loadScore]
+    [initAudio, applyScore]
   );
 
   const handleStart = useCallback(async () => {
