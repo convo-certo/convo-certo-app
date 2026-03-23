@@ -5,7 +5,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { MeasureAnnotation } from "~/lib/types";
+import type { MeasureAnnotation, TempoEvent } from "~/lib/types";
 import type { Locale } from "~/lib/i18n";
 
 interface ScoreDisplayProps {
@@ -18,6 +18,7 @@ interface ScoreDisplayProps {
   measures: MeasureAnnotation[];
   measureNumbers: number[];
   locale?: Locale;
+  onTempoMapReady?: (events: TempoEvent[]) => void;
 }
 
 interface FractionLike {
@@ -59,6 +60,19 @@ interface OSMDInstance {
   };
   sheet: {
     sourceMeasures: unknown[];
+    TimestampSortedTempoExpressionsList?: Array<{
+      AbsoluteTimestamp: { RealValue: number };
+      InstantaneousTempo?: {
+        TempoInBpm: number;
+      };
+      ContinuousTempo?: {
+        AbsoluteStartTimestamp: { RealValue: number };
+        AbsoluteEndTimestamp: { RealValue: number };
+        StartTempo: number;
+        EndTempo: number;
+      };
+    }>;
+    getExpressionsStartTempoInBPM?: () => number;
   };
 }
 
@@ -71,6 +85,7 @@ export function ScoreDisplay({
   engineState,
   measures,
   measureNumbers,
+  onTempoMapReady,
 }: ScoreDisplayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -120,11 +135,37 @@ export function ScoreDisplay({
 
       osmdRef.current = osmd;
       lastCursorBeatRef.current = -1;
+
+      if (onTempoMapReady && osmd.sheet?.TimestampSortedTempoExpressionsList) {
+        const tempoEvents: TempoEvent[] = [];
+        for (const mte of osmd.sheet.TimestampSortedTempoExpressionsList) {
+          const beatPos = mte.AbsoluteTimestamp.RealValue * beatsPerMeasure;
+
+          if (mte.ContinuousTempo) {
+            const ct = mte.ContinuousTempo;
+            tempoEvents.push({
+              beatPosition: ct.AbsoluteStartTimestamp.RealValue * beatsPerMeasure,
+              bpm: ct.StartTempo,
+              type: "continuous",
+              endBeatPosition: ct.AbsoluteEndTimestamp.RealValue * beatsPerMeasure,
+              endBpm: ct.EndTempo,
+            });
+          } else if (mte.InstantaneousTempo) {
+            tempoEvents.push({
+              beatPosition: beatPos,
+              bpm: mte.InstantaneousTempo.TempoInBpm,
+              type: "instant",
+            });
+          }
+        }
+        onTempoMapReady(tempoEvents);
+      }
+
       setLoaded(true);
     } catch (err) {
       console.error("[ScoreDisplay] OSMD error:", err);
     }
-  }, [musicXML]);
+  }, [musicXML, onTempoMapReady, beatsPerMeasure]);
 
   useEffect(() => {
     setLoaded(false);

@@ -2,7 +2,9 @@ import type {
   NoteEvent,
   ParsedScore,
   EngineState,
+  TempoEvent,
 } from "./types";
+import { TempoMap } from "./tempo-map";
 import { eventBus } from "./event-bus";
 
 export interface PlaybackState {
@@ -12,6 +14,10 @@ export interface PlaybackState {
   tempo: number;
 }
 
+export interface PlaybackEngineOptions {
+  getAudioTime?: () => number;
+}
+
 export class PlaybackEngine {
   private score: ParsedScore | null = null;
   private accompNotes: NoteEvent[] = [];
@@ -19,15 +25,28 @@ export class PlaybackEngine {
   private currentMeasure = 0;
   private currentBeat = 0;
   private tempo = 120;
+  private tempoMultiplier = 1.0;
   private autoPlayTimer: ReturnType<typeof setInterval> | null = null;
   private accompIndex = 0;
   private mutedParts: Set<number> = new Set();
 
+  private tempoMap: TempoMap = new TempoMap([], 120);
+  private audioStartTime = 0;
+  private getAudioTime: () => number;
+
+  private readonly scheduleAheadTime = 0.1;
+  private readonly tickIntervalMs = 25;
+  private scheduledUpToBeat = 0;
+
   private lastEmitTime = 0;
   private readonly emitIntervalMs = 200;
 
-  private onNoteOutput: ((note: NoteEvent, time: number) => void) | null = null;
+  private onNoteOutput: ((note: NoteEvent, delayMs: number, audioTime?: number) => void) | null = null;
   private onStateChange: ((state: PlaybackState) => void) | null = null;
+
+  constructor(options?: PlaybackEngineOptions) {
+    this.getAudioTime = options?.getAudioTime ?? (() => performance.now() / 1000);
+  }
 
   loadScore(score: ParsedScore, options?: { excludeSolo?: boolean; excludePartIndex?: number }): void {
     this.score = score;
@@ -45,12 +64,18 @@ export class PlaybackEngine {
     this.accompNotes = partsToPlay.flatMap((p) => p.notes);
     this.accompNotes.sort((a, b) => a.startBeat - b.startBeat);
     this.tempo = score.tempo;
+    this.tempoMultiplier = 1.0;
     this.currentMeasure = score.measureNumbers[0] ?? 0;
     this.engineState = "idle";
     this.emitState();
   }
 
-  setNoteOutputCallback(cb: (note: NoteEvent, time: number) => void): void {
+  setTempoMap(events: TempoEvent[]): void {
+    const defaultBpm = this.score?.tempo ?? 120;
+    this.tempoMap = new TempoMap(events, defaultBpm);
+  }
+
+  setNoteOutputCallback(cb: (note: NoteEvent, delayMs: number, audioTime?: number) => void): void {
     this.onNoteOutput = cb;
   }
 
@@ -63,6 +88,7 @@ export class PlaybackEngine {
     const minTempo = baseTempo * 0.25;
     const maxTempo = baseTempo * 4.0;
     this.tempo = Math.max(minTempo, Math.min(maxTempo, bpm));
+    this.tempoMultiplier = this.tempo / baseTempo;
     this.emitState();
   }
 
@@ -73,6 +99,8 @@ export class PlaybackEngine {
   start(): void {
     if (!this.score) return;
     this.engineState = "playing";
+    this.audioStartTime = this.getAudioTime();
+    this.scheduledUpToBeat = 0;
     this.startAutoPlay();
     eventBus.emit({ type: "playback_start" });
     this.emitState();
@@ -83,6 +111,7 @@ export class PlaybackEngine {
     this.stopAutoPlay();
     this.accompIndex = 0;
     this.currentBeat = 0;
+    this.scheduledUpToBeat = 0;
     this.currentMeasure = this.score?.measureNumbers[0] ?? 0;
     eventBus.emit({ type: "playback_stop" });
     this.emitState();
@@ -115,29 +144,37 @@ export class PlaybackEngine {
 
   private startAutoPlay(): void {
     this.stopAutoPlay();
-    const tickMs = 50;
     this.autoPlayTimer = setInterval(() => {
-      if (this.engineState !== "playing") return;
+      this.tick();
+    }, this.tickIntervalMs);
+  }
 
-      const beatsPerTick = (this.tempo / 60000) * tickMs;
-      this.currentBeat += beatsPerTick;
+  private tick(): void {
+    if (this.engineState !== "playing") return;
 
-      const beatsPerMeasure = this.score?.timeSignature.beats ?? 4;
-      const playbackIndex = Math.floor(this.currentBeat / beatsPerMeasure);
+    const now = this.getAudioTime();
+    const elapsedRaw = now - this.audioStartTime;
+    const elapsed = elapsedRaw * this.tempoMultiplier;
 
-      if (this.score && playbackIndex >= this.score.playbackOrder.length) {
-        this.stop();
-        return;
-      }
+    this.currentBeat = this.tempoMap.secondsToBeat(elapsed);
 
-      if (this.score) {
-        const slot = this.score.playbackOrder[playbackIndex];
-        this.currentMeasure = this.score.measureNumbers[slot] ?? 0;
-      }
+    const beatsPerMeasure = this.score?.timeSignature.beats ?? 4;
+    const playbackIndex = Math.floor(this.currentBeat / beatsPerMeasure);
 
-      this.scheduleAccompaniment();
-      this.emitStateThrottled();
-    }, tickMs);
+    if (this.score && playbackIndex >= this.score.playbackOrder.length) {
+      this.stop();
+      return;
+    }
+
+    if (this.score) {
+      const slot = this.score.playbackOrder[playbackIndex];
+      this.currentMeasure = this.score.measureNumbers[slot] ?? 0;
+    }
+
+    this.tempo = this.tempoMap.getBpmAtBeat(this.currentBeat) * this.tempoMultiplier;
+
+    this.scheduleAccompaniment(now);
+    this.emitStateThrottled();
   }
 
   private stopAutoPlay(): void {
@@ -147,27 +184,34 @@ export class PlaybackEngine {
     }
   }
 
-  private scheduleAccompaniment(): void {
+  private scheduleAccompaniment(now: number): void {
     if (this.engineState !== "playing") return;
 
-    const lookAhead = 4;
-    const targetBeat = this.currentBeat + lookAhead;
+    const lookAheadSeconds = this.scheduleAheadTime;
+    const lookAheadElapsed = (now - this.audioStartTime + lookAheadSeconds) * this.tempoMultiplier;
+    const lookAheadBeat = this.tempoMap.secondsToBeat(lookAheadElapsed);
 
     while (
       this.accompIndex < this.accompNotes.length &&
-      this.accompNotes[this.accompIndex].startBeat <= targetBeat
+      this.accompNotes[this.accompIndex].startBeat <= lookAheadBeat
     ) {
       const note = this.accompNotes[this.accompIndex];
       if (this.mutedParts.has(note.partIndex)) {
         this.accompIndex++;
         continue;
       }
-      const beatDelta = note.startBeat - this.currentBeat;
-      const msPerBeat = 60000 / this.tempo;
-      const delayMs = Math.max(0, beatDelta * msPerBeat);
-      this.onNoteOutput?.(note, delayMs);
+
+      if (note.startBeat > this.scheduledUpToBeat) {
+        const noteSeconds = this.tempoMap.beatToSeconds(note.startBeat);
+        const noteAudioTime = this.audioStartTime + noteSeconds / this.tempoMultiplier;
+        const delayMs = Math.max(0, (noteAudioTime - now) * 1000);
+        this.onNoteOutput?.(note, delayMs, noteAudioTime);
+      }
+
       this.accompIndex++;
     }
+
+    this.scheduledUpToBeat = lookAheadBeat;
   }
 
   private emitState(): void {

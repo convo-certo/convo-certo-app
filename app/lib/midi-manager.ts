@@ -74,6 +74,16 @@ export class MidiManager {
     this.isAudioReady = true;
   }
 
+  getAudioContext(): AudioContext | null {
+    if (!this.isAudioReady) return null;
+    return Tone.getContext().rawContext as AudioContext;
+  }
+
+  getCurrentTime(): number {
+    const ctx = this.getAudioContext();
+    return ctx ? ctx.currentTime : performance.now() / 1000;
+  }
+
   getInputDevices(): MidiDeviceInfo[] {
     if (!this.midiAccess) return [];
     const devices: MidiDeviceInfo[] = [];
@@ -119,14 +129,14 @@ export class MidiManager {
   }
 
   /** Play an accompaniment note via Tone.js */
-  playNote(note: NoteEvent, delayMs: number): void {
+  playNote(note: NoteEvent, delayMs: number, audioTime?: number): void {
     if (!this.synth || !this.isAudioReady) return;
 
     const noteName = midiToNoteName(note.pitch);
     const velocity = note.velocity / 127;
     const durationSec = (note.durationBeats * 60) / this.currentTempo;
 
-    const time = Tone.now() + delayMs / 1000;
+    const time = audioTime ?? Tone.now() + delayMs / 1000;
     this.synth.triggerAttackRelease(noteName, durationSec, time, velocity);
   }
 

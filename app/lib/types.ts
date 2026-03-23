@@ -157,6 +157,18 @@ export interface RehearsalCommand {
   rawText: string;
 }
 
+// --- Tempo Map ---
+
+export type TempoEventType = "instant" | "continuous";
+
+export interface TempoEvent {
+  beatPosition: number;
+  bpm: number;
+  type: TempoEventType;
+  endBeatPosition?: number;
+  endBpm?: number;
+}
+
 // --- Event Bus ---
 
 export type ConvoCertoEvent =

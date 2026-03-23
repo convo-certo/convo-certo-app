@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parseMusicXML } from "./musicxml-parser";
 import { PlaybackEngine } from "./playback-engine";
-import type { PlaybackState, } from "./playback-engine";
+import type { PlaybackState } from "./playback-engine";
 import type { NoteEvent } from "./types";
 
 function loadFixture(filename: string): string {
@@ -17,10 +17,14 @@ describe("PlaybackEngine", () => {
   let engine: PlaybackEngine;
   let states: PlaybackState[];
   let outputNotes: Array<{ note: NoteEvent; time: number }>;
+  let mockTime: number;
 
   beforeEach(() => {
     vi.useFakeTimers();
-    engine = new PlaybackEngine();
+    mockTime = 0;
+    engine = new PlaybackEngine({
+      getAudioTime: () => mockTime / 1000,
+    });
     states = [];
     outputNotes = [];
 
@@ -37,6 +41,11 @@ describe("PlaybackEngine", () => {
     engine.stop();
     vi.useRealTimers();
   });
+
+  function advanceTime(ms: number): void {
+    mockTime += ms;
+    vi.advanceTimersByTime(ms);
+  }
 
   describe("with Mozart K.622", () => {
     beforeEach(() => {
@@ -60,14 +69,14 @@ describe("PlaybackEngine", () => {
 
     it("advances beats over time", () => {
       engine.start();
-      vi.advanceTimersByTime(1000);
+      advanceTime(1000);
       const state = engine.getState();
       expect(state.currentBeat).toBeGreaterThan(0);
     });
 
     it("stops cleanly", () => {
       engine.start();
-      vi.advanceTimersByTime(500);
+      advanceTime(500);
       engine.stop();
       const state = engine.getState();
       expect(state.engineState).toBe("idle");
@@ -77,14 +86,14 @@ describe("PlaybackEngine", () => {
 
     it("emits state changes", () => {
       engine.start();
-      vi.advanceTimersByTime(200);
+      advanceTime(200);
       engine.stop();
       expect(states.length).toBeGreaterThanOrEqual(2);
     });
 
     it("schedules accompaniment notes", () => {
       engine.start();
-      vi.advanceTimersByTime(5000);
+      advanceTime(5000);
       expect(outputNotes.length).toBeGreaterThan(0);
     });
 
@@ -104,7 +113,7 @@ describe("PlaybackEngine", () => {
     it("stops automatically at end of score", () => {
       engine.setTempo(200);
       engine.start();
-      vi.advanceTimersByTime(60000);
+      advanceTime(60000);
       expect(engine.getState().engineState).toBe("idle");
     });
   });
@@ -122,7 +131,7 @@ describe("PlaybackEngine", () => {
 
     it("plays through the short score", () => {
       engine.start();
-      vi.advanceTimersByTime(20000);
+      advanceTime(20000);
       expect(engine.getState().engineState).toBe("idle");
     });
   });
@@ -141,7 +150,7 @@ describe("PlaybackEngine", () => {
     it("stops automatically after playing through repeats", () => {
       engine.setTempo(200);
       engine.start();
-      vi.advanceTimersByTime(120000);
+      advanceTime(120000);
       expect(engine.getState().engineState).toBe("idle");
     });
   });
@@ -153,7 +162,7 @@ describe("PlaybackEngine", () => {
       engine.loadScore(score, { excludePartIndex: 0 });
 
       engine.start();
-      vi.advanceTimersByTime(5000);
+      advanceTime(5000);
 
       const part0Notes = outputNotes.filter((n) => n.note.partIndex === 0);
       const part1Notes = outputNotes.filter((n) => n.note.partIndex === 1);
@@ -200,10 +209,28 @@ describe("PlaybackEngine", () => {
     it("skips muted part notes during playback", () => {
       engine.mutePart(1);
       engine.start();
-      vi.advanceTimersByTime(5000);
+      advanceTime(5000);
 
       const mutedNotes = outputNotes.filter((n) => n.note.partIndex === 1);
       expect(mutedNotes).toHaveLength(0);
+    });
+  });
+
+  describe("tempo map integration", () => {
+    it("uses tempo map for beat calculation", () => {
+      const xml = loadFixture("sample-duet.musicxml");
+      const score = parseMusicXML(xml);
+      engine.loadScore(score);
+
+      engine.setTempoMap([
+        { beatPosition: 4, bpm: 60, type: "instant" },
+      ]);
+
+      engine.start();
+      advanceTime(3000);
+
+      const state = engine.getState();
+      expect(state.currentBeat).toBeGreaterThan(0);
     });
   });
 });

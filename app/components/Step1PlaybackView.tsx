@@ -6,7 +6,7 @@ import { PlaybackEngine } from "~/lib/playback-engine";
 import type { PlaybackState } from "~/lib/playback-engine";
 import { MidiManager } from "~/lib/midi-manager";
 import { parseMusicXML } from "~/lib/musicxml-parser";
-import type { ParsedScore } from "~/lib/types";
+import type { ParsedScore, TempoEvent } from "~/lib/types";
 import { t } from "~/lib/i18n";
 import type { Locale } from "~/lib/i18n";
 
@@ -27,11 +27,13 @@ export function Step1PlaybackView() {
   const [mutedParts, setMutedParts] = useState<Set<number>>(new Set());
 
   useEffect(() => {
-    const engine = new PlaybackEngine();
     const midi = new MidiManager();
+    const engine = new PlaybackEngine({
+      getAudioTime: () => midi.getCurrentTime(),
+    });
 
-    engine.setNoteOutputCallback((note, delayMs) => {
-      midi.playNote(note, delayMs);
+    engine.setNoteOutputCallback((note, delayMs, audioTime) => {
+      midi.playNote(note, delayMs, audioTime);
     });
 
     engine.setStateChangeCallback((state) => {
@@ -100,6 +102,10 @@ export function Step1PlaybackView() {
 
   const handleTempoChange = useCallback((bpm: number) => {
     engineRef.current?.setTempo(bpm);
+  }, []);
+
+  const handleTempoMapReady = useCallback((events: TempoEvent[]) => {
+    engineRef.current?.setTempoMap(events);
   }, []);
 
   const handleToggleMute = useCallback((partIndex: number) => {
@@ -321,6 +327,7 @@ export function Step1PlaybackView() {
             engineState={playbackState.engineState}
             measures={score.measures}
             measureNumbers={score.measureNumbers}
+            onTempoMapReady={handleTempoMapReady}
           />
         ) : (
           <div
