@@ -19,3 +19,14 @@ public/scores/mozart-k581-trio.musicxml
 
 # Proposal / private documents
 *.pdf
+
+it2025-koubo-teianshiryou_中村_植田 .pdf
+
+# Python backend
+__pycache__/
+*.pyc
+*.pyo
+backend/.venv/
+backend/.pytest_cache/
+backend/.ruff_cache/
+*.egg-info/
