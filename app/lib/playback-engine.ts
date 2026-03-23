@@ -1,4 +1,5 @@
 import type {
+  ExpressionProfile,
   NoteEvent,
   ParsedScore,
   EngineState,
@@ -29,6 +30,7 @@ export class PlaybackEngine {
   private autoPlayTimer: ReturnType<typeof setInterval> | null = null;
   private accompIndex = 0;
   private mutedParts: Set<number> = new Set();
+  private expressionParams: ExpressionProfile | null = null;
 
   private tempoMap: TempoMap = new TempoMap([], 120);
   private audioStartTime = 0;
@@ -64,6 +66,7 @@ export class PlaybackEngine {
     this.accompNotes = partsToPlay.flatMap((p) => p.notes);
     this.accompNotes.sort((a, b) => a.startBeat - b.startBeat);
     this.tempo = score.tempo;
+    this.expressionParams = score.expressionParams ?? null;
     this.tempoMultiplier = 1.0;
     this.currentMeasure = score.measureNumbers[0] ?? 0;
     this.engineState = "idle";
@@ -184,6 +187,37 @@ export class PlaybackEngine {
     }
   }
 
+  private applyExpression(note: NoteEvent, noteIndex: number): { note: NoteEvent; timingOffsetSec: number } {
+    if (!this.expressionParams) return { note, timingOffsetSec: 0 };
+
+    const params = this.expressionParams;
+    const idx = Math.min(noteIndex, params.velocity.length - 1);
+    if (idx < 0) return { note, timingOffsetSec: 0 };
+
+    const velParam = params.velocity[idx] ?? 0;
+    const velScale = Math.pow(2, velParam * 0.5);
+    const expressiveVelocity = Math.max(1, Math.min(127,
+      Math.round(note.velocity * velScale)
+    ));
+
+    const timingParam = params.timing[idx] ?? 0;
+    const beatPeriod = params.beatPeriod[idx] ?? (60 / this.tempo);
+    const timingOffsetSec = timingParam * beatPeriod * 0.3;
+
+    const artParam = params.articulationLog[idx] ?? 0;
+    const artScale = Math.pow(2, artParam * 0.3);
+    const expressiveDuration = Math.max(0.01, note.durationBeats * artScale);
+
+    return {
+      note: {
+        ...note,
+        velocity: expressiveVelocity,
+        durationBeats: expressiveDuration,
+      },
+      timingOffsetSec,
+    };
+  }
+
   private scheduleAccompaniment(now: number): void {
     if (this.engineState !== "playing") return;
 
@@ -202,10 +236,11 @@ export class PlaybackEngine {
       }
 
       if (note.startBeat > this.scheduledUpToBeat) {
-        const noteSeconds = this.tempoMap.beatToSeconds(note.startBeat);
-        const noteAudioTime = this.audioStartTime + noteSeconds / this.tempoMultiplier;
+        const { note: expNote, timingOffsetSec } = this.applyExpression(note, this.accompIndex);
+        const noteSeconds = this.tempoMap.beatToSeconds(expNote.startBeat);
+        const noteAudioTime = this.audioStartTime + noteSeconds / this.tempoMultiplier + timingOffsetSec;
         const delayMs = Math.max(0, (noteAudioTime - now) * 1000);
-        this.onNoteOutput?.(note, delayMs, noteAudioTime);
+        this.onNoteOutput?.(expNote, delayMs, noteAudioTime);
       }
 
       this.accompIndex++;

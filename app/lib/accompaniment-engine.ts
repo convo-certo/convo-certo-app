@@ -13,6 +13,7 @@
 import type {
   AccompanimentState,
   EngineState,
+  ExpressionProfile,
   MeasureAnnotation,
   MidiNoteMessage,
   MotionCue,
@@ -51,6 +52,7 @@ export class AccompanimentEngine {
   private audioRef: AudioReferenceAnalyser | null = null;
   private audioRefProfile: AudioReferenceProfile | null = null;
   private mutedParts: Set<number> = new Set();
+  private expressionParams: ExpressionProfile | null = null;
 
   private onNoteOutput: ((note: NoteEvent, time: number) => void) | null = null;
   private onStateChange: ((state: AccompanimentState) => void) | null = null;
@@ -100,7 +102,8 @@ export class AccompanimentEngine {
       const blended =
         baseTempo * this.leadFollowRatio +
         followerTempo * (1 - this.leadFollowRatio);
-      this.tempo = Math.max(minTempo, Math.min(maxTempo, blended));
+      const clamped = Math.max(minTempo, Math.min(maxTempo, blended));
+      this.tempo = this.tempo * 0.7 + clamped * 0.3;
 
       eventBus.emit({
         type: "tempo_change",
@@ -142,6 +145,7 @@ export class AccompanimentEngine {
     this.accompNotes = accompParts.flatMap((p) => p.notes);
     this.accompNotes.sort((a, b) => a.startBeat - b.startBeat);
     this.tempo = score.tempo;
+    this.expressionParams = score.expressionParams ?? null;
 
     // Check if first measure has a wait directive
     const firstMeasure = score.measures.find((m) => m.measureNumber === 1);
@@ -220,7 +224,7 @@ export class AccompanimentEngine {
     this.autoPlayMode = true;
     this.autoPlayBeat = this.currentBeat;
 
-    const tickMs = 50;
+    const tickMs = 25;
     this.autoPlayTimer = setInterval(() => {
       if (this.engineState !== "playing" && this.engineState !== "listening")
         return;
@@ -389,6 +393,36 @@ export class AccompanimentEngine {
     }
   }
 
+  private applyExpression(note: NoteEvent, noteIndex: number): { note: NoteEvent; timingOffsetMs: number } {
+    if (!this.expressionParams) return { note, timingOffsetMs: 0 };
+
+    const params = this.expressionParams;
+    const idx = Math.min(noteIndex, params.velocity.length - 1);
+    if (idx < 0) return { note, timingOffsetMs: 0 };
+
+    const velParam = params.velocity[idx] ?? 0;
+    const velScale = Math.pow(2, velParam * 0.5);
+    const expressiveVelocity = Math.max(1, Math.min(127,
+      Math.round(note.velocity * velScale)
+    ));
+
+    const timingParam = params.timing[idx] ?? 0;
+    const timingOffsetMs = timingParam * (60000 / this.tempo) * 0.3;
+
+    const artParam = params.articulationLog[idx] ?? 0;
+    const artScale = Math.pow(2, artParam * 0.3);
+    const expressiveDuration = Math.max(0.01, note.durationBeats * artScale);
+
+    return {
+      note: {
+        ...note,
+        velocity: expressiveVelocity,
+        durationBeats: expressiveDuration,
+      },
+      timingOffsetMs,
+    };
+  }
+
   private scheduleAccompaniment(): void {
     if (
       this.engineState !== "playing" &&
@@ -410,9 +444,10 @@ export class AccompanimentEngine {
       }
       const beatDelta = note.startBeat - this.currentBeat;
       const msPerBeat = 60000 / this.tempo;
-      const delayMs = Math.max(0, beatDelta * msPerBeat);
+      const { note: expNote, timingOffsetMs } = this.applyExpression(note, this.accompIndex);
+      const delayMs = Math.max(0, beatDelta * msPerBeat + timingOffsetMs);
 
-      this.onNoteOutput?.(note, delayMs);
+      this.onNoteOutput?.(expNote, delayMs);
       this.accompIndex++;
     }
   }

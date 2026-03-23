@@ -16,11 +16,12 @@ import type {
 } from "./types";
 import { eventBus } from "./event-bus";
 
-const NUM_TEMPO_HYPOTHESES = 5;
-const TEMPO_RANGE_FACTOR = 0.3;
+const NUM_TEMPO_HYPOTHESES = 7;
+const TEMPO_RANGE_FACTOR = 0.4;
 const PITCH_MATCH_PROB = 0.8;
 const PITCH_NEAR_PROB = 0.15;
 const PITCH_MISS_PROB = 0.05;
+const TEMPO_SMOOTHING_ALPHA = 0.15;
 
 export class ScoreFollower {
   private soloNotes: NoteEvent[] = [];
@@ -33,6 +34,8 @@ export class ScoreFollower {
   private beatsPerMeasure = 4;
   private playbackOrder: number[] = [];
   private measureNumbers: number[] = [];
+  private smoothedTempo = 120;
+  private recentTempos: number[] = [];
 
   private onStateUpdate: ((state: ScoreFollowerState) => void) | null = null;
 
@@ -108,6 +111,15 @@ export class ScoreFollower {
     const best = this.getBestState();
     this.currentPosition = best.position;
 
+    // Smooth tempo with EMA + median filter for outlier rejection
+    this.recentTempos.push(best.tempo);
+    if (this.recentTempos.length > 5) this.recentTempos.shift();
+
+    const medianTempo = this.getMedianTempo();
+    this.smoothedTempo =
+      this.smoothedTempo * (1 - TEMPO_SMOOTHING_ALPHA) +
+      medianTempo * TEMPO_SMOOTHING_ALPHA;
+
     const currentBeat = this.soloNotes[this.currentPosition]?.startBeat ?? 0;
     const playbackIndex = Math.floor(currentBeat / this.beatsPerMeasure);
     let currentMeasure: number;
@@ -121,7 +133,7 @@ export class ScoreFollower {
     const state: ScoreFollowerState = {
       currentBeat,
       currentMeasure,
-      estimatedTempo: best.tempo,
+      estimatedTempo: this.smoothedTempo,
       confidence: best.probability,
       isPlaying: this.isActive,
     };
@@ -139,7 +151,7 @@ export class ScoreFollower {
   }
 
   getEstimatedTempo(): number {
-    return this.getBestState().tempo;
+    return this.smoothedTempo;
   }
 
   private initStates(): void {
@@ -158,6 +170,8 @@ export class ScoreFollower {
   private reset(): void {
     this.currentPosition = 0;
     this.lastNoteTime = performance.now();
+    this.smoothedTempo = this.baseTempo;
+    this.recentTempos = [];
     this.initStates();
   }
 
@@ -189,9 +203,9 @@ export class ScoreFollower {
       const beatsPerMs = state.tempo / 60000;
       const expectedBeatsElapsed = beatsPerMs * deltaMs;
 
-      // In follow mode, be more tolerant of tempo variations
-      // In lead mode, keep closer to the base tempo
-      const tempoAdaptRate = role.mode === "follow" ? 0.3 : 0.1;
+      const tempoAdaptRate = role.mode === "follow"
+        ? 0.15 + role.factor * 0.35
+        : 0.08;
 
       // Advance position estimate
       const currentBeat =
@@ -263,5 +277,14 @@ export class ScoreFollower {
       }
     }
     return best;
+  }
+
+  private getMedianTempo(): number {
+    if (this.recentTempos.length === 0) return this.baseTempo;
+    const sorted = [...this.recentTempos].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 0
+      ? (sorted[mid - 1] + sorted[mid]) / 2
+      : sorted[mid];
   }
 }
