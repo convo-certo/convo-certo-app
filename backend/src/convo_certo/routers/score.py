@@ -140,6 +140,12 @@ def _extract_notes(score: pt.score.Score) -> list[NoteOut]:
     for part_idx, part in enumerate(score.parts):
         beat_map = part.beat_map
         dynamics = _DynamicsResolver(part)
+
+        transpose_chromatic = 0
+        for t in part.iter_all(pt.score.Transposition):
+            transpose_chromatic = t.chromatic
+            break
+
         for note in part.notes_tied:
             onset_beat = float(beat_map(note.start.t))
             offset_beat = float(beat_map(note.end_tied.t))
@@ -147,7 +153,7 @@ def _extract_notes(score: pt.score.Score) -> list[NoteOut]:
 
             notes.append(
                 NoteOut(
-                    pitch=note.midi_pitch,
+                    pitch=note.midi_pitch + transpose_chromatic,
                     onset_beat=onset_beat,
                     duration_beat=max(duration_beat, 0.01),
                     velocity=dynamics.velocity_at(note.start.t),

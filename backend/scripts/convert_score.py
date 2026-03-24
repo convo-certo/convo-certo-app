@@ -137,20 +137,46 @@ def _extract_time_signature(score: pt.score.Score) -> dict:
     return {"beats": 4, "beatType": 4}
 
 
+def _extract_time_signature_changes(
+    score: pt.score.Score,
+) -> list[dict]:
+    changes: list[dict] = []
+    initial_found = False
+    for part in score.parts:
+        for ts in part.iter_all(pts.TimeSignature):
+            if not initial_found:
+                initial_found = True
+                continue
+            beat_pos = float(part.beat_map(ts.start.t))
+            changes.append({
+                "beatPosition": beat_pos,
+                "beats": ts.beats,
+                "beatType": ts.beat_type,
+            })
+        break
+    return changes
+
+
 def convert_score(musicxml_path: Path) -> dict:
     score = pt.load_score(str(musicxml_path))
 
     default_tempo, tempo_events = _extract_tempo(score)
     time_sig = _extract_time_signature(score)
-    beats_per_measure = time_sig["beats"]
+    ts_changes = _extract_time_signature_changes(score)
 
     parts_out: list[dict] = []
     total_measures = 0
     measure_numbers: list[int] = []
+    measure_beats_list: list[int] = []
 
     for part_idx, part in enumerate(score.parts):
         beat_map = part.beat_map
         dynamics = DynamicsResolver(part)
+
+        transpose_chromatic = 0
+        for t in part.iter_all(pts.Transposition):
+            transpose_chromatic = t.chromatic
+            break
 
         notes: list[dict] = []
         for note in part.notes_tied:
@@ -160,7 +186,7 @@ def convert_score(musicxml_path: Path) -> dict:
             velocity = dynamics.velocity_at(note.start.t)
 
             notes.append({
-                "pitch": note.midi_pitch,
+                "pitch": note.midi_pitch + transpose_chromatic,
                 "startBeat": onset_beat,
                 "durationBeats": duration_beat,
                 "velocity": velocity,
@@ -177,6 +203,14 @@ def convert_score(musicxml_path: Path) -> dict:
             measure_numbers = [
                 getattr(m, "number", i + 1) or i + 1 for i, m in enumerate(measures)
             ]
+            current_beats = time_sig["beats"]
+            ts_change_idx = 0
+            for m in measures:
+                m_beat = float(beat_map(m.start.t))
+                while ts_change_idx < len(ts_changes) and ts_changes[ts_change_idx]["beatPosition"] <= m_beat:
+                    current_beats = ts_changes[ts_change_idx]["beats"]
+                    ts_change_idx += 1
+                measure_beats_list.append(current_beats)
 
         parts_out.append({
             "id": part.id or f"P{part_idx + 1}",
@@ -190,6 +224,13 @@ def convert_score(musicxml_path: Path) -> dict:
         (n["startBeat"] + n["durationBeats"] for n in all_notes), default=0.0
     )
     playback_order = list(range(len(measure_numbers)))
+
+    measure_start_beats: list[float] = []
+    running = 0.0
+    for i in range(len(playback_order)):
+        measure_start_beats.append(running)
+        slot = playback_order[i]
+        running += measure_beats_list[slot] if slot < len(measure_beats_list) else time_sig["beats"]
 
     title = (
         getattr(score, "work_title", None)
@@ -207,6 +248,8 @@ def convert_score(musicxml_path: Path) -> dict:
         "totalBeats": total_beats,
         "playbackOrder": playback_order,
         "measureNumbers": measure_numbers,
+        "measureStartBeats": measure_start_beats,
+        "timeSignatureChanges": ts_changes,
         "tempoEvents": tempo_events,
     }
 
