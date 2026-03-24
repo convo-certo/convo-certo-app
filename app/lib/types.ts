@@ -72,6 +72,10 @@ export interface ParsedScore {
   playbackOrder: number[];
   /** Maps slot index → physical measure number */
   measureNumbers: number[];
+  /** Cumulative beat position at the start of each slot */
+  measureStartBeats: number[];
+  /** Time signature changes throughout the score */
+  timeSignatureChanges: TimeSignatureEvent[];
   /** Expression parameters from performance analysis (optional) */
   expressionParams?: ExpressionProfile;
 }
@@ -164,6 +168,14 @@ export interface RehearsalCommand {
   tempo?: number;
   dynamics?: number;
   rawText: string;
+}
+
+// --- Time Signature Map ---
+
+export interface TimeSignatureEvent {
+  beatPosition: number;
+  beats: number;
+  beatType: number;
 }
 
 // --- Tempo Map ---

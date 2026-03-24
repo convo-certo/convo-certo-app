@@ -30,6 +30,12 @@ interface ScoreJsonExpression {
   articulation_log: number[];
 }
 
+interface ScoreJsonTimeSignatureEvent {
+  beatPosition: number;
+  beats: number;
+  beatType: number;
+}
+
 interface ScoreJson {
   title: string;
   tempo: number;
@@ -40,6 +46,8 @@ interface ScoreJson {
   totalBeats: number;
   playbackOrder: number[];
   measureNumbers: number[];
+  measureStartBeats?: number[];
+  timeSignatureChanges?: ScoreJsonTimeSignatureEvent[];
   tempoEvents?: ParsedScore["measures"];
   expressionParams?: ScoreJsonExpression;
 }
@@ -84,6 +92,19 @@ export async function loadScore(
     jsonResult.status === "fulfilled" ? jsonResult.value : null;
 
   if (scoreJson && musicXML) {
+    let measureStartBeats: number[];
+    if (scoreJson.measureStartBeats) {
+      measureStartBeats = scoreJson.measureStartBeats;
+    } else {
+      const { beats } = scoreJson.timeSignature;
+      measureStartBeats = [];
+      let runningBeat = 0;
+      for (let i = 0; i < scoreJson.playbackOrder.length; i++) {
+        measureStartBeats.push(runningBeat);
+        runningBeat += beats;
+      }
+    }
+
     const score: ParsedScore = {
       title: scoreJson.title,
       tempo: scoreJson.tempo,
@@ -94,6 +115,8 @@ export async function loadScore(
       totalBeats: scoreJson.totalBeats,
       playbackOrder: scoreJson.playbackOrder,
       measureNumbers: scoreJson.measureNumbers,
+      measureStartBeats,
+      timeSignatureChanges: scoreJson.timeSignatureChanges ?? [],
     };
     if (scoreJson.expressionParams) {
       score.expressionParams = {

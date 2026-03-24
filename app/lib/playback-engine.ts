@@ -41,7 +41,7 @@ export class PlaybackEngine {
   private scheduledUpToBeat = 0;
 
   private lastEmitTime = 0;
-  private readonly emitIntervalMs = 200;
+  private readonly emitIntervalMs = 50;
 
   private onNoteOutput: ((note: NoteEvent, delayMs: number, audioTime?: number) => void) | null = null;
   private onStateChange: ((state: PlaybackState) => void) | null = null;
@@ -90,8 +90,18 @@ export class PlaybackEngine {
     const baseTempo = this.score?.tempo ?? 120;
     const minTempo = baseTempo * 0.25;
     const maxTempo = baseTempo * 4.0;
-    this.tempo = Math.max(minTempo, Math.min(maxTempo, bpm));
-    this.tempoMultiplier = this.tempo / baseTempo;
+    const newTempo = Math.max(minTempo, Math.min(maxTempo, bpm));
+    const newMultiplier = newTempo / baseTempo;
+
+    if (this.engineState === "playing") {
+      const now = this.getAudioTime();
+      const elapsedRaw = now - this.audioStartTime;
+      const elapsedScaled = elapsedRaw * this.tempoMultiplier;
+      this.audioStartTime = now - elapsedScaled / newMultiplier;
+    }
+
+    this.tempo = newTempo;
+    this.tempoMultiplier = newMultiplier;
     this.emitState();
   }
 
@@ -161,13 +171,12 @@ export class PlaybackEngine {
 
     this.currentBeat = this.tempoMap.secondsToBeat(elapsed);
 
-    const beatsPerMeasure = this.score?.timeSignature.beats ?? 4;
-    const playbackIndex = Math.floor(this.currentBeat / beatsPerMeasure);
-
-    if (this.score && playbackIndex >= this.score.playbackOrder.length) {
+    if (this.score && this.currentBeat >= this.score.totalBeats) {
       this.stop();
       return;
     }
+
+    const playbackIndex = this.getMeasureIndex(this.currentBeat);
 
     if (this.score) {
       const slot = this.score.playbackOrder[playbackIndex];
@@ -178,6 +187,25 @@ export class PlaybackEngine {
 
     this.scheduleAccompaniment(now);
     this.emitStateThrottled();
+  }
+
+  private getMeasureIndex(beat: number): number {
+    const starts = this.score?.measureStartBeats;
+    if (!starts || starts.length === 0) {
+      const bpm = this.score?.timeSignature.beats ?? 4;
+      return Math.floor(beat / bpm);
+    }
+    let lo = 0;
+    let hi = starts.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi + 1) >> 1;
+      if (starts[mid] <= beat) {
+        lo = mid;
+      } else {
+        hi = mid - 1;
+      }
+    }
+    return lo;
   }
 
   private stopAutoPlay(): void {

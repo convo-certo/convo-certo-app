@@ -14,6 +14,7 @@ import type {
   RoleMode,
   RoleStrength,
   ScorePart,
+  TimeSignatureEvent,
   WaitDirective,
 } from "./types";
 
@@ -133,8 +134,8 @@ export function parseMusicXML(xmlString: string): ParsedScore {
   const tempo = soundEl ? parseFloat(soundEl.getAttribute("tempo")!) : 120;
 
   const timeEl = doc.querySelector("time");
-  const beats = parseInt(timeEl?.querySelector("beats")?.textContent ?? "4");
-  const beatType = parseInt(
+  const initialBeats = parseInt(timeEl?.querySelector("beats")?.textContent ?? "4");
+  const initialBeatType = parseInt(
     timeEl?.querySelector("beat-type")?.textContent ?? "4"
   );
 
@@ -148,6 +149,8 @@ export function parseMusicXML(xmlString: string): ParsedScore {
   let totalMeasures = 0;
   const measureNumbers: number[] = [];
   const repeatMarkers: RepeatMarker[] = [];
+  const slotBeatsPerMeasure: number[] = [];
+  const timeSignatureChanges: TimeSignatureEvent[] = [];
 
   partListEls.forEach((partListEl, partIndex) => {
     const partId = partListEl.getAttribute("id") ?? `P${partIndex + 1}`;
@@ -164,6 +167,7 @@ export function parseMusicXML(xmlString: string): ParsedScore {
     let currentBeat = 0;
     let divisions = 1;
     let transposeChromatic = 0;
+    let currentBeatsPerMeasure = initialBeats;
 
     measureEls.forEach((measureEl, slotIndex) => {
       const rawNum = measureEl.getAttribute("number") ?? "1";
@@ -192,6 +196,30 @@ export function parseMusicXML(xmlString: string): ParsedScore {
       const divEl = measureEl.querySelector("attributes divisions");
       if (divEl?.textContent) {
         divisions = parseInt(divEl.textContent);
+      }
+
+      const timeChangeEl = measureEl.querySelector("attributes time");
+      if (timeChangeEl) {
+        const newBeats = parseInt(
+          timeChangeEl.querySelector("beats")?.textContent ?? String(currentBeatsPerMeasure)
+        );
+        const newBeatType = parseInt(
+          timeChangeEl.querySelector("beat-type")?.textContent ?? String(initialBeatType)
+        );
+        if (newBeats !== currentBeatsPerMeasure || newBeatType !== initialBeatType) {
+          if (partIndex === 0) {
+            timeSignatureChanges.push({
+              beatPosition: currentBeat,
+              beats: newBeats,
+              beatType: newBeatType,
+            });
+          }
+        }
+        currentBeatsPerMeasure = newBeats;
+      }
+
+      if (partIndex === 0) {
+        slotBeatsPerMeasure.push(currentBeatsPerMeasure);
       }
 
       const chromaticEl = measureEl.querySelector(
@@ -283,7 +311,7 @@ export function parseMusicXML(xmlString: string): ParsedScore {
         }
       });
 
-      currentBeat += beats;
+      currentBeat += currentBeatsPerMeasure;
     });
 
     parts.push({
@@ -300,25 +328,44 @@ export function parseMusicXML(xmlString: string): ParsedScore {
       ? buildPlaybackOrder(slotCount, repeatMarkers)
       : Array.from({ length: slotCount }, (_, i) => i);
 
+  const measureStartBeats: number[] = [];
+  let runningBeat = 0;
+  for (let step = 0; step < playbackOrder.length; step++) {
+    measureStartBeats.push(runningBeat);
+    const srcSlot = playbackOrder[step];
+    runningBeat += slotBeatsPerMeasure[srcSlot] ?? initialBeats;
+  }
+
   if (playbackOrder.length > slotCount) {
+    const slotStartBeats: number[] = [];
+    let b = 0;
+    for (let i = 0; i < slotCount; i++) {
+      slotStartBeats.push(b);
+      b += slotBeatsPerMeasure[i] ?? initialBeats;
+    }
+
     for (const part of parts) {
       const notesBySlot: NoteEvent[][] = Array.from(
         { length: slotCount },
         () => []
       );
       for (const note of part.notes) {
-        const slot = Math.floor(note.startBeat / beats);
-        if (slot >= 0 && slot < slotCount) {
-          notesBySlot[slot].push(note);
+        let slot = slotCount - 1;
+        for (let i = slotCount - 1; i >= 0; i--) {
+          if (slotStartBeats[i] <= note.startBeat) {
+            slot = i;
+            break;
+          }
         }
+        notesBySlot[slot].push(note);
       }
 
       const expanded: NoteEvent[] = [];
       for (let step = 0; step < playbackOrder.length; step++) {
         const srcSlot = playbackOrder[step];
         const slotNotes = notesBySlot[srcSlot];
-        const srcBase = srcSlot * beats;
-        const destBase = step * beats;
+        const srcBase = slotStartBeats[srcSlot];
+        const destBase = measureStartBeats[step];
 
         for (const note of slotNotes) {
           expanded.push({
@@ -333,18 +380,20 @@ export function parseMusicXML(xmlString: string): ParsedScore {
     }
   }
 
-  const totalBeats = playbackOrder.length * beats;
+  const totalBeats = runningBeat;
 
   return {
     title,
     tempo,
-    timeSignature: { beats, beatType },
+    timeSignature: { beats: initialBeats, beatType: initialBeatType },
     parts,
     measures,
     totalMeasures,
     totalBeats,
     playbackOrder,
     measureNumbers,
+    measureStartBeats,
+    timeSignatureChanges,
   };
 }
 
