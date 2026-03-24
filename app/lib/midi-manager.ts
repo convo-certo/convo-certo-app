@@ -53,22 +53,29 @@ export class MidiManager {
     if (this.isAudioReady) return;
     await Tone.start();
 
-    const reverb = new Tone.Reverb({ decay: 2.5, wet: 0.25 }).toDestination();
-    const eq = new Tone.EQ3({
-      low: -2,
-      mid: 1,
-      high: -4,
+    const reverb = new Tone.Reverb({ decay: 3.5, wet: 0.3 }).toDestination();
+    const chorus = new Tone.Chorus({
+      frequency: 0.5,
+      delayTime: 3.5,
+      depth: 0.15,
+      wet: 0.2,
     }).connect(reverb);
+    chorus.start();
+    const eq = new Tone.EQ3({
+      low: -3,
+      mid: 2,
+      high: -6,
+    }).connect(chorus);
 
     this.synth = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: "fatsawtooth", count: 3, spread: 12 },
+      oscillator: { type: "triangle8" },
       envelope: {
-        attack: 0.04,
-        decay: 0.4,
-        sustain: 0.35,
-        release: 1.2,
+        attack: 0.02,
+        decay: 0.8,
+        sustain: 0.2,
+        release: 1.8,
       },
-      volume: -10,
+      volume: -8,
     }).connect(eq);
 
     this.isAudioReady = true;

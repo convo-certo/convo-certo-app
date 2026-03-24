@@ -72,8 +72,7 @@ export class AccompanimentEngine {
         ? this.autoPlayBeat
         : state.currentBeat;
       if (this.autoPlayMode && this.score) {
-        const beatsPerMeasure = this.score.timeSignature.beats;
-        const playbackIndex = Math.floor(this.autoPlayBeat / beatsPerMeasure);
+        const playbackIndex = this.getMeasureIndex(this.autoPlayBeat);
         const slot = this.score.playbackOrder[playbackIndex] ?? 0;
         this.currentMeasure = this.score.measureNumbers[slot] ?? 0;
       } else {
@@ -138,7 +137,8 @@ export class AccompanimentEngine {
         score.tempo,
         score.timeSignature.beats,
         score.playbackOrder,
-        score.measureNumbers
+        score.measureNumbers,
+        score.measureStartBeats
       );
     }
 
@@ -241,13 +241,12 @@ export class AccompanimentEngine {
       this.autoPlayBeat += beatsPerTick;
       this.currentBeat = this.autoPlayBeat;
 
-      const beatsPerMeasure = this.score?.timeSignature.beats ?? 4;
-      const playbackIndex = Math.floor(this.autoPlayBeat / beatsPerMeasure);
-
-      if (this.score && playbackIndex >= this.score.playbackOrder.length) {
+      if (this.score && this.autoPlayBeat >= this.score.totalBeats) {
         this.stop();
         return;
       }
+
+      const playbackIndex = this.getMeasureIndex(this.autoPlayBeat);
 
       if (this.score) {
         const slot = this.score.playbackOrder[playbackIndex] ?? 0;
@@ -450,6 +449,25 @@ export class AccompanimentEngine {
       this.onNoteOutput?.(expNote, delayMs);
       this.accompIndex++;
     }
+  }
+
+  private getMeasureIndex(beat: number): number {
+    const starts = this.score?.measureStartBeats;
+    if (!starts || starts.length === 0) {
+      const bpm = this.score?.timeSignature.beats ?? 4;
+      return Math.floor(beat / bpm);
+    }
+    let lo = 0;
+    let hi = starts.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi + 1) >> 1;
+      if (starts[mid] <= beat) {
+        lo = mid;
+      } else {
+        hi = mid - 1;
+      }
+    }
+    return lo;
   }
 
   private emitState(): void {

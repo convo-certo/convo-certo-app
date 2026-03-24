@@ -34,6 +34,7 @@ export class ScoreFollower {
   private beatsPerMeasure = 4;
   private playbackOrder: number[] = [];
   private measureNumbers: number[] = [];
+  private measureStartBeats: number[] = [];
   private smoothedTempo = 120;
   private recentTempos: number[] = [];
 
@@ -48,13 +49,15 @@ export class ScoreFollower {
     tempo: number,
     beatsPerMeasure: number,
     playbackOrder?: number[],
-    measureNumbers?: number[]
+    measureNumbers?: number[],
+    measureStartBeats?: number[]
   ): void {
     this.soloNotes = soloNotes.sort((a, b) => a.startBeat - b.startBeat);
     this.baseTempo = tempo;
     this.beatsPerMeasure = beatsPerMeasure;
     this.playbackOrder = playbackOrder ?? [];
     this.measureNumbers = measureNumbers ?? [];
+    this.measureStartBeats = measureStartBeats ?? [];
     this.reset();
   }
 
@@ -121,7 +124,7 @@ export class ScoreFollower {
       medianTempo * TEMPO_SMOOTHING_ALPHA;
 
     const currentBeat = this.soloNotes[this.currentPosition]?.startBeat ?? 0;
-    const playbackIndex = Math.floor(currentBeat / this.beatsPerMeasure);
+    const playbackIndex = this.getMeasureIndex(currentBeat);
     let currentMeasure: number;
     if (this.playbackOrder.length > 0 && this.measureNumbers.length > 0) {
       const slot = this.playbackOrder[playbackIndex] ?? 0;
@@ -277,6 +280,23 @@ export class ScoreFollower {
       }
     }
     return best;
+  }
+
+  private getMeasureIndex(beat: number): number {
+    if (this.measureStartBeats.length > 0) {
+      let lo = 0;
+      let hi = this.measureStartBeats.length - 1;
+      while (lo < hi) {
+        const mid = (lo + hi + 1) >> 1;
+        if (this.measureStartBeats[mid] <= beat) {
+          lo = mid;
+        } else {
+          hi = mid - 1;
+        }
+      }
+      return lo;
+    }
+    return Math.floor(beat / this.beatsPerMeasure);
   }
 
   private getMedianTempo(): number {
