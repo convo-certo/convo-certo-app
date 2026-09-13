@@ -142,6 +142,7 @@ test("verified wind catalogue exposes fourteen playable scores", async ({ page }
   await page.goto("/perform");
   const catalog = page.getByRole("region", { name: "MusicXMLライブラリ" });
   await expect(catalog.getByText(/クラリネット席 \d+譜/)).toBeVisible();
+  await expect(catalog.getByRole("link", { name: "追加候補の調査レポート（権利未確定）", exact: true })).toHaveAttribute("href", "/repertoire/ensemble/pdmx-wind-candidates.json");
   await catalog.getByLabel("楽譜の編成").selectOption("wind");
   await expect(catalog.getByText("14譜", { exact: true })).toBeVisible();
   await catalog.getByLabel("クラリネット席ありのみ").check();
