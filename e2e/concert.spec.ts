@@ -169,6 +169,7 @@ test("wind candidate report is packaged with its rights warning", async ({ page,
   expect(report.rightsNote).toContain("copyright");
   expect(report.candidates.length).toBeGreaterThan(0);
   await expect(page.getByRole("link", { name: "追加候補の調査レポート（権利未確定）", exact: true })).toBeVisible();
+  await expect(page.getByText(`未確定候補${report.candidates.length}件`)).toBeVisible();
 });
 
 test("phrase instructions shape playback and survive MusicXML export", async ({ page }) => {
