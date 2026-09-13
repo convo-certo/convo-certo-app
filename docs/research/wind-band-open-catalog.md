@@ -17,7 +17,7 @@
 | The Washington Post | John Philip Sousa | [IMSLP](https://imslp.org/wiki/The_Washington_Post_%28Sousa%2C_John_Philip%29) | 原曲PD。編曲版はCPDL License v4など条件を明記 |
 | 交響曲第5番 第1楽章 | Pyotr Ilyich Tchaikovsky | [IMSLP](https://imslp.org/wiki/Symphony_No.5_%28Tchaikovsky%2C_Pyotr_Ilyich%29) | 原曲PD候補。吹奏楽化は自前編曲として別管理 |
 
-PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**（34パート、451小節、CC0表示、`license_conflict=False`、有効ファイル）が候補として見つかっている。ただし現行のPDMX配布は全体で約1.9GBのMXLアーカイブで、元のMusicScore投稿と内部権利の不一致も報告されているため、個別MXLを取得して内部権利・編成・欠落箇所を確認するまで収録対象にはしない。[PDMX Zenodo](https://zenodo.org/records/15571083)
+PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**（34パート、451小節、CC0表示、`license_conflict=False`、有効ファイル）が候補として見つかっている。ただしScoreBaseで取得できた個別MXL（スコアID 223642）は1パートのピアノ版で、別の演奏用候補（155502）はユーフォニアム版だった。全曲吹奏楽版（492895）はPDFのみでMusicXMLを取得できないため、吹奏楽収録には追加していない。[PDMX Zenodo](https://zenodo.org/records/15571083)
 
 ラデツキー行進曲は、PDMXの`cc-zero`・`license_conflict=False`・`all_valid=True`を満たす8パート版を取得し、MusicXMLの権利要素が空であることを確認して収録した。38小節の短いアレンジなので、原曲全曲版ではなく「木管・金管アレンジ」として表示する。
 
