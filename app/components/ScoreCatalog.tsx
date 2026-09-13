@@ -11,7 +11,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
   const filtered = scores.filter((score) => (!category || score.category === category) && `${score.title} ${score.composer} ${score.parts.join(" ")}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => Number(b.featured) - Number(a.featured));
   const priorityRoadmap = [
     ["ベートーヴェン交響曲第5番 第1楽章", "収録済み"],
-    ["ベートーヴェン交響曲第6番《田園》", "全曲MusicXMLを検証中"],
+    ["ベートーヴェン交響曲第6番《田園》第1楽章", "第1楽章を収録済み・全曲を検証中"],
     ["ベートーヴェン交響曲第7番", "全曲MusicXMLを検証中"],
     ["モーツァルト クラリネット五重奏曲 K.581", "5パートを浄書・校正中"],
     ["ブラームス クラリネットソナタ Op.120-2", "公開版から浄書中"],
@@ -45,6 +45,6 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     </article>)}</div>
     {filtered.length > limit && <button onClick={() => setLimit(limit + 10)}>さらに10譜表示</button>}
     <p className="concert-muted"><a href="/repertoire/ensemble/sources.json">各ファイルのライセンス表示・出典・照合記録</a>。CC0表示と内部の権利表示の矛盾がない版を選定しています。</p>
-    <p className="concert-muted">優先収集：ベートーヴェン交響曲第5・6・7番。5番第1楽章は収録済み、6・7番は全曲総譜の検証と収録を進めています。<a href="https://imslp.org/wiki/Symphony_No.5%2C_Op.67_(Beethoven%2C_Ludwig_van)" target="_blank" rel="noreferrer">原曲の楽譜情報</a></p>
+    <p className="concert-muted">優先収集：ベートーヴェン交響曲第5・6・7番。5番第1楽章と6番《田園》第1楽章は収録済み、全曲総譜の検証を進めています。<a href="https://imslp.org/wiki/Symphony_No.5%2C_Op.67_(Beethoven%2C_Ludwig_van)" target="_blank" rel="noreferrer">原曲の楽譜情報</a></p>
   </section>;
 }

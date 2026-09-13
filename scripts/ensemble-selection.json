@@ -8,6 +8,14 @@
     "featured": true
   },
   {
+    "id": "beethoven-symphony-6-pastoral-1",
+    "scorebaseId": 60123,
+    "stem": "QmdmRjPuVVR96eNkNCqB5hYixTUXuCBzAREjMm4xVUPnUa",
+    "title": "ベートーヴェン：交響曲第6番《田園》第1楽章",
+    "category": "orchestra",
+    "featured": true
+  },
+  {
     "id": "dvorak-new-world-4-woodwind",
     "scorebaseId": 54600,
     "stem": "Qmd5Uha8HCNsMt3faFLy1Ay4V8qFhRskVtAsXgQ1CHP4Mg",

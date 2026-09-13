@@ -33,11 +33,19 @@ it("loads the four movement Mozart K.581 quintet with five playable parts", () =
   expect(score.parts.every((part) => part.notes.length > 100)).toBe(true);
 });
 
+it("loads the Pastoral Symphony first movement with orchestral winds", () => {
+  const score = parseMusicXML(readFileSync("public/repertoire/ensemble/beethoven-symphony-6-pastoral-1.musicxml", "utf8"));
+  expect(score.parts).toHaveLength(10);
+  expect(score.totalMeasures).toBeGreaterThan(300);
+  expect(score.parts.some((part) => /clarinet/i.test(part.name))).toBe(true);
+  expect(score.parts.some((part) => /violin/i.test(part.name))).toBe(true);
+});
+
 it("bundles a searchable, attributed catalogue with featured orchestral and wind scores", () => {
   const catalog = JSON.parse(readFileSync("public/repertoire/ensemble/catalog.json", "utf8")) as { id: string; title: string; parts: string[]; category: string; featured: boolean }[];
   const manifest = JSON.parse(readFileSync("public/repertoire/ensemble/sources.json", "utf8")) as { id: string; licenseConflict: boolean; scoreLicense: string; sha256: string }[];
   expect(catalog.length).toBeGreaterThanOrEqual(30);
-    expect(catalog.filter((item) => item.featured)).toHaveLength(10);
+  expect(catalog.filter((item) => item.featured)).toHaveLength(11);
   for (const item of catalog) {
     const xml = readFileSync(`public/repertoire/ensemble/${item.id}.musicxml`, "utf8");
     expect(xml).toContain("<score-partwise");

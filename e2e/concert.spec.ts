@@ -354,6 +354,22 @@ for (const [name, expectedParts] of [["交響曲第40番", 12], ["交響曲第4�
   });
 }
 
+test("Beethoven Pastoral first movement parses, displays and starts", async ({ page }) => {
+  const errors: string[] = []; page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/perform");
+  const catalog = page.getByRole("region", { name: "MusicXMLライブラリ", exact: true });
+  await catalog.getByLabel("収録楽譜を検索").fill("田園");
+  await catalog.getByRole("button", { name: /この総譜で演奏/ }).click();
+  const play = page.getByRole("button", { name: "▶ 演奏開始", exact: true });
+  await expect(play).toBeEnabled({ timeout: 25000 });
+  await expect(page.locator(".part-row")).toHaveCount(9);
+  await expect(page.getByLabel("奏者パート").locator("option")).toContainText(["Clarinet"]);
+  await play.click();
+  await expect.poll(async () => Number(await page.getByLabel("演奏位置").inputValue())).toBeGreaterThan(0.1);
+  await page.getByRole("button", { name: "■ 停止", exact: true }).click();
+  expect(errors).toEqual([]);
+});
+
 test("Florentiner wind arrangement parses, displays and starts", async ({ page }) => {
   await page.goto("/perform");
   const catalog = page.getByRole("region", { name: "MusicXMLライブラリ", exact: true });
