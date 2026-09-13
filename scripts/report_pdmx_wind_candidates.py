@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CSV_PATH = ROOT / ".repertoire-cache" / "PDMX.csv"
 OUT_PATH = ROOT / "docs" / "research" / "pdmx-wind-candidates.json"
+PUBLIC_OUT_PATH = ROOT / "public" / "repertoire" / "ensemble" / "pdmx-wind-candidates.json"
 TERMS = ("military band", "wind ensemble", "woodwind", "brass", "march", "water music", "folk song suite")
 
 
@@ -33,7 +34,9 @@ def main() -> None:
                 "mxlPath": row["mxl"],
             })
     candidates.sort(key=lambda item: (-item["metadataEligible"], -item["tracks"], item["title"]))
-    OUT_PATH.write_text(json.dumps({"generatedFrom": "PDMX.csv", "rightsNote": "Metadata eligibility is not a copyright determination; every row requires manual work, edition, and arrangement review.", "candidates": candidates[:100]}, ensure_ascii=False, indent=2) + "\n")
+    report = json.dumps({"generatedFrom": "PDMX.csv", "rightsNote": "Metadata eligibility is not a copyright determination; every row requires manual work, edition, and arrangement review.", "candidates": candidates[:100]}, ensure_ascii=False, indent=2) + "\n"
+    OUT_PATH.write_text(report)
+    PUBLIC_OUT_PATH.write_text(report)
     print(f"Wrote {min(100, len(candidates))} wind candidates to {OUT_PATH}")
 
 
