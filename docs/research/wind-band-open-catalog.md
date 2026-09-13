@@ -1,0 +1,32 @@
+# 吹奏楽オープン譜面候補
+
+この一覧は、ConvoCertoに収録する吹奏楽作品を選ぶための調査台帳。`PD候補`は原曲と確認した版が公開されている候補であり、各国での商用配布を自動的に保証するものではない。MusicXML化するときは、指定された公開版を参照して新規に浄書し、音源・PDF・MusicXMLの権利を別々に記録する。
+
+## 収録候補10曲
+
+| 作品 | 作曲者 | 吹奏楽譜の確認先 | 現時点の扱い |
+| --- | --- | --- | --- |
+| フロレンティーナ行進曲 Op.214 | Julius Fučík | [IMSLP](https://imslp.org/wiki/Florentiner_Marsch%2C_Op.214_%28Fu%C4%8D%C3%ADk%2C_Julius%29) | PD候補。1908年の吹奏楽版を優先して採譜 |
+| 軍隊の子供たち Op.169 | Julius Fučík | [IMSLP](https://imslp.org/wiki/Die_Regimentskinder%2C_Op.169_%28Fu%C4%8D%C3%ADk%2C_Julius%29) | PD候補。完全スコアとパートの有無を確認して採譜 |
+| ファンファーレ・クレンゲ Op.278 | Julius Fučík | [IMSLP](https://imslp.org/wiki/Fanfarenkl%C3%A4nge_%28Fu%C4%8D%C3%ADk%2C_Julius%29) | PD候補。吹奏楽原版の探索を継続 |
+| ラデツキー行進曲 Op.228 | Johann Strauss Sr. | [IMSLP](https://imslp.org/wiki/Radetzky_Marsch_%28_for_Concert_Bands_%29_%28Strauss_Sr.%2C_Johann%29) | PD候補。PD表示の版だけを採譜 |
+| The Free-Lance March | John Philip Sousa | [IMSLP](https://imslp.org/wiki/The_Free-Lance_March_%28Sousa%2C_John_Philip%29) | PD表示。1906年初版を基準にする |
+| Ancient and Honorable Artillery Company | John Philip Sousa | [IMSLP](https://imslp.org/wiki/Ancient_and_Honorable_Artillery_Company_%28Sousa%2C_John_Philip%29) | PD表示。吹奏楽とハープの編成を確認 |
+| Holyrood | Kenneth J. Alford | [IMSLP](https://imslp.org/wiki/Holyrood_%28Alford%2C_Kenneth_J.%29) | PD表示。1913年版のスコアとパートを基準にする |
+| The Vanished Army | Kenneth J. Alford | [IMSLP](https://imslp.org/wiki/The_Vanished_Army_%28Alford%2C_Kenneth_J.%29) | PD表示。軍楽隊版のパートを基準にする |
+| The Washington Post | John Philip Sousa | [IMSLP](https://imslp.org/wiki/The_Washington_Post_%28Sousa%2C_John_Philip%29) | 原曲PD。編曲版はCPDL License v4など条件を明記 |
+| 交響曲第5番 第1楽章 | Pyotr Ilyich Tchaikovsky | [IMSLP](https://imslp.org/wiki/Symphony_No.5_%28Tchaikovsky%2C_Pyotr_Ilyich%29) | 原曲PD候補。吹奏楽化は自前編曲として別管理 |
+
+## リード作品と課題曲
+
+アルフレッド・リードの作品は、本人が2005年に亡くなっており、現在の死後70年基準では自由収録の対象にしない。[Keiser Productionsの略歴](https://keiserproductions.com/composer3/?tid=6902739C-817A-4490-A515-E6638762F888)にある *Armenian Dances*、*El Camino Real*、*A Festival Prelude*、*The Hounds of Spring* などは、出版社からMusicXML化・表示・伴奏生成・商用配布の許諾を得る候補として別のライセンス待ちリストに置く。
+
+吹奏楽コンクールの課題曲も、作曲者や編曲者が存命であることが多く、演奏できることと譜面データを再配布できることは別。まずは権利者から、アプリ内表示、MusicXMLの同梱、派生編集、生成伴奏、TestFlight配布の範囲を含む許諾を取る。
+
+## ConvoCertoへの取り込み手順
+
+1. 出典ページ、版、国別のPD表示、編曲者、取得日を`public/repertoire/ensemble/sources.json`に登録する。
+2. 公開版PDFから自前でMusicXMLを浄書し、原譜との小節数・パート数・調号・拍子・音域を検査する。
+3. 自前MusicXMLの変更履歴と校正結果を保存し、ファイル自体はCC0で公開できる状態にする。CC0は権利者が自分の権利を放棄し、商用利用や改変を許可する仕組み。[Creative Commons CC0](https://creativecommons.org/publicdomain/zero/1.0/)
+4. Clarimateでクラリネット担当を吹き、休符、入り、テンポ変化、伴奏の音量、楽器配置を実演確認する。
+5. 権利が曖昧な作品はアプリに同梱せず、ユーザーが自分のMusicXMLを読み込む機能だけで扱う。
