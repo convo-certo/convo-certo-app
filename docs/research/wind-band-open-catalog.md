@@ -2,7 +2,7 @@
 
 この一覧は、ConvoCertoに収録する吹奏楽作品を選ぶための調査台帳。`PD候補`は原曲と確認した版が公開されている候補であり、各国での商用配布を自動的に保証するものではない。MusicXML化するときは、指定された公開版を参照して新規に浄書し、音源・PDF・MusicXMLの権利を別々に記録する。
 
-## 収録候補10曲
+## 収録済み10エントリー
 
 候補のうち、現在は次の10エントリーをMusicXMLとして収録済み。いずれもPDMXの`cc-zero`または`publicdomain`、`license_conflict=False`、`has_paywall=False`、`subset:all_valid=True`を満たし、内部の権利要素がないことを生成スクリプトで検査している。
 
@@ -18,6 +18,8 @@
 | `bizet-arlesienne-brass-expanded` | ビゼー《アルルの女》拡張金管版 | 6 |
 | `bach-orchestral-suite-1` | J.S.バッハ 管弦楽組曲第1番 BWV 1066 | 6 |
 | `mozart-turkish-march-orchestra` | モーツァルト トルコ行進曲（クラリネット入り） | 15 |
+
+## 追加候補（今後の調査）
 
 | 作品 | 作曲者 | 吹奏楽譜の確認先 | 現時点の扱い |
 | --- | --- | --- | --- |
