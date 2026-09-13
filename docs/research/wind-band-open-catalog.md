@@ -41,6 +41,8 @@ PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**
 
 K.581はIMSLPに初版スコアとパート譜が揃っている。公開PDFをそのままMusicXMLとして再配布せず、自前浄書後に小節数・5パート（クラリネット＋弦4部）・調号・アーティキュレーションを校正してから収録する。
 
+浄書の入力資料として、Mutopia ProjectのK.581ページにBreitkopf und Härtel（1883）を基にした5パートのLilyPondソースが公開されている。ページ上でPublic Domain表示と、クラリネット・第1/第2ヴァイオリン・ヴィオラ・チェロの編成を確認した。LilyPondからMusicXMLへ変換した後、原譜との校正を完了するまで配布ファイルには含めない。[Mutopia K.581](https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=337)
+
 ScoreBaseではK.581相当の検索結果（スコアID 238394、クラリネット＋弦4部、22ページ）を確認できるが、MusicXMLエンドポイントが404でPDFのみだった。別のF管版（238397）やA管版（238395）も同様に、実データを取得できるまでカタログへ登録しない。これにより、ページ上の編成表記だけでMusicXML収録済みと誤表示しない。
 
 アルフレッド・リードの作品は、本人が2005年に亡くなっており、現在の死後70年基準では自由収録の対象にしない。[Keiser Productionsの略歴](https://keiserproductions.com/composer3/?tid=6902739C-817A-4490-A515-E6638762F888)にある *Armenian Dances*、*El Camino Real*、*A Festival Prelude*、*The Hounds of Spring* などは、出版社からMusicXML化・表示・伴奏生成・商用配布の許諾を得る候補として別のライセンス待ちリストに置く。
