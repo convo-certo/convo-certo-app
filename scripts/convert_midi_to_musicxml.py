@@ -14,8 +14,12 @@ def main() -> None:
     args = parser.parse_args()
     score = converter.parse(str(args.input))
     if args.clarinet_bb and score.parts:
-        score.parts[0].transpose("M2", inPlace=True)
-        score.parts[0].partName = "Clarinet in B-flat"
+        clarinet = next(
+            (part for part in score.parts if "clarinet" in (part.partName or "").lower()),
+            score.parts[0],
+        )
+        clarinet.transpose("M2", inPlace=True)
+        clarinet.partName = "Clarinet in B-flat"
     args.output.parent.mkdir(parents=True, exist_ok=True)
     score.write("musicxml", fp=str(args.output))
     print(f"{args.input} -> {args.output}: {len(score.parts)} parts")
