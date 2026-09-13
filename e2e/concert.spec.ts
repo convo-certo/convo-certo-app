@@ -145,6 +145,7 @@ test("verified wind catalogue exposes ten playable scores", async ({ page }) => 
   await expect(catalog.getByText("10譜", { exact: true })).toBeVisible();
   const march = catalog.locator("article").filter({ hasText: "トルコ行進曲" });
   await expect(march).toBeVisible();
+  await expect(march.getByLabel("クラリネット席の有無")).toHaveText("クラリネット席あり");
   await march.getByRole("button", { name: /この総譜で演奏/ }).click();
   await expect(page.getByRole("button", { name: "▶ 演奏開始", exact: true })).toBeEnabled({ timeout: 20000 });
   await expect(page.getByLabel("奏者パート").locator("option").filter({ hasText: /Clarinette|Clarinet/ })).toHaveCount(1);

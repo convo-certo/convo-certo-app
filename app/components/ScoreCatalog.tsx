@@ -39,6 +39,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     <div className="catalog-grid">{filtered.slice(0, limit).map((score) => <article className="catalog-score" key={score.id}>
       <h4>{score.featured ? "★ " : ""}{score.title}</h4>
       <p>{score.parts.length}パート · {score.measures}小節 · {score.scoreLicense}</p>
+      <p aria-label="クラリネット席の有無">{score.parts.some((part) => /clarinet|clari[nm]ette|クラリネット/i.test(part)) ? "クラリネット席あり" : "クラリネット席なし"}</p>
       <details><summary>編成と出典</summary><p>{score.parts.join(" / ")}</p><p>{score.editionStatus}</p><a href={score.scoreSource} target="_blank" rel="noreferrer">出典を見る</a></details>
       <button disabled={busy || loading} onClick={async () => { setLoading(true); setError(""); try { const response = await fetch(`/repertoire/ensemble/${score.id}.musicxml`); if (!response.ok) throw new Error("楽譜を取得できませんでした。"); await onLoad(new File([await response.text()], `${score.id}.musicxml`)); } catch (error) { setError(String(error)); } finally { setLoading(false); } }}>この総譜で演奏 · {score.title}</button>
       <a href={`/repertoire/ensemble/${score.id}.musicxml`} download>MusicXMLをダウンロード</a>
