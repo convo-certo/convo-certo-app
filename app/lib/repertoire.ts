@@ -8,6 +8,7 @@ export interface RepertoireEntry {
   ensemble: "orchestra" | "piano";
   path: string;
   nativeTransposition: number;
+  scoreDisplayTransposition?: number;
   source: string;
 }
 
@@ -19,7 +20,7 @@ export const repertoire: RepertoireEntry[] = [
   })),
   ...["I. Allegro amabile", "II. Allegro appassionato", "III. Andante con moto"].map((movement, i) => ({
     id: `brahms-op120-2-${i + 1}`, composer: "Johannes Brahms", title: "クラリネットソナタ第2番 Op.120-2", movement,
-    ensemble: "piano" as const, path: `/repertoire/local/brahms-op120-2-${i + 1}.json`, nativeTransposition: -2,
+    ensemble: "piano" as const, path: `/repertoire/local/brahms-op120-2-${i + 1}.json`, nativeTransposition: -2, scoreDisplayTransposition: 2,
     source: "https://www.viola-in-music.com/free-classical-music-midi-download.html",
   })),
 ];
