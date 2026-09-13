@@ -22,4 +22,9 @@ describe("clarinet repertoire", () => {
     expect(transposed.parts[0].notes[0].pitch).toBe(score.parts[0].notes[0].pitch + 1);
     expect(transposed.parts[0].notes[0].startBeat).toBe(score.parts[0].notes[0].startBeat);
   });
+  it("keeps Brahms accompaniment in concert pitch and renders the clarinet in B-flat", () => {
+    const entry = repertoire.find((item) => item.id === "brahms-op120-2-1");
+    expect(entry?.nativeTransposition).toBe(-2);
+    expect(entry?.scoreDisplayTransposition).toBe(2);
+  });
 });
