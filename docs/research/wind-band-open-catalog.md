@@ -61,6 +61,8 @@ ScoreBaseで再検索したHolst《第1組曲》の別結果（スコアID 12245
 
 ヘンデル《スキピオの行進曲》も検索したが、確認できた無料MusicXMLはピアノ版のみだった。吹奏楽版のMXLが取得できるまで、候補として保持する。
 
+スーザ《The Free Lance March》も検索したが、吹奏楽版として確認できた無料結果はPDFのみで、MusicXML取得可能な版は見つからなかった。既収録の《星条旗よ永遠なれ》とは異なり、現時点では候補に留める。
+
 2026-09-14のローカルPDMX台帳再検索では、Holst以外にも次の候補を確認した。English Folk Song Suite（29パート、CC0、`license_conflict=False`、`subset:all_valid=True`）、Handel Water Musicの22パート版（Public Domain、同条件）、Clarke King William's Marchの5パート版（CC0、同条件）が該当する。ただしPDMXの行メタデータだけでは編曲者と原譜の同定が完了しないため、MusicXML本体の取得、内部`rights`要素、編曲版の利用範囲を確認するまで候補扱いに留める。対照的にHolst First Suiteの31パート版は`license_conflict=True`であり、候補から除外する。
 
 PDMXの`metadata`番号（例：English Folk Song Suiteの6103030、Water Musicの3386756）はScoreBaseのスコアIDではない。これらをScoreBaseのMusicXMLエンドポイントへ直接渡しても404になったため、番号だけを根拠に取得済みとは扱わない。取得元のファイル配布または正しいスコアIDが確認できた場合に限り、生成スクリプトへ追加する。
