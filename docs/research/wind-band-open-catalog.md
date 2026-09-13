@@ -2,6 +2,8 @@
 
 この一覧は、ConvoCertoに収録する吹奏楽作品を選ぶための調査台帳。`PD候補`は原曲と確認した版が公開されている候補であり、各国での商用配布を自動的に保証するものではない。MusicXML化するときは、指定された公開版を参照して新規に浄書し、音源・PDF・MusicXMLの権利を別々に記録する。
 
+候補の再検索は `npm run ensemble:candidates` で実行する。PDMXのメタデータから管楽・金管・行進曲系を抽出し、`docs/research/pdmx-wind-candidates.json` とアプリから参照できる `public/repertoire/ensemble/pdmx-wind-candidates.json` を更新する。このレポートは収録許可リストではなく、各行を原譜・編曲者・MusicXML内部の権利表示まで確認してから `scripts/ensemble-selection.json` に追加する。
+
 ## 収録済み14エントリー
 
 候補のうち、現在は次の14エントリーをMusicXMLとして収録済み。いずれもPDMXの`cc-zero`または`publicdomain`、`license_conflict=False`、`has_paywall=False`、`subset:all_valid=True`を満たし、内部の権利要素がないことを生成スクリプトで検査している。
