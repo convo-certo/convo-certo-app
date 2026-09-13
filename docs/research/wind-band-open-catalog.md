@@ -41,6 +41,8 @@ PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**
 
 K.581はIMSLPに初版スコアとパート譜が揃っている。公開PDFをそのままMusicXMLとして再配布せず、自前浄書後に小節数・5パート（クラリネット＋弦4部）・調号・アーティキュレーションを校正してから収録する。
 
+ブラームス：クラリネットソナタ Op.120-2はIMSLPで原典初版のPublic Domain表示を確認済み。ただし、現時点で取得できるPDMXの該当MusicXMLは第2楽章の別版でライセンス競合があるため、同梱対象にしていない。K.581と同じく、公開版を基にした自前浄書と全楽章の校正を次のクラリネット優先作業にする。[IMSLP Op.120-2](https://imslp.org/wiki/Clarinet_Sonata_No.2%2C_Op.120_No.2_%28Brahms%2C_Johannes%29)
+
 浄書の入力資料として、Mutopia ProjectのK.581ページにBreitkopf und Härtel（1883）を基にした5パートのLilyPondソースが公開されている。ページ上でPublic Domain表示と、クラリネット・第1/第2ヴァイオリン・ヴィオラ・チェロの編成を確認した。LilyPondからMusicXMLへ変換した後、原譜との校正を完了するまで配布ファイルには含めない。[Mutopia K.581](https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=337)
 
 ScoreBaseではK.581相当の検索結果（スコアID 238394、クラリネット＋弦4部、22ページ）を確認できるが、MusicXMLエンドポイントが404でPDFのみだった。別のF管版（238397）やA管版（238395）も同様に、実データを取得できるまでカタログへ登録しない。これにより、ページ上の編成表記だけでMusicXML収録済みと誤表示しない。
