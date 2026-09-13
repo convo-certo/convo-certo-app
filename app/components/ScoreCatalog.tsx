@@ -20,20 +20,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     ["モーツァルト クラリネット五重奏曲 K.581", "5パートを浄書・校正中"],
     ["ブラームス クラリネットソナタ Op.120-2", "ローカルMIDI変換版あり・公開用浄書中"],
   ];
-  const verifiedWindScores = [
-    ["ドヴォルザーク《新世界より》第4楽章", "収録済み・権利確認済み"],
-    ["ラデツキー行進曲", "収録済み・権利確認済み"],
-    ["フロレンティーナ行進曲", "収録済み・権利確認済み"],
-    ["オックスフォード伯の行進曲", "収録済み・権利確認済み"],
-    ["Salvation Is Created", "収録済み・権利確認済み"],
-    ["ヘンデル La March", "収録済み・権利確認済み"],
-    ["ビゼー《アルルの女》金管版", "収録済み・権利確認済み"],
-    ["ビゼー《アルルの女》拡張金管版", "収録済み・権利確認済み"],
-    ["バッハ 管弦楽組曲第1番", "収録済み・権利確認済み"],
-    ["モーツァルト トルコ行進曲", "収録済み・権利確認済み"],
-    ["ホルスト《木星》金管アンサンブル版", "収録済み・権利確認済み"],
-    ["コレッリ：サラバンド ニ短調", "収録済み・権利確認済み"],
-  ];
+  const verifiedWindScores = scores.filter((score) => score.category === "wind" && ["CC0-1.0", "PDM-1.0"].includes(score.scoreLicense)).map((score) => [score.title, "収録済み・権利確認済み"] as const);
   return <section className="concert-panel" aria-label="MusicXMLライブラリ">
     <h3>好きな楽器で、オーケストラの中へ</h3>
     <p><a href="/repertoire/ensemble/ConvoCerto-MusicXML.zip" download>MusicXML一式をZIPでダウンロード</a></p>
