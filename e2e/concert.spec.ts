@@ -363,3 +363,14 @@ test("Florentiner wind arrangement parses, displays and starts", async ({ page }
   await expect(page.getByRole("button", { name: "▶ 演奏開始", exact: true })).toBeEnabled({ timeout: 25000 });
   await expect(page.locator(".part-row")).toHaveCount(6);
 });
+
+test("Mozart K.581 quintet loads all five parts", async ({ page }) => {
+  await page.goto("/perform");
+  const catalog = page.getByRole("region", { name: "MusicXMLライブラリ", exact: true });
+  await catalog.getByLabel("楽譜の編成").selectOption("chamber");
+  await catalog.getByLabel("収録楽譜を検索").fill("K.581");
+  await catalog.getByRole("button", { name: /この総譜で演奏/ }).click();
+  await expect(page.getByRole("button", { name: "▶ 演奏開始", exact: true })).toBeEnabled({ timeout: 25000 });
+  await expect(page.locator(".part-row")).toHaveCount(4);
+  await expect(page.getByLabel("奏者パート").locator("option")).toContainText(["Clarinet in A", "Violin I", "Violin II", "Viola", "Cello"]);
+});

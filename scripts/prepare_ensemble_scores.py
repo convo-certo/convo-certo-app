@@ -20,6 +20,7 @@ SCORES = [
 ]
 SELECTION = json.loads((ROOT / "scripts/ensemble-selection.json").read_text())
 SCORES += [(item["id"], item["scorebaseId"], item["stem"], item["title"]) for item in SELECTION]
+LOCAL_SOURCES = {item["id"]: item for item in SELECTION if item.get("localSource")}
 DATASET = "https://zenodo.org/records/15571083"
 
 
@@ -45,20 +46,25 @@ def main() -> None:
                 rows[stem] = row
     manifest = []
     for name, scorebase_id, stem, title in SCORES:
-        row = rows.get(stem)
-        if not row or row["license"] not in {"cc-zero", "publicdomain"} or row["license_conflict"] != "False" or row["has_paywall"] != "False" or row["subset:all_valid"] != "True":
-            raise ValueError(f"Verified, nonconflicting public-domain metadata is required: {stem}")
-        url = f"https://scorebase.org/scores/{scorebase_id}/file/mxl?download=true"
-        archive = CACHE / "ensemble" / f"{scorebase_id}.mxl"
-        fetch(url, archive)
-        with zipfile.ZipFile(archive) as data:
-            xml = data.read(stem + ".xml")
+        local = LOCAL_SOURCES.get(name)
+        if local:
+            row = {"license": "publicdomain", "license_conflict": "False", "has_paywall": "False", "subset:all_valid": "True", "composer_name": "Wolfgang Amadeus Mozart", "metadata": "Mutopia Project entry 337", "mxl": local["localSource"]}
+            xml = (ROOT / local["localSource"]).read_bytes()
+        else:
+            row = rows.get(stem)
+            if not row or row["license"] not in {"cc-zero", "publicdomain"} or row["license_conflict"] != "False" or row["has_paywall"] != "False" or row["subset:all_valid"] != "True":
+                raise ValueError(f"Verified, nonconflicting public-domain metadata is required: {stem}")
+            url = f"https://scorebase.org/scores/{scorebase_id}/file/mxl?download=true"
+            archive = CACHE / "ensemble" / f"{scorebase_id}.mxl"
+            fetch(url, archive)
+            with zipfile.ZipFile(archive) as data:
+                xml = data.read(stem + ".xml")
         root = ET.fromstring(xml)
         if root.tag != "score-partwise" or root.findall("identification/rights"):
             raise ValueError(f"Review the score's internal rights before distribution: {name}")
         (OUT / f"{name}.musicxml").write_bytes(xml)
         record = {
-            "id": name, "title": title, "scoreSource": f"https://scorebase.org/scores/{scorebase_id}",
+            "id": name, "title": title, "scoreSource": local.get("sourceUrl", f"https://scorebase.org/scores/{scorebase_id}") if local else f"https://scorebase.org/scores/{scorebase_id}",
             "originalSource": root.findtext("identification/source"), "dataset": DATASET,
             "datasetLicense": "CC-BY-4.0", "scoreLicense": "CC0-1.0" if row["license"] == "cc-zero" else "PDM-1.0",
             "licenseConflict": False, "metadataPath": row["metadata"], "datasetPath": row["mxl"],
@@ -74,9 +80,10 @@ def main() -> None:
     (OUT / "catalog.json").write_text(json.dumps([{key: record[key] for key in fields} for record in manifest], ensure_ascii=False, indent=2) + "\n")
     (OUT / "README.md").write_text(
         "# Ensemble MusicXML sources\n\n"
-        "These scores are marked CC0 or Public Domain according to the per-score PDMX metadata. "
-        "Entries were checked for license_conflict=False, no paywall, valid files, and no internal rights statement. "
-        "The MusicXML is distributed unchanged. sources.json records exact files, hashes and metadata.\n\n"
+        "These scores are marked CC0 or Public Domain according to the per-score source metadata. "
+        "PDMX-backed entries were checked for license_conflict=False, no paywall, valid files, and no internal rights statement; "
+        "locally typeset entries record their public source in sources.json. The MusicXML is distributed unchanged. "
+        "sources.json records exact files, hashes and metadata.\n\n"
         "PDMX dataset: Phillip Long, Zachary Novack, Julian McAuley and Taylor Berg-Kirkpatrick, "
         "*PDMX: A Large-Scale Public Domain MusicXML Dataset for Symbolic Music Processing*, ICASSP 2025. "
         "Dataset compilation: CC BY 4.0. https://zenodo.org/records/15571083 "

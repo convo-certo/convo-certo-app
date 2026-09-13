@@ -32,6 +32,16 @@
     "featured": true
   },
   {
+    "id": "mozart-k581-clarinet-quintet",
+    "scorebaseId": 0,
+    "stem": "local-mozart-k581",
+    "localSource": "public/repertoire/ensemble/mozart-k581-clarinet-quintet.musicxml",
+    "sourceUrl": "https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=337",
+    "title": "モーツァルト：クラリネット五重奏曲 K.581 全4楽章",
+    "category": "chamber",
+    "featured": true
+  },
+  {
     "id": "library-163219",
     "scorebaseId": 163219,
     "stem": "QmZEPy1a3SznXMiDDgxx71K8UifCgZYDDf8GaT4X8Yv6JN",

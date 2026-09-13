@@ -193,6 +193,24 @@
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   },
   {
+    "id": "mozart-k581-clarinet-quintet",
+    "title": "モーツァルト：クラリネット五重奏曲 K.581 全4楽章",
+    "composer": "Wolfgang Amadeus Mozart",
+    "parts": [
+      "Clarinet in A",
+      "Violin I",
+      "Violin II",
+      "Viola",
+      "Cello"
+    ],
+    "measures": 498,
+    "category": "chamber",
+    "featured": true,
+    "scoreLicense": "PDM-1.0",
+    "scoreSource": "https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=337",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
     "id": "library-163219",
     "title": "ドヴォルザーク：交響曲第9番《新世界より》第2楽章",
     "composer": "Antonin Dvorak",
