@@ -5,8 +5,8 @@ import { defaultChairs, type OrchestraChair } from "~/lib/orchestra-space";
 import { instrumentForPart, type OrchestraAudio } from "~/lib/orchestra-audio";
 import type { ScorePart } from "~/lib/types";
 
-const commonInstruments = ["clarinet", "flute", "oboe", "bassoon", "french_horn", "trumpet", "trombone", "tuba", "violin", "viola", "cello", "contrabass", "string_ensemble_1", "timpani", "piano"];
-const instrumentLabels: Record<string, string> = { clarinet: "クラリネット", flute: "フルート", oboe: "オーボエ", bassoon: "ファゴット", french_horn: "ホルン", trumpet: "トランペット", trombone: "トロンボーン", tuba: "チューバ", violin: "ヴァイオリン", viola: "ヴィオラ", cello: "チェロ", contrabass: "コントラバス", string_ensemble_1: "弦楽合奏", timpani: "ティンパニ", piano: "ピアノ" };
+const commonInstruments = ["clarinet", "flute", "oboe", "bassoon", "french_horn", "trumpet", "trombone", "tuba", "violin", "viola", "cello", "contrabass", "string_ensemble_1", "timpani", "acoustic_grand_piano"];
+const instrumentLabels: Record<string, string> = { clarinet: "クラリネット", flute: "フルート", oboe: "オーボエ", bassoon: "ファゴット", french_horn: "ホルン", trumpet: "トランペット", trombone: "トロンボーン", tuba: "チューバ", violin: "ヴァイオリン", viola: "ヴィオラ", cello: "チェロ", contrabass: "コントラバス", string_ensemble_1: "弦楽合奏", timpani: "ティンパニ", acoustic_grand_piano: "ピアノ" };
 
 export function OrchestraStage({ parts, audio, beat, active, initialSpace, onSpaceChange, mutedParts = [] }: { parts: ScorePart[]; audio: OrchestraAudio; beat: number; active: boolean; mutedParts?: number[]; initialSpace?: OrchestraSpace; onSpaceChange?: (space: OrchestraSpace) => void }) {
   const [chairs, setChairs] = useState(() => initialSpace?.chairs ?? defaultChairs(parts));
