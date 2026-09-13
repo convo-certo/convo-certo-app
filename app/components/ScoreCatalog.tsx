@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 interface CatalogScore { id: string; title: string; composer: string; parts: string[]; measures: number; category: string; featured: boolean; scoreLicense: string; scoreSource: string; editionStatus: string }
 const isClarinetPart = (name: string) => /clarinet|clari[nm]ette|クラリネット/i.test(name) || /(?:^|[^a-z])(?:solo|[1-4](?:st|nd|rd|th)?)?cl(?:[^a-z]|$)/i.test(name) || /\bcla\b/i.test(name);
 const licenseLabel = (license: string) => license === "CC0-1.0" ? "公開利用可・CC0" : license === "PDM-1.0" ? "公開利用可・PDM" : license;
+const licenseUrl = (license: string) => license === "CC0-1.0" ? "https://creativecommons.org/publicdomain/zero/1.0/" : license === "PDM-1.0" ? "https://creativecommons.org/publicdomain/mark/1.0/" : "https://creativecommons.org/share-your-work/cclicenses/";
 export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: File) => Promise<void> }) {
   const [scores, setScores] = useState<CatalogScore[]>([]);
   const [query, setQuery] = useState("");
@@ -31,7 +32,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     {error && <p role="alert">{error}</p>}
     <div className="catalog-grid">{filtered.slice(0, limit).map((score) => <article className="catalog-score" key={score.id}>
       <h4>{score.featured ? "★ " : ""}{score.title}</h4>
-      <p>{score.parts.length}パート · {score.measures}小節 · <span aria-label="利用条件">{licenseLabel(score.scoreLicense)}</span></p>
+      <p>{score.parts.length}パート · {score.measures}小節 · <a aria-label="利用条件" href={licenseUrl(score.scoreLicense)} target="_blank" rel="noreferrer">{licenseLabel(score.scoreLicense)}</a></p>
       <p aria-label="クラリネット席の有無">{score.parts.some(isClarinetPart) ? "クラリネット席あり" : "クラリネット席なし"}</p>
       <details><summary>編成と出典</summary><p>{score.parts.join(" / ")}</p><p>{score.editionStatus}</p><a href={score.scoreSource} target="_blank" rel="noreferrer">出典を見る</a></details>
       <button disabled={busy || loading} onClick={async () => { setLoading(true); setError(""); try { const response = await fetch(`/repertoire/ensemble/${score.id}.musicxml`); if (!response.ok) throw new Error("楽譜を取得できませんでした。"); await onLoad(new File([await response.text()], `${score.id}.musicxml`)); } catch (error) { setError(String(error)); } finally { setLoading(false); } }}>この総譜で演奏 · {score.title}</button>
