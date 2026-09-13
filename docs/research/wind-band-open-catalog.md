@@ -21,6 +21,8 @@ PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**
 
 ラデツキー行進曲は、PDMXの`cc-zero`・`license_conflict=False`・`all_valid=True`を満たす8パート版を取得し、MusicXMLの権利要素が空であることを確認して収録した。38小節の短いアレンジなので、原曲全曲版ではなく「木管・金管アレンジ」として表示する。
 
+追加調査では、Sousa「The Washington Post」とHalvorsen「Entry March of the Boyars」の候補を検索した。前者はアルトサックスまたはピアノ譜、後者はMusicXMLを取得できない検索結果しか見つからなかったため、吹奏楽譜としては登録していない。原曲の公開性だけでなく、実際に取得できる編成済みMusicXMLまで揃うことを収録条件にする。
+
 ## リード作品と課題曲
 
 ## クラリネット優先ロードマップ
