@@ -3,11 +3,9 @@ import type { OrchestraSpace } from "~/lib/practice-session";
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { defaultChairs, type OrchestraChair } from "~/lib/orchestra-space";
 import { instrumentForPart, type OrchestraAudio } from "~/lib/orchestra-audio";
+import { instrumentGroups, instrumentLabels, placementInstruments } from "~/lib/instrument-palette";
 import type { ScorePart } from "~/lib/types";
 
-const commonInstruments = ["clarinet", "flute", "piccolo", "oboe", "english_horn", "bassoon", "french_horn", "trumpet", "trombone", "tuba", "soprano_sax", "alto_sax", "tenor_sax", "baritone_sax", "violin", "viola", "cello", "contrabass", "string_ensemble_1", "orchestral_harp", "timpani", "marimba", "glockenspiel", "harpsichord", "acoustic_guitar_nylon", "acoustic_grand_piano"];
-const instrumentLabels: Record<string, string> = { clarinet: "クラリネット", flute: "フルート", piccolo: "ピッコロ", oboe: "オーボエ", english_horn: "イングリッシュホルン", bassoon: "ファゴット", french_horn: "ホルン", trumpet: "トランペット", trombone: "トロンボーン", tuba: "チューバ", soprano_sax: "ソプラノサックス", alto_sax: "アルトサックス", tenor_sax: "テナーサックス", baritone_sax: "バリトンサックス", violin: "ヴァイオリン", viola: "ヴィオラ", cello: "チェロ", contrabass: "コントラバス", string_ensemble_1: "弦楽合奏", orchestral_harp: "ハープ", timpani: "ティンパニ", marimba: "マリンバ", glockenspiel: "グロッケンシュピール", harpsichord: "チェンバロ", acoustic_guitar_nylon: "クラシックギター", acoustic_grand_piano: "ピアノ" };
-const instrumentGroups = [["木管", ["flute", "piccolo", "oboe", "english_horn", "bassoon", "clarinet", "soprano_sax", "alto_sax", "tenor_sax", "baritone_sax"]], ["金管", ["french_horn", "trumpet", "trombone", "tuba"]], ["弦", ["violin", "viola", "cello", "contrabass", "string_ensemble_1", "orchestral_harp"]], ["鍵盤・打楽器", ["acoustic_grand_piano", "harpsichord", "acoustic_guitar_nylon", "timpani", "marimba", "glockenspiel"]]] as const;
 
 export function OrchestraStage({ parts, audio, beat, active, initialSpace, onSpaceChange, mutedParts = [] }: { parts: ScorePart[]; audio: OrchestraAudio; beat: number; active: boolean; mutedParts?: number[]; initialSpace?: OrchestraSpace; onSpaceChange?: (space: OrchestraSpace) => void }) {
   const [chairs, setChairs] = useState(() => initialSpace?.chairs ?? defaultChairs(parts));
@@ -19,7 +17,7 @@ export function OrchestraStage({ parts, audio, beat, active, initialSpace, onSpa
   const activity = useMemo(() => parts.map(part => scoreActivity(part.notes)), [parts]);
   const soundingParts = useMemo(() => activity.map(intervals => active && soundingAt(intervals, beat)), [activity, active, beat]);
   const chair = chairs.find((item) => item.id === selected);
-  const instruments = useMemo(() => [...new Set([...commonInstruments, ...parts.map(instrumentForPart)])], [parts]);
+  const instruments = useMemo(() => [...new Set([...placementInstruments, ...parts.map(instrumentForPart)])], [parts]);
   useEffect(() => { audio.configureSpace(chairs, listener, enabled); }, [audio, chairs, listener, enabled, parts]);
   useEffect(() => { onSpaceChange?.({ chairs, listener, enabled }); }, [chairs, listener, enabled, onSpaceChange]);
   const update = (patch: Partial<OrchestraChair>) => setChairs((items) => items.map((item) => item.id === selected ? { ...item, ...patch } : item));

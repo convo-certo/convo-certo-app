@@ -3,8 +3,7 @@ import { sustainLoop, sustainedInstruments } from "./sustain-loop";
 import { playerVariation, chairLevel } from "./player-variation";
 import { defaultChairs, type OrchestraChair } from "./orchestra-space";
 import type { NoteEvent, ScorePart } from "./types";
-
-const placementInstruments = ["clarinet", "flute", "piccolo", "oboe", "english_horn", "bassoon", "french_horn", "trumpet", "trombone", "tuba", "soprano_sax", "alto_sax", "tenor_sax", "baritone_sax", "violin", "viola", "cello", "contrabass", "string_ensemble_1", "orchestral_harp", "timpani", "marimba", "glockenspiel", "harpsichord", "acoustic_guitar_nylon", "acoustic_grand_piano"];
+import { placementInstruments } from "./instrument-palette";
 
 export function instrumentForPart(part: ScorePart): string {
   const program = part.midiProgram;
