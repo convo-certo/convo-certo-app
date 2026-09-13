@@ -15,7 +15,7 @@ if (catalog.length !== sources.length) throw new Error("catalog.jsonとsources.j
 const sourceById = new Map(sources.map((source) => [source.id, source]));
 for (const item of catalog) {
   const source = sourceById.get(item.id);
-  if (!source || !["CC0-1.0", "PDM-1.0"].includes(source.scoreLicense) || source.licenseConflict !== false) throw new Error(`権利メタデータが不正です: ${item.id}`);
+  if (!source || !["CC0-1.0", "PDM-1.0"].includes(source.scoreLicense) || source.licenseConflict !== false || !/^https:\/\//.test(source.scoreSource) || typeof source.editionStatus !== "string" || source.editionStatus.trim() === "") throw new Error(`権利メタデータが不正です: ${item.id}`);
   const file = join(directory, `${item.id}.musicxml`);
   if (!existsSync(file)) throw new Error(`MusicXMLがありません: ${item.id}`);
   const xml = readFileSync(file);
