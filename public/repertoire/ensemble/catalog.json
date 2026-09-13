@@ -1095,5 +1095,23 @@
     "scoreLicense": "CC0-1.0",
     "scoreSource": "https://scorebase.org/scores/72193",
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
+    "id": "holst-jupiter-low-brass-quintet",
+    "title": "ホルスト：《木星》低音金管五重奏版",
+    "composer": "Gustav Holst（編曲：Ian Burchfield）",
+    "parts": [
+      "Trombone 1",
+      "Trombone 2",
+      "Euphonium 1",
+      "Euphonium 2",
+      "Tuba"
+    ],
+    "measures": 299,
+    "category": "wind",
+    "featured": false,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/197518",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   }
 ]

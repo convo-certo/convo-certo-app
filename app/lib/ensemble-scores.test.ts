@@ -77,11 +77,18 @@ it("loads the public-domain Holst Jupiter woodwind chorale with clarinets", () =
   expect(score.parts.filter((part) => /clarinet/i.test(part.name))).toHaveLength(3);
 });
 
+it("loads the public-domain Holst Jupiter low brass quintet", () => {
+  const score = parseMusicXML(readFileSync("public/repertoire/ensemble/holst-jupiter-low-brass-quintet.musicxml", "utf8"));
+  expect(score.parts).toHaveLength(5);
+  expect(score.totalMeasures).toBeGreaterThan(250);
+  expect(score.parts.some((part) => /euphonium|tuba/i.test(part.name))).toBe(true);
+});
+
 it("bundles a searchable, attributed catalogue with featured orchestral and wind scores", () => {
   const catalog = JSON.parse(readFileSync("public/repertoire/ensemble/catalog.json", "utf8")) as { id: string; title: string; parts: string[]; category: string; featured: boolean }[];
   const manifest = JSON.parse(readFileSync("public/repertoire/ensemble/sources.json", "utf8")) as { id: string; licenseConflict: boolean; scoreLicense: string; sha256: string }[];
   expect(catalog.length).toBeGreaterThanOrEqual(30);
-  expect(catalog.filter((item) => item.category === "wind")).toHaveLength(13);
+  expect(catalog.filter((item) => item.category === "wind")).toHaveLength(14);
   expect(catalog.filter((item) => item.featured)).toHaveLength(13);
   for (const item of catalog) {
     const xml = readFileSync(`public/repertoire/ensemble/${item.id}.musicxml`, "utf8");

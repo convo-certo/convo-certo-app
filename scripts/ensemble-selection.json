@@ -363,5 +363,14 @@
     "category": "orchestra",
     "featured": false,
     "composer": "Wolfgang Amadeus Mozart"
+  },
+  {
+    "id": "holst-jupiter-low-brass-quintet",
+    "scorebaseId": 197518,
+    "stem": "QmfGfPGM5jcstJHaKEZrWyGGhJ34yx9szE4Ge8p3yg7R2Z",
+    "title": "ホルスト：《木星》低音金管五重奏版",
+    "category": "wind",
+    "featured": false,
+    "composer": "Gustav Holst（編曲：Ian Burchfield）"
   }
 ]
