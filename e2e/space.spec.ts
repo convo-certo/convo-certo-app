@@ -11,6 +11,9 @@ test("custom timewise score, spatial assignment and score page preserve playback
   await page.getByLabel("MusicXMLで演奏する", {exact:true}).setInputFiles({name:"timewise.xml", mimeType:"application/xml", buffer:Buffer.from(xml)});
   await expect(page.getByRole("button", {name:"▶ 演奏開始",exact:true})).toBeEnabled();
   await page.getByRole("button", {name:"席 chair-1: Cello",exact:true}).click();
+  await page.getByLabel("席の楽器", {exact:true}).selectOption("clarinet");
+  await expect(page.getByLabel("席の楽器", {exact:true})).toHaveValue("clarinet");
+  await page.getByLabel("席の楽器", {exact:true}).selectOption("cello");
   const draggedSeat = page.getByRole("button", {name:"席 chair-1: Cello",exact:true});
   const seatBox = await draggedSeat.locator("circle").boundingBox();
   expect(seatBox).not.toBeNull();
