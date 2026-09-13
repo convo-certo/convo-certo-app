@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 interface CatalogScore { id: string; title: string; composer: string; parts: string[]; measures: number; category: string; featured: boolean; scoreLicense: string; scoreSource: string; editionStatus: string }
+interface CandidateReport { candidates?: unknown[] }
 const isClarinetPart = (name: string) => /clarinet|clari[nm]ette|クラリネット/i.test(name) || /(?:^|[^a-z])(?:solo|[1-4](?:st|nd|rd|th)?)?cl(?:[^a-z]|$)/i.test(name) || /\bcla\b/i.test(name);
 const licenseLabel = (license: string) => license === "CC0-1.0" ? "公開利用可・CC0" : license === "PDM-1.0" ? "公開利用可・PDM" : license;
 const licenseUrl = (license: string) => license === "CC0-1.0" ? "https://creativecommons.org/publicdomain/zero/1.0/" : license === "PDM-1.0" ? "https://creativecommons.org/publicdomain/mark/1.0/" : "https://creativecommons.org/share-your-work/cclicenses/";
 export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: File) => Promise<void> }) {
   const [scores, setScores] = useState<CatalogScore[]>([]);
+  const [candidateCount, setCandidateCount] = useState<number | null>(null);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [licenseFilter, setLicenseFilter] = useState("");
@@ -13,6 +15,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => { let cancelled = false; void fetch("/repertoire/ensemble/catalog.json").then((response) => { if (!response.ok) throw new Error(); return response.json(); }).then((data: CatalogScore[]) => { if (!cancelled) setScores(data); }).catch(() => { if (!cancelled) setError("楽譜一覧を読み込めませんでした。"); }); return () => { cancelled = true; }; }, []);
+  useEffect(() => { let cancelled = false; void fetch("/repertoire/ensemble/pdmx-wind-candidates.json").then((response) => response.ok ? response.json() as Promise<CandidateReport> : null).then((data) => { if (!cancelled && data) setCandidateCount(Array.isArray(data.candidates) ? data.candidates.length : 0); }).catch(() => { if (!cancelled) setCandidateCount(null); }); return () => { cancelled = true; }; }, []);
   const filtered = scores.filter((score) => (!category || score.category === category) && (!licenseFilter || score.scoreLicense === licenseFilter) && (!clarinetOnly || score.parts.some(isClarinetPart)) && `${score.title} ${score.composer} ${score.parts.join(" ")}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => Number(b.featured) - Number(a.featured));
   const clarinetCount = scores.filter((score) => score.parts.some(isClarinetPart)).length;
   const priorityRoadmap = [
@@ -60,7 +63,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
       <a href={`/repertoire/ensemble/${score.id}.musicxml`} download>MusicXMLをダウンロード</a>
     </article>)}</div>
     {filtered.length > limit && <button onClick={() => setLimit(limit + 10)}>さらに10譜表示</button>}
-    <p className="concert-muted"><a href="/repertoire/ensemble/sources.json">各ファイルのライセンス表示・出典・照合記録</a>。CC0表示と内部の権利表示の矛盾がない版を選定しています。<a href="/repertoire/ensemble/pdmx-wind-candidates.json" target="_blank" rel="noreferrer">追加候補の調査レポート（権利未確定）</a></p>
+    <p className="concert-muted"><a href="/repertoire/ensemble/sources.json">各ファイルのライセンス表示・出典・照合記録</a>。CC0表示と内部の権利表示の矛盾がない版を選定しています。<a href="/repertoire/ensemble/pdmx-wind-candidates.json" target="_blank" rel="noreferrer">追加候補の調査レポート（権利未確定）</a>{candidateCount != null && ` · 未確定候補${candidateCount}件`}</p>
     <p className="concert-muted">優先収集：ベートーヴェン交響曲第5・6・7番。5番第1楽章と6番《田園》第1楽章は収録済み、全曲総譜の検証を進めています。<a href="https://imslp.org/wiki/Symphony_No.5%2C_Op.67_(Beethoven%2C_Ludwig_van)" target="_blank" rel="noreferrer">原曲の楽譜情報</a></p>
   </section>;
 }
