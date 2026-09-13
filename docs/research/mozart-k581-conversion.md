@@ -13,6 +13,6 @@
 
 - `public/repertoire/ensemble/mozart-k581-clarinet-quintet.musicxml`
 - 5パート、498小節、全4楽章
-- 生成物SHA-256: `84d4cace9fbfd3503c72b0d3155a6682679d8ebfb2145f7e36a52191c922a72e`
+- 生成物SHA-256: `5d845dfb375121ba676fc30db2b7fd624398d27b7552098b0e8ca222bb5d2535`
 
 LilyPondソースをMusicXMLへ変換し、アプリで読み込み、パート選択、演奏開始まで確認した。エディション全音符の校合は未完了のため、`sources.json`の`editionStatus`にその状態を記録している。
