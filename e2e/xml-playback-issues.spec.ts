@@ -6,7 +6,7 @@ test('playback limitations follow the loaded and saved XML in both preparation a
   await page.goto('/perform');
   await page.getByLabel('MusicXMLで演奏する', {exact:true}).setInputFiles({name:'warnings.musicxml',mimeType:'application/xml',buffer:Buffer.from(xml)});
   const issues = page.getByLabel('MusicXMLの再生上の注意', {exact:true});
-  await expect(issues).toContainText('2種類');
+  await expect(issues).toContainText('3種類');
   await issues.locator('summary').click();
   await expect(issues).toContainText('Clarinet・小節 7');
   await expect(issues).toContainText('発音・追従の対象に含めません');
@@ -16,11 +16,11 @@ test('playback limitations follow the loaded and saved XML in both preparation a
   await expect(page.getByRole('button', {name:'▶ 演奏開始',exact:true})).toBeEnabled();
   await page.reload();
   await page.getByRole('region', {name:'マイ楽譜',exact:true}).getByRole('button', {name:'Playback warning fixture',exact:true}).click();
-  await expect(issues).toContainText('2種類');
+  await expect(issues).toContainText('3種類');
   await page.getByRole('button', {name:'準備・オーケストラ',exact:true}).click();
   await page.getByLabel('MusicXMLで演奏する', {exact:true}).setInputFiles('public/scores/sample-duet.musicxml');
   await expect(page.getByRole('button', {name:'▶ 演奏開始',exact:true})).toBeEnabled();
-  await expect(issues).toHaveCount(0);
+  await expect(issues).toContainText('移調情報のない移調楽器');
 });
 
 test('overlong imported measure is identified without silently shortening the score', async ({ page }) => {

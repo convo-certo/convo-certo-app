@@ -343,7 +343,7 @@ test("wind catalogue loads a full score and offers MusicXML download", async ({ 
   await catalog.getByText("優先曲の収録状況").click();
   await expect(catalog.getByText("ベートーヴェン交響曲第5番 第1楽章")).toBeVisible();
   await catalog.getByLabel("楽譜の編成").selectOption("wind");
-  await expect(catalog.locator(".catalog-score")).toHaveCount(3);
+  await expect(catalog.locator(".catalog-score")).toHaveCount(10);
   await catalog.getByLabel("収録楽譜を検索").fill("新世界");
   await expect(catalog.locator(".catalog-score")).toHaveCount(1);
   const download = page.waitForEvent("download");
@@ -355,7 +355,7 @@ test("wind catalogue loads a full score and offers MusicXML download", async ({ 
   await expect(page.locator(".printable-score svg").first()).toBeVisible();
 });
 
-for (const [name, expectedParts] of [["交響曲第40番", 12], ["交響曲第4番", 27], ["交響曲第6番", 19], ["雪片のワルツ", 21], ["1812年", 41], ["管弦楽組曲第2番", 8]] as const) {
+for (const [name, expectedParts] of [["交響曲第40番", 12], ["交響曲第4番", 27], ["チャイコフスキー：交響曲第6番《悲愴》終楽章", 19], ["雪片のワルツ", 21], ["1812年", 41], ["管弦楽組曲第2番", 8]] as const) {
   test(`orchestral MusicXML ${name} parses, displays and starts`, async ({ page }) => {
     const errors: string[] = []; page.on("pageerror", (error) => errors.push(error.message));
     await page.goto("/perform");

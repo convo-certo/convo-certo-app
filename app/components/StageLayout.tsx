@@ -18,6 +18,7 @@ export function StageLayout({ children, locale = "ja", immersive = false }: Stag
         flexDirection: "column",
         minHeight: "100vh",
         height: immersive ? "100dvh" : undefined,
+        overflow: immersive ? "hidden" : undefined,
         fontFamily: "'Inter', sans-serif",
       }}
     >
@@ -39,6 +40,7 @@ export function StageLayout({ children, locale = "ja", immersive = false }: Stag
           minHeight: immersive ? 0 : undefined,
           display: immersive ? "flex" : undefined,
           flexDirection: "column",
+          overflow: immersive ? "hidden" : undefined,
           maxWidth: 1200,
           width: "100%",
           margin: "0 auto",
