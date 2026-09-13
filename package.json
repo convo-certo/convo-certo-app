@@ -14,6 +14,7 @@
     "e2e:headed": "playwright test --headed",
     "repertoire:prepare": "uv run --with mido scripts/prepare_repertoire.py",
     "ensemble:prepare": "uv run scripts/prepare_ensemble_scores.py",
+    "musicxml:from-midi": "uv run --with music21 scripts/convert_midi_to_musicxml.py",
     "instruments:prepare": "uv run scripts/prepare_instruments.py",
     "native:build": "node scripts/build-native.mjs",
     "native:test": "build/native/ConvoCerto.app/Contents/MacOS/ConvoCerto --smoke-test",
