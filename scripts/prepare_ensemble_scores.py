@@ -65,8 +65,8 @@ def main() -> None:
         (OUT / f"{name}.musicxml").write_bytes(xml)
         record = {
             "id": name, "title": title, "scoreSource": local.get("sourceUrl", f"https://scorebase.org/scores/{scorebase_id}") if local else f"https://scorebase.org/scores/{scorebase_id}",
-            "originalSource": root.findtext("identification/source"), "dataset": DATASET,
-            "datasetLicense": "CC-BY-4.0", "scoreLicense": "CC0-1.0" if row["license"] == "cc-zero" else "PDM-1.0",
+            "originalSource": root.findtext("identification/source"), "dataset": local.get("sourceUrl") if local else DATASET,
+            "datasetLicense": "Public Domain" if local else "CC-BY-4.0", "scoreLicense": "CC0-1.0" if row["license"] == "cc-zero" else "PDM-1.0",
             "licenseConflict": False, "metadataPath": row["metadata"], "datasetPath": row["mxl"],
             "sha256": hashlib.sha256(xml).hexdigest(), "verifiedAt": date.today().isoformat(),
             "metadata": row,
