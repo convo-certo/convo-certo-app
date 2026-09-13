@@ -152,6 +152,27 @@
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   },
   {
+    "id": "strauss-radetzky-wind-ensemble",
+    "title": "ヨハン・シュトラウス1世：ラデツキー行進曲 木管・金管アレンジ",
+    "composer": "Johann Strauss",
+    "parts": [
+      "Flute",
+      "Flute",
+      "BaccidentalFlat Clarinet",
+      "BaccidentalFlat Clarinet",
+      "Alto Saxophone",
+      "Alto Saxophone",
+      "Euphonium",
+      "Piano"
+    ],
+    "measures": 38,
+    "category": "wind",
+    "featured": true,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/56589",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
     "id": "library-163219",
     "title": "ドヴォルザーク：交響曲第9番《新世界より》第2楽章",
     "composer": "Antonin Dvorak",
