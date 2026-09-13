@@ -356,6 +356,18 @@ test("wind catalogue loads a full score and offers MusicXML download", async ({ 
   await expect(page.locator(".printable-score svg").first()).toBeVisible();
 });
 
+for (const [query, expectedParts] of [["星条旗よ永遠なれ", 31], ["水上の音楽", 13]] as const) {
+  test(`new wind score ${query} loads and starts`, async ({ page }) => {
+    await page.goto("/perform");
+    const catalog = page.getByRole("region", { name: "MusicXMLライブラリ", exact: true });
+    await catalog.getByLabel("収録楽譜を検索").fill(query);
+    await catalog.getByRole("button", { name: /この総譜で演奏/ }).click();
+    await expect(page.getByRole("button", { name: "▶ 演奏開始", exact: true })).toBeEnabled({ timeout: 25000 });
+    await expect(page.locator(".part-row")).toHaveCount(expectedParts - 1);
+    await expect(page.locator(".printable-score svg").first()).toBeVisible();
+  });
+}
+
 for (const [name, expectedParts] of [["交響曲第40番", 12], ["交響曲第4番", 27], ["チャイコフスキー：交響曲第6番《悲愴》終楽章", 19], ["雪片のワルツ", 21], ["1812年", 41], ["管弦楽組曲第2番", 8]] as const) {
   test(`orchestral MusicXML ${name} parses, displays and starts`, async ({ page }) => {
     const errors: string[] = []; page.on("pageerror", (error) => errors.push(error.message));
