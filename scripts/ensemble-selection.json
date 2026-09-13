@@ -64,6 +64,22 @@
     "featured": false
   },
   {
+    "id": "chesnokov-salvation-is-created-brass",
+    "scorebaseId": 207780,
+    "stem": "QmNsjLPPmgM5pr9VyXGBsBgm48srMnuStBzT2EdntH8yPp",
+    "title": "パーヴェル・チェスノコフ：Salvation Is Created 金管合奏版",
+    "category": "wind",
+    "featured": false
+  },
+  {
+    "id": "handel-la-march-d-major",
+    "scorebaseId": 210606,
+    "stem": "QmNziBPLdMvADe6uXwyXJCDpo3JN71MrosUEcv2iWQTJhp",
+    "title": "ヘンデル：La March ニ長調 管楽器入り合奏版",
+    "category": "wind",
+    "featured": false
+  },
+  {
     "id": "mozart-k581-clarinet-quintet",
     "scorebaseId": 0,
     "stem": "local-mozart-k581",

@@ -309,6 +309,54 @@
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   },
   {
+    "id": "chesnokov-salvation-is-created-brass",
+    "title": "パーヴェル・チェスノコフ：Salvation Is Created 金管合奏版",
+    "composer": "Pavel Chesnokov Arr. David Schwartz",
+    "parts": [
+      "BaccidentalFlat Trumpet",
+      "BaccidentalFlat Trumpet",
+      "BaccidentalFlat Trumpet",
+      "Horn",
+      "Horn",
+      "Trombone",
+      "Trombone",
+      "Euphonium",
+      "Euphonium",
+      "B Tuba",
+      "B Tuba"
+    ],
+    "measures": 42,
+    "category": "wind",
+    "featured": false,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/207780",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
+    "id": "handel-la-march-d-major",
+    "title": "ヘンデル：La March ニ長調 管楽器入り合奏版",
+    "composer": "Handel George F.",
+    "parts": [
+      "Trumpet at\nconcert pitch",
+      "Oboe 1",
+      "Oboe 2",
+      "Bassoon",
+      "BSN",
+      "VLN",
+      "VLA",
+      "VCL",
+      "Kontrebaß",
+      "Lute",
+      "Lute"
+    ],
+    "measures": 57,
+    "category": "wind",
+    "featured": false,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/210606",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
     "id": "mozart-k581-clarinet-quintet",
     "title": "モーツァルト：クラリネット五重奏曲 K.581 全4楽章",
     "composer": "Wolfgang Amadeus Mozart",
