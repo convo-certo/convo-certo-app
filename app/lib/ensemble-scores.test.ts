@@ -41,6 +41,14 @@ it("loads the Pastoral Symphony first movement with orchestral winds", () => {
   expect(score.parts.some((part) => /violin/i.test(part.name))).toBe(true);
 });
 
+it("loads Mozart Jupiter with its complete orchestral parts", () => {
+  const score = parseMusicXML(readFileSync("public/repertoire/ensemble/mozart-symphony-41-jupiter.musicxml", "utf8"));
+  expect(score.parts).toHaveLength(17);
+  expect(score.totalMeasures).toBeGreaterThan(200);
+  expect(score.parts.some((part) => /clarino|trumpet/i.test(part.name))).toBe(true);
+  expect(score.parts.some((part) => /violin/i.test(part.name))).toBe(true);
+}, 30000);
+
 it("loads the public-domain Earl of Oxford march brass arrangement", () => {
   const score = parseMusicXML(readFileSync("public/repertoire/ensemble/byrd-earl-of-oxford-march-brass.musicxml", "utf8"));
   expect(score.parts).toHaveLength(5);

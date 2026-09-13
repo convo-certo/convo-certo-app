@@ -1065,5 +1065,35 @@
     "scoreLicense": "CC0-1.0",
     "scoreSource": "https://scorebase.org/scores/102483",
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
+    "id": "mozart-symphony-41-jupiter",
+    "title": "モーツァルト：交響曲第41番《ジュピター》",
+    "composer": "Wolfgang Amadeus Mozart",
+    "parts": [
+      "Flauto",
+      "Oboe I",
+      "Oboe II",
+      "Fagotto I",
+      "Fagotto II",
+      "Corno I in C",
+      "Corno II in C",
+      "Corno I in F",
+      "Corno II in F",
+      "Clarino I in C",
+      "Clarino II in C",
+      "Timpani in C–G",
+      "Violino I",
+      "Violino II",
+      "Viola",
+      "Violoncello",
+      "Basso"
+    ],
+    "measures": 925,
+    "category": "orchestra",
+    "featured": false,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/72193",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   }
 ]

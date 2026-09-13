@@ -354,5 +354,14 @@
     "category": "wind",
     "featured": true,
     "composer": "Gustav Holst"
+  },
+  {
+    "id": "mozart-symphony-41-jupiter",
+    "scorebaseId": 72193,
+    "stem": "QmYifrY2fp8q3ioxu2mnssCoLjrY9LtVCC4NtFWmFsPmM8",
+    "title": "モーツァルト：交響曲第41番《ジュピター》",
+    "category": "orchestra",
+    "featured": false,
+    "composer": "Wolfgang Amadeus Mozart"
   }
 ]
