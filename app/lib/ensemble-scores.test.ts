@@ -24,7 +24,7 @@ it("loads the complete Mozart Adagio score instead of a MIDI conversion", () => 
   expect(playerPart(score)?.name).toMatch(/clarinet/i);
 });
 
-it("bundles a searchable, attributed catalogue and five orchestral editions with strings", () => {
+it("bundles a searchable, attributed catalogue with featured orchestral and wind scores", () => {
   const catalog = JSON.parse(readFileSync("public/repertoire/ensemble/catalog.json", "utf8")) as { id: string; title: string; parts: string[]; category: string; featured: boolean }[];
   const manifest = JSON.parse(readFileSync("public/repertoire/ensemble/sources.json", "utf8")) as { id: string; licenseConflict: boolean; scoreLicense: string; sha256: string }[];
   expect(catalog.length).toBeGreaterThanOrEqual(30);
