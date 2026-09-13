@@ -17,6 +17,8 @@
 | The Washington Post | John Philip Sousa | [IMSLP](https://imslp.org/wiki/The_Washington_Post_%28Sousa%2C_John_Philip%29) | 原曲PD。編曲版はCPDL License v4など条件を明記 |
 | 交響曲第5番 第1楽章 | Pyotr Ilyich Tchaikovsky | [IMSLP](https://imslp.org/wiki/Symphony_No.5_%28Tchaikovsky%2C_Pyotr_Ilyich%29) | 原曲PD候補。吹奏楽化は自前編曲として別管理 |
 
+PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**（34パート、451小節、CC0表示、`license_conflict=False`、有効ファイル）が候補として見つかっている。ただし現行のPDMX配布は全体で約1.9GBのMXLアーカイブで、元のMusicScore投稿と内部権利の不一致も報告されているため、個別MXLを取得して内部権利・編成・欠落箇所を確認するまで収録対象にはしない。[PDMX Zenodo](https://zenodo.org/records/15571083)
+
 ## リード作品と課題曲
 
 アルフレッド・リードの作品は、本人が2005年に亡くなっており、現在の死後70年基準では自由収録の対象にしない。[Keiser Productionsの略歴](https://keiserproductions.com/composer3/?tid=6902739C-817A-4490-A515-E6638762F888)にある *Armenian Dances*、*El Camino Real*、*A Festival Prelude*、*The Hounds of Spring* などは、出版社からMusicXML化・表示・伴奏生成・商用配布の許諾を得る候補として別のライセンス待ちリストに置く。
