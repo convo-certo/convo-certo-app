@@ -158,6 +158,16 @@ test("verified wind catalogue exposes sixteen playable scores", async ({ page })
   await expect(page.getByLabel("奏者パート").locator("option").filter({ hasText: /Clarinette|Clarinet/ })).toHaveCount(1);
 });
 
+test("wind candidate report is packaged with its rights warning", async ({ page, request }) => {
+  await page.goto("/perform");
+  const response = await request.get("/repertoire/ensemble/pdmx-wind-candidates.json");
+  expect(response.ok()).toBe(true);
+  const report = await response.json();
+  expect(report.rightsNote).toContain("copyright");
+  expect(report.candidates.length).toBeGreaterThan(0);
+  await expect(page.getByRole("link", { name: "追加候補の調査レポート（権利未確定）", exact: true })).toBeVisible();
+});
+
 test("phrase instructions shape playback and survive MusicXML export", async ({ page }) => {
   await page.goto("/perform");
   await page.getByLabel("MusicXMLで演奏する", { exact: true }).setInputFiles("public/scores/sample-duet.musicxml");
