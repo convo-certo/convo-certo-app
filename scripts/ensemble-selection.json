@@ -80,6 +80,38 @@
     "featured": false
   },
   {
+    "id": "bizet-arlesienne-brass",
+    "scorebaseId": 138863,
+    "stem": "QmaRth5etpzH3LjKQRHTpJyrJEqJK8vSk7KGZC2tk3Epc1",
+    "title": "ビゼー：《アルルの女》金管合奏版",
+    "category": "wind",
+    "featured": false
+  },
+  {
+    "id": "bizet-arlesienne-brass-expanded",
+    "scorebaseId": 188919,
+    "stem": "QmVEMNrQkWfnLjXBitjBuLgPXGcRnZidtTHc6nUaoGVmsN",
+    "title": "ビゼー：《アルルの女》金管合奏版（拡張編成）",
+    "category": "wind",
+    "featured": false
+  },
+  {
+    "id": "bach-orchestral-suite-1",
+    "scorebaseId": 160167,
+    "stem": "QmZjUs2EAGJAeH5niAjuvAjb9v32BYyU3eg5uqH8v7D3Kr",
+    "title": "J.S.バッハ：管弦楽組曲第1番 BWV 1066",
+    "category": "wind",
+    "featured": false
+  },
+  {
+    "id": "mozart-turkish-march-orchestra",
+    "scorebaseId": 120829,
+    "stem": "QmeW7N3mCGaC417Xnf6jPLQKZebM9tdWxLWkGFmk2Bkw6B",
+    "title": "モーツァルト：トルコ行進曲 管弦楽編成（クラリネット入り）",
+    "category": "wind",
+    "featured": false
+  },
+  {
     "id": "mozart-k581-clarinet-quintet",
     "scorebaseId": 0,
     "stem": "local-mozart-k581",

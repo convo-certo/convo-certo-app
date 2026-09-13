@@ -357,6 +357,90 @@
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   },
   {
+    "id": "bizet-arlesienne-brass",
+    "title": "ビゼー：《アルルの女》金管合奏版",
+    "composer": "Bizet",
+    "parts": [
+      "B♭ Trumpet",
+      "B♭ Trumpet",
+      "Horn in F",
+      "Trombone",
+      "Tuba"
+    ],
+    "measures": 34,
+    "category": "wind",
+    "featured": false,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/138863",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
+    "id": "bizet-arlesienne-brass-expanded",
+    "title": "ビゼー：《アルルの女》金管合奏版（拡張編成）",
+    "composer": "Bizet",
+    "parts": [
+      "B♭ Trumpet",
+      "B♭ Trumpet",
+      "Horn in F",
+      "Trombone",
+      "Euphonium",
+      "Tuba"
+    ],
+    "measures": 34,
+    "category": "wind",
+    "featured": false,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/188919",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
+    "id": "bach-orchestral-suite-1",
+    "title": "J.S.バッハ：管弦楽組曲第1番 BWV 1066",
+    "composer": "Johann Sebastian Bach",
+    "parts": [
+      "Violinos 1",
+      "Violinos 2",
+      "Violinos 3",
+      "Violas",
+      "Violoncelos",
+      "Tímpanos"
+    ],
+    "measures": 28,
+    "category": "wind",
+    "featured": false,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/160167",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
+    "id": "mozart-turkish-march-orchestra",
+    "title": "モーツァルト：トルコ行進曲 管弦楽編成（クラリネット入り）",
+    "composer": "W. A. Mozart",
+    "parts": [
+      "Flûte",
+      "Hautbois",
+      "Clarinette\nen La",
+      "Basson",
+      "Cor en Fa",
+      "Cymbale",
+      "Triangle",
+      "Tambourin",
+      "Caisse claire \npiccolo",
+      "Glockenspiel ",
+      "Violons\nI",
+      "Violons\nII",
+      "Altos",
+      "Violoncelles",
+      "Contrebasses"
+    ],
+    "measures": 137,
+    "category": "wind",
+    "featured": false,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/120829",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
     "id": "mozart-k581-clarinet-quintet",
     "title": "モーツァルト：クラリネット五重奏曲 K.581 全4楽章",
     "composer": "Wolfgang Amadeus Mozart",
