@@ -12,6 +12,7 @@ if (createHash("sha256").update(readFileSync(join(directory, "pdmx-wind-candidat
 if (!candidateReport.rightsNote || !Array.isArray(candidateReport.candidates) || candidateReport.candidates.length > 100) throw new Error("吹奏楽候補レポートの権利注記または件数が不正です。");
 if (candidateReport.candidates.some((candidate) => candidate.manualReviewRequired !== true || !["metadata-eligible-manual-review", "reject-until-rights-resolved"].includes(candidate.reviewStatus))) throw new Error("吹奏楽候補レポートの確認状態が不正です。");
 if (catalog.length !== sources.length) throw new Error("catalog.jsonとsources.jsonの件数が一致しません。");
+if (new Set(catalog.map((item) => item.id)).size !== catalog.length || catalog.some((item) => !item.title?.trim() || !Array.isArray(item.parts) || item.parts.length === 0)) throw new Error("カタログに重複IDまたは不完全な曲情報があります。");
 const windCatalog = catalog.filter((item) => item.category === "wind");
 if (windCatalog.length < 10) throw new Error(`公開利用可能な管楽・金管合奏が10曲未満です: ${windCatalog.length}`);
 for (const id of ["sousa-stars-and-stripes-forever", "handel-water-music-wind-ensemble"]) if (!windCatalog.some((item) => item.id === id)) throw new Error(`必須の公開管楽譜がありません: ${id}`);
