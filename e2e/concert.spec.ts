@@ -141,6 +141,7 @@ test("MusicXML becomes the performance source and rehearsal directives round-tri
 test("verified wind catalogue exposes ten playable scores", async ({ page }) => {
   await page.goto("/perform");
   const catalog = page.getByRole("region", { name: "MusicXMLライブラリ" });
+  await expect(catalog.getByText(/クラリネット席 \d+譜/)).toBeVisible();
   await catalog.getByLabel("楽譜の編成").selectOption("wind");
   await expect(catalog.getByText("10譜", { exact: true })).toBeVisible();
   await catalog.getByLabel("クラリネット席ありのみ").check();
