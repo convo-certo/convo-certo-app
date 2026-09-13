@@ -554,7 +554,7 @@ export function PerformanceView({ stage = false }: { stage?: boolean }) {
       </details>
       <section className="concert-panel xml-dropzone" onDragOver={(event) => { event.preventDefault(); }} onDrop={(event) => { event.preventDefault(); if (busy) return; const files = event.dataTransfer.files; if (files.length !== 1) { setError("楽譜ファイルを1つずつドロップしてください。"); return; } void loadXML(files[0]); }}>
         <label>MusicXMLで演奏する<input aria-label="MusicXMLで演奏する" type="file" accept=".musicxml,.xml,.mxl" disabled={!!busy} onChange={(event) => { const file = event.target.files?.[0]; if (file) void loadXML(file); event.target.value = ""; }} /></label>
-        <p className="concert-muted">総譜を読み込むと、その音符から伴奏を生成し、あなたのパートを聴いて追従します。.musicxml / .xml / 圧縮 .mxl に対応。ここにファイルをドロップできます。partwise / timewise形式に対応。</p>
+        <p className="concert-muted">自作曲や許諾済みの課題曲も、総譜を読み込むとその音符から伴奏を生成し、あなたのパートを聴いて追従します。.musicxml / .xml / 圧縮 .mxl に対応。ここにファイルをドロップできます。partwise / timewise形式に対応。</p>
       </section>
       <section className="concert-panel" aria-label="マイ楽譜">
         <h3>マイ楽譜</h3>
