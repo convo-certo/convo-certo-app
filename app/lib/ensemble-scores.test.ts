@@ -48,12 +48,19 @@ it("loads the public-domain Earl of Oxford march brass arrangement", () => {
   expect(score.parts.some((part) => /trumpet|horn|trombone|tuba/i.test(part.name))).toBe(true);
 });
 
+it("loads the public-domain Holst Jupiter brass ensemble arrangement", () => {
+  const score = parseMusicXML(readFileSync("public/repertoire/ensemble/holst-jupiter-brass-ensemble.musicxml", "utf8"));
+  expect(score.parts).toHaveLength(6);
+  expect(score.totalMeasures).toBeGreaterThan(100);
+  expect(score.parts.some((part) => /trumpet|horn|trombone|euphonium|tuba/i.test(part.name))).toBe(true);
+});
+
 it("bundles a searchable, attributed catalogue with featured orchestral and wind scores", () => {
   const catalog = JSON.parse(readFileSync("public/repertoire/ensemble/catalog.json", "utf8")) as { id: string; title: string; parts: string[]; category: string; featured: boolean }[];
   const manifest = JSON.parse(readFileSync("public/repertoire/ensemble/sources.json", "utf8")) as { id: string; licenseConflict: boolean; scoreLicense: string; sha256: string }[];
   expect(catalog.length).toBeGreaterThanOrEqual(30);
-  expect(catalog.filter((item) => item.category === "wind")).toHaveLength(10);
-  expect(catalog.filter((item) => item.featured)).toHaveLength(11);
+  expect(catalog.filter((item) => item.category === "wind")).toHaveLength(11);
+  expect(catalog.filter((item) => item.featured)).toHaveLength(12);
   for (const item of catalog) {
     const xml = readFileSync(`public/repertoire/ensemble/${item.id}.musicxml`, "utf8");
     expect(xml).toContain("<score-partwise");

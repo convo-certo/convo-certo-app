@@ -1002,5 +1002,24 @@
     "scoreLicense": "CC0-1.0",
     "scoreSource": "https://scorebase.org/scores/26542",
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
+    "id": "holst-jupiter-brass-ensemble",
+    "title": "ホルスト：《木星》吹奏楽・金管アンサンブル版",
+    "composer": "Gustav Holst（編曲：Alejandra Carbajal）",
+    "parts": [
+      "B♭ Trumpet",
+      "Horn in F",
+      "Euphonium",
+      "Tenor Trombone",
+      "Bass Trombone",
+      "Tuba"
+    ],
+    "measures": 113,
+    "category": "wind",
+    "featured": true,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/87043",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   }
 ]

@@ -328,5 +328,14 @@
     "title": "Slavonic Dance Op.72 No.2 - Antonín Leopold Dvorak",
     "category": "chamber",
     "featured": false
+  },
+  {
+    "id": "holst-jupiter-brass-ensemble",
+    "scorebaseId": 87043,
+    "stem": "QmSR1JVH9L8YCvzdxNQsbAGddzfaYxm2YtSNwwBFpH77Aw",
+    "title": "ホルスト：《木星》吹奏楽・金管アンサンブル版",
+    "composer": "Gustav Holst（編曲：Alejandra Carbajal）",
+    "category": "wind",
+    "featured": true
   }
 ]

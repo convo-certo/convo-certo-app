@@ -72,7 +72,7 @@ def main() -> None:
             "metadata": row,
         }
         selection = next((item for item in SELECTION if item["id"] == name), {})
-        record.update({"composer": row["composer_name"], "parts": [part.findtext("part-name", "") for part in root.findall("part-list/score-part")], "measures": len(root.findall("part")[0].findall("measure")), "category": selection.get("category", "orchestra"), "featured": selection.get("featured", False), "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"})
+        record.update({"composer": selection.get("composer", row["composer_name"]), "parts": [part.findtext("part-name", "") for part in root.findall("part-list/score-part")], "measures": len(root.findall("part")[0].findall("measure")), "category": selection.get("category", "orchestra"), "featured": selection.get("featured", False), "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"})
         manifest.append(record)
         print(f"{name}: {len(root.findall('part'))} parts, public-domain metadata checked")
     (OUT / "sources.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
