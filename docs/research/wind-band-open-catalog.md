@@ -42,6 +42,8 @@ PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**
 
 追加調査では、Sousa「The Washington Post」とHalvorsen「Entry March of the Boyars」の候補を検索した。前者はアルトサックスまたはピアノ譜、後者はMusicXMLを取得できない検索結果しか見つからなかったため、吹奏楽譜としては登録していない。原曲の公開性だけでなく、実際に取得できる編成済みMusicXMLまで揃うことを収録条件にする。
 
+PDMXの候補には、Holst《First Suite for Military Band》の31パート453小節版（CC0表示）と《Jupiter》の32パート409小節版（CC0表示）もある。ただし編曲者・版の同定と原譜との校合が未完了で、現時点では配布カタログへ入れていない。候補の存在だけで権利確認済み・演奏可能とは扱わず、取得元、編曲者表示、全パートの整合を確認してから収録する。
+
 ## リード作品と課題曲
 
 ## クラリネット優先ロードマップ
