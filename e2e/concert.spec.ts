@@ -146,6 +146,9 @@ test("verified wind catalogue exposes ten playable scores", async ({ page }) => 
   await expect(catalog.getByText("10譜", { exact: true })).toBeVisible();
   await catalog.getByLabel("クラリネット席ありのみ").check();
   await expect(catalog.getByText("10譜", { exact: true })).toHaveCount(0);
+  const newWorld = catalog.locator("article").filter({ hasText: "新世界より" });
+  await expect(newWorld).toBeVisible();
+  await expect(newWorld.getByLabel("クラリネット席の有無")).toHaveText("クラリネット席あり");
   const march = catalog.locator("article").filter({ hasText: "トルコ行進曲" });
   await expect(march).toBeVisible();
   await expect(march.getByLabel("クラリネット席の有無")).toHaveText("クラリネット席あり");
