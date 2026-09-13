@@ -35,15 +35,15 @@ PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**
 4. ベートーヴェン：交響曲第5番、第6番《田園》第7番
 5. チャイコフスキー：交響曲第5番 第1楽章
 
-モーツァルト協奏曲は既に3楽章のMusicXML総譜を収録済み。K.581は公開スコアを確認済みだが、収録用の検証済みMusicXMLは未確保。ブラームスの原典初版はIMSLPでPublic Domain表示を確認できる。[Mozart K.581](https://imslp.org/wiki/Clarinet_Quintet%2C_K.581_%28Mozart%2C_Wolfgang_Amadeus%29) [Brahms Op.120-2](https://imslp.org/wiki/Clarinet_Sonata_No.2%2C_Op.120_No.2_%28Brahms%2C_Johannes%29)
+モーツァルト協奏曲は既に3楽章のMusicXML総譜を収録済み。K.581はMutopiaの公開ソースを基に4楽章・5パートへ変換し、A管クラリネットの移調情報を保持したMusicXMLを収録済み。ブラームスの原典初版はIMSLPでPublic Domain表示を確認できる。[Mozart K.581](https://imslp.org/wiki/Clarinet_Quintet%2C_K.581_%28Mozart%2C_Wolfgang_Amadeus%29) [Brahms Op.120-2](https://imslp.org/wiki/Clarinet_Sonata_No.2%2C_Op.120_No.2_%28Brahms%2C_Johannes%29)
 
 ベートーヴェンの5・6・7番は、クラリネット担当を中心にした優先キューとして扱う。5番第1楽章は、12パート・514小節の検証済みMusicXMLを収録済み。6番はScoreBaseのオーケストラ版（スコアID 60123、CC0表示、10パート・第1楽章）を取得して収録済み。7番は第2楽章の10パート版がPDMXの`no_license_conflict`・`all_valid`を満たす一方、全曲総譜ではないため、まずは全楽章版の確保を優先する。
 
-K.581はIMSLPに初版スコアとパート譜が揃っている。公開PDFをそのままMusicXMLとして再配布せず、自前浄書後に小節数・5パート（クラリネット＋弦4部）・調号・アーティキュレーションを校正してから収録する。
+K.581はIMSLPに初版スコアとパート譜が揃っている。Mutopiaの公開LilyPondソースをMusicXMLへ変換し、小節番号・5パート（クラリネット＋弦4部）・A管移調を確認して収録した。原譜との全音符単位の校正は継続中である。
 
 ブラームス：クラリネットソナタ Op.120-2はIMSLPで原典初版のPublic Domain表示を確認済み。ただし、現時点で取得できるPDMXの該当MusicXMLは第2楽章の別版でライセンス競合があるため、同梱対象にしていない。K.581と同じく、公開版を基にした自前浄書と全楽章の校正を次のクラリネット優先作業にする。[IMSLP Op.120-2](https://imslp.org/wiki/Clarinet_Sonata_No.2%2C_Op.120_No.2_%28Brahms%2C_Johannes%29)
 
-浄書の入力資料として、Mutopia ProjectのK.581ページにBreitkopf und Härtel（1883）を基にした5パートのLilyPondソースが公開されている。ページ上でPublic Domain表示と、クラリネット・第1/第2ヴァイオリン・ヴィオラ・チェロの編成を確認した。LilyPondからMusicXMLへ変換した後、原譜との校正を完了するまで配布ファイルには含めない。[Mutopia K.581](https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=337)
+浄書の入力資料として、Mutopia ProjectのK.581ページにBreitkopf und Härtel（1883）を基にした5パートのLilyPondソースが公開されている。ページ上でPublic Domain表示と、クラリネット・第1/第2ヴァイオリン・ヴィオラ・チェロの編成を確認した。LilyPondからMusicXMLへ変換し、変換記録とハッシュを保存して配布ファイルへ含めた。[Mutopia K.581](https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=337)
 
 ScoreBaseではK.581相当の検索結果（スコアID 238394、クラリネット＋弦4部、22ページ）を確認できるが、MusicXMLエンドポイントが404でPDFのみだった。別のF管版（238397）やA管版（238395）も同様に、実データを取得できるまでカタログへ登録しない。これにより、ページ上の編成表記だけでMusicXML収録済みと誤表示しない。
 
