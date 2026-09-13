@@ -200,6 +200,27 @@
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   },
   {
+    "id": "bach-orchestral-suite-2",
+    "title": "J.S.バッハ：管弦楽組曲第2番 BWV 1067",
+    "composer": "Johann Sebastian Bach",
+    "parts": [
+      "Flauto traverso.",
+      "Violino I.",
+      "Violino II.",
+      "Viola.",
+      "Continuo.",
+      "Cello.",
+      "Violone.",
+      "Harpsichord."
+    ],
+    "measures": 34,
+    "category": "orchestra",
+    "featured": false,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/30852",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
     "id": "dvorak-new-world-4-woodwind",
     "title": "ドヴォルザーク：交響曲第9番《新世界より》第4楽章 木管アンサンブル",
     "composer": "Antonin Dvorak",
