@@ -51,6 +51,8 @@ PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**
 
 PDMXの候補には、Holst《First Suite for Military Band》の31パート453小節版（CC0表示）と《Jupiter》の32パート409小節版（CC0表示）もある。ただし編曲者・版の同定と原譜との校合が未完了で、現時点では配布カタログへ入れていない。候補の存在だけで権利確認済み・演奏可能とは扱わず、取得元、編曲者表示、全パートの整合を確認してから収録する。
 
+2026-09-14のローカルPDMX台帳再検索では、Holst以外にも次の候補を確認した。English Folk Song Suite（29パート、CC0、`license_conflict=False`、`subset:all_valid=True`）、Handel Water Musicの22パート版（Public Domain、同条件）、Clarke King William's Marchの5パート版（CC0、同条件）が該当する。ただしPDMXの行メタデータだけでは編曲者と原譜の同定が完了しないため、MusicXML本体の取得、内部`rights`要素、編曲版の利用範囲を確認するまで候補扱いに留める。対照的にHolst First Suiteの31パート版は`license_conflict=True`であり、候補から除外する。
+
 モーツァルト《交響曲第41番《ジュピター》》の17パートMusicXMLも収録した。クラリネットは原編成にないため、クラリネット席を直接検出する譜面ではないが、空間ステージで任意の木管席をクラリネットへ差し替えて試奏できる。PDMXのCC0条件と内部権利表示を検査済みである。
 
 ## リード作品と課題曲
