@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 interface CatalogScore { id: string; title: string; composer: string; parts: string[]; measures: number; category: string; featured: boolean; scoreLicense: string; scoreSource: string; editionStatus: string }
+const isClarinetPart = (name: string) => /clarinet|clari[nm]ette|クラリネット/i.test(name) || /(?:^|[^a-z])(?:solo|[1-4](?:st|nd|rd|th)?)?cl(?:[^a-z]|$)/i.test(name) || /\bcla\b/i.test(name);
 export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: File) => Promise<void> }) {
   const [scores, setScores] = useState<CatalogScore[]>([]);
   const [query, setQuery] = useState("");
@@ -9,8 +10,8 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => { let cancelled = false; void fetch("/repertoire/ensemble/catalog.json").then((response) => { if (!response.ok) throw new Error(); return response.json(); }).then((data: CatalogScore[]) => { if (!cancelled) setScores(data); }).catch(() => { if (!cancelled) setError("楽譜一覧を読み込めませんでした。"); }); return () => { cancelled = true; }; }, []);
-  const filtered = scores.filter((score) => (!category || score.category === category) && (!clarinetOnly || score.parts.some((part) => /clarinet|clari[nm]ette|クラリネット/i.test(part))) && `${score.title} ${score.composer} ${score.parts.join(" ")}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => Number(b.featured) - Number(a.featured));
-  const clarinetCount = scores.filter((score) => score.parts.some((part) => /clarinet|clari[nm]ette|クラリネット/i.test(part))).length;
+  const filtered = scores.filter((score) => (!category || score.category === category) && (!clarinetOnly || score.parts.some(isClarinetPart)) && `${score.title} ${score.composer} ${score.parts.join(" ")}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => Number(b.featured) - Number(a.featured));
+  const clarinetCount = scores.filter((score) => score.parts.some(isClarinetPart)).length;
   const priorityRoadmap = [
     ["ベートーヴェン交響曲第5番 第1楽章", "収録済み"],
     ["ベートーヴェン交響曲第6番《田園》第1楽章", "第1楽章を収録済み・全曲を検証中"],
@@ -41,7 +42,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     <div className="catalog-grid">{filtered.slice(0, limit).map((score) => <article className="catalog-score" key={score.id}>
       <h4>{score.featured ? "★ " : ""}{score.title}</h4>
       <p>{score.parts.length}パート · {score.measures}小節 · {score.scoreLicense}</p>
-      <p aria-label="クラリネット席の有無">{score.parts.some((part) => /clarinet|clari[nm]ette|クラリネット/i.test(part)) ? "クラリネット席あり" : "クラリネット席なし"}</p>
+      <p aria-label="クラリネット席の有無">{score.parts.some(isClarinetPart) ? "クラリネット席あり" : "クラリネット席なし"}</p>
       <details><summary>編成と出典</summary><p>{score.parts.join(" / ")}</p><p>{score.editionStatus}</p><a href={score.scoreSource} target="_blank" rel="noreferrer">出典を見る</a></details>
       <button disabled={busy || loading} onClick={async () => { setLoading(true); setError(""); try { const response = await fetch(`/repertoire/ensemble/${score.id}.musicxml`); if (!response.ok) throw new Error("楽譜を取得できませんでした。"); await onLoad(new File([await response.text()], `${score.id}.musicxml`)); } catch (error) { setError(String(error)); } finally { setLoading(false); } }}>この総譜で演奏 · {score.title}</button>
       <a href={`/repertoire/ensemble/${score.id}.musicxml`} download>MusicXMLをダウンロード</a>
