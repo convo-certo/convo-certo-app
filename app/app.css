@@ -98,6 +98,11 @@ body {
 .catalog-score h4 { line-height: 1.5; }
 .catalog-score a, .catalog-score details, .catalog-score p { font-size: 12px; overflow-wrap: anywhere; }
 .catalog-score button { margin-top: auto; white-space: normal; }
+.concert-roadmap { margin: 12px 0 16px; font-size: 12px; }
+.concert-roadmap summary { cursor: pointer; color: #52645b; }
+.concert-roadmap ul { display: grid; gap: 6px; margin: 10px 0 0; padding-left: 18px; }
+.concert-roadmap li { display: flex; flex-wrap: wrap; gap: 8px 14px; justify-content: space-between; }
+.concert-roadmap li span { color: #52645b; }
 .concert-controls select { max-width: 100%; }
 .concert-controls label { min-width: 0; max-width: 100%; }
 .concert-panel { min-width: 0; overflow-wrap: anywhere; }
