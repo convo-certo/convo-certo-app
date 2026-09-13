@@ -145,6 +145,9 @@ test("verified wind catalogue exposes sixteen playable scores", async ({ page })
   await expect(catalog.getByRole("link", { name: "追加候補の調査レポート（権利未確定）", exact: true })).toHaveAttribute("href", "/repertoire/ensemble/pdmx-wind-candidates.json");
   await catalog.getByLabel("楽譜の編成").selectOption("wind");
   await expect(catalog.getByText("16譜", { exact: true })).toBeVisible();
+  await catalog.getByLabel("楽譜の利用条件").selectOption("CC0-1.0");
+  await expect(catalog.getByText("15譜", { exact: true })).toBeVisible();
+  await catalog.getByLabel("楽譜の利用条件").selectOption("");
   await catalog.getByLabel("クラリネット席ありのみ").check();
   await expect(catalog.getByText("16譜", { exact: true })).toHaveCount(0);
   const newWorld = catalog.locator("article").filter({ hasText: "新世界より" });

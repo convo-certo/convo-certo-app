@@ -7,12 +7,13 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
   const [scores, setScores] = useState<CatalogScore[]>([]);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
+  const [licenseFilter, setLicenseFilter] = useState("");
   const [clarinetOnly, setClarinetOnly] = useState(false);
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => { let cancelled = false; void fetch("/repertoire/ensemble/catalog.json").then((response) => { if (!response.ok) throw new Error(); return response.json(); }).then((data: CatalogScore[]) => { if (!cancelled) setScores(data); }).catch(() => { if (!cancelled) setError("楽譜一覧を読み込めませんでした。"); }); return () => { cancelled = true; }; }, []);
-  const filtered = scores.filter((score) => (!category || score.category === category) && (!clarinetOnly || score.parts.some(isClarinetPart)) && `${score.title} ${score.composer} ${score.parts.join(" ")}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => Number(b.featured) - Number(a.featured));
+  const filtered = scores.filter((score) => (!category || score.category === category) && (!licenseFilter || score.scoreLicense === licenseFilter) && (!clarinetOnly || score.parts.some(isClarinetPart)) && `${score.title} ${score.composer} ${score.parts.join(" ")}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => Number(b.featured) - Number(a.featured));
   const clarinetCount = scores.filter((score) => score.parts.some(isClarinetPart)).length;
   const priorityRoadmap = [
     ["ベートーヴェン交響曲第5番 第1楽章", "収録済み"],
@@ -46,7 +47,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     <h3>好きな楽器で、オーケストラの中へ</h3>
     <p><a href="/repertoire/ensemble/ConvoCerto-MusicXML.zip" download>MusicXML一式をZIPでダウンロード</a></p>
     <p>MusicXML {scores.length}譜・クラリネット席 {clarinetCount}譜・公開利用可能な管楽／金管 {verifiedWindScores.length}譜。総譜のパートを選んで共奏できます。★は優先収録曲です。</p>
-    <div className="concert-controls"><input aria-label="収録楽譜を検索" placeholder="曲名・作曲家・楽器名" value={query} onChange={(event) => { setQuery(event.target.value); setLimit(10); }} /><select aria-label="楽譜の編成" value={category} onChange={(event) => { setCategory(event.target.value); setLimit(10); }}><option value="orchestra">管弦楽編成</option><option value="wind">管楽・金管合奏</option><option value="chamber">室内楽・伴奏付き</option><option value="solo">独奏</option><option value="">すべて</option></select><label><input aria-label="クラリネット席ありのみ" type="checkbox" checked={clarinetOnly} onChange={(event) => { setClarinetOnly(event.target.checked); setLimit(10); }} /> クラリネット席あり</label><span>{filtered.length}譜</span></div>
+    <div className="concert-controls"><input aria-label="収録楽譜を検索" placeholder="曲名・作曲家・楽器名" value={query} onChange={(event) => { setQuery(event.target.value); setLimit(10); }} /><select aria-label="楽譜の編成" value={category} onChange={(event) => { setCategory(event.target.value); setLimit(10); }}><option value="orchestra">管弦楽編成</option><option value="wind">管楽・金管合奏</option><option value="chamber">室内楽・伴奏付き</option><option value="solo">独奏</option><option value="">すべて</option></select><select aria-label="楽譜の利用条件" value={licenseFilter} onChange={(event) => { setLicenseFilter(event.target.value); setLimit(10); }}><option value="">利用条件すべて</option><option value="CC0-1.0">CC0</option><option value="PDM-1.0">PDM</option></select><label><input aria-label="クラリネット席ありのみ" type="checkbox" checked={clarinetOnly} onChange={(event) => { setClarinetOnly(event.target.checked); setLimit(10); }} /> クラリネット席あり</label><span>{filtered.length}譜</span></div>
     <details className="concert-roadmap"><summary>優先曲の収録状況</summary><ul>{priorityRoadmap.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul></details>
     <details className="concert-roadmap"><summary>公開利用可能な管楽・金管合奏 {verifiedWindScores.length}曲</summary><ul>{verifiedWindScores.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul></details>
     <details className="concert-roadmap"><summary>吹奏楽の追加候補 {windCandidates.length}曲</summary><ul>{windCandidates.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul><p className="concert-muted">候補は権利と版の確認が終わるまで配布カタログに追加しません。許諾済みのMusicXMLは持ち込みから演奏できます。</p></details>
