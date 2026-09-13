@@ -61,7 +61,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
       <a href={`/repertoire/ensemble/${score.id}.musicxml`} download>MusicXMLをダウンロード</a>
     </article>)}</div>
     {filtered.length > limit && <button onClick={() => setLimit(limit + 10)}>さらに10譜表示</button>}
-    <p className="concert-muted"><a href="/repertoire/ensemble/sources.json">各ファイルのライセンス表示・出典・照合記録</a>。CC0表示と内部の権利表示の矛盾がない版を選定しています。<a href="/repertoire/ensemble/pdmx-wind-candidates.json">追加候補の調査レポート（権利未確定）</a></p>
+    <p className="concert-muted"><a href="/repertoire/ensemble/sources.json">各ファイルのライセンス表示・出典・照合記録</a>。CC0表示と内部の権利表示の矛盾がない版を選定しています。<a href="/repertoire/ensemble/pdmx-wind-candidates.json" target="_blank" rel="noreferrer">追加候補の調査レポート（権利未確定）</a></p>
     <p className="concert-muted">優先収集：ベートーヴェン交響曲第5・6・7番。5番第1楽章と6番《田園》第1楽章は収録済み、全曲総譜の検証を進めています。<a href="https://imslp.org/wiki/Symphony_No.5%2C_Op.67_(Beethoven%2C_Ludwig_van)" target="_blank" rel="noreferrer">原曲の楽譜情報</a></p>
   </section>;
 }
