@@ -14,6 +14,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     ["ベートーヴェン交響曲第6番《田園》", "全曲MusicXMLを検証中"],
     ["ベートーヴェン交響曲第7番", "全曲MusicXMLを検証中"],
     ["モーツァルト クラリネット五重奏曲 K.581", "5パートを浄書・校正中"],
+    ["ブラームス クラリネットソナタ Op.120-2", "公開版から浄書中"],
   ];
   const windCandidates = [
     ["ラデツキー行進曲", "収録済み"],
