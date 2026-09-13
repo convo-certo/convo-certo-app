@@ -539,7 +539,7 @@ export function PerformanceView({ stage = false }: { stage?: boolean }) {
             } catch (error) { setError(String(error)); }
           }}>{item.label}</button>)}
         </div>
-        <p className="concert-muted">CC0のMusicXMLを使用。<a href="/repertoire/ensemble/sources.json" target="_blank" rel="noreferrer">楽譜ごとの出典・権利確認</a></p>
+        <p className="concert-muted">出典と権利表示を確認したMusicXMLを使用。<a href="/repertoire/ensemble/sources.json" target="_blank" rel="noreferrer">楽譜ごとの出典・権利確認</a></p>
       </section>
       <ScoreCatalog busy={!!busy} onLoad={loadXML} />
       <section className="repertoire-grid" aria-label="演奏する作品">
