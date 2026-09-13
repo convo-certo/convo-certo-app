@@ -31,6 +31,9 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     ["フチーク：ファンファーレ・クレンゲ", "公開初版の全パート確認待ち"],
     ["アルフォード：ホーリー・ルード", "公開版の編成確認待ち"],
     ["アルフォード：消えた軍隊", "公開版の編成確認待ち"],
+    ["ホルスト：第1組曲《シャコンヌ》", "PDMX公開版の編曲者・権利確認待ち"],
+    ["ヘンデル：水上の音楽", "PDMX公開版の編成確認待ち"],
+    ["クラーク：ウィリアム王の行進曲", "PDMX公開版の編成確認待ち"],
   ] as const;
   return <section className="concert-panel" aria-label="MusicXMLライブラリ">
     <h3>好きな楽器で、オーケストラの中へ</h3>

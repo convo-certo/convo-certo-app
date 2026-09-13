@@ -39,6 +39,9 @@
 | The Vanished Army | Kenneth J. Alford | [IMSLP](https://imslp.org/wiki/The_Vanished_Army_%28Alford%2C_Kenneth_J.%29) | PD表示。軍楽隊版のパートを基準にする |
 | The Washington Post | John Philip Sousa | [IMSLP](https://imslp.org/wiki/The_Washington_Post_%28Sousa%2C_John_Philip%29) | 原曲PD。編曲版はCPDL License v4など条件を明記 |
 | 交響曲第5番 第1楽章 | Pyotr Ilyich Tchaikovsky | [IMSLP](https://imslp.org/wiki/Symphony_No.5_%28Tchaikovsky%2C_Pyotr_Ilyich%29) | 原曲PD候補。吹奏楽化は自前編曲として別管理 |
+| 第1組曲《シャコンヌ》 | Gustav Holst | PDMX候補（CC0表示） | 31パート候補は`license_conflict=True`のため未収録。別版の同定待ち |
+| 水上の音楽 | George Frideric Handel | PDMX候補（PDM/CC0表示） | 編成済みMusicXMLの版と内部権利表示を確認してから採譜 |
+| ウィリアム王の行進曲 | Jeremiah Clarke | PDMX候補（公開表示） | 原曲PDと編曲版の権利を分けて確認 |
 
 PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**（34パート、451小節、CC0表示、`license_conflict=False`、有効ファイル）が候補として見つかっている。ただしScoreBaseで取得できた個別MXL（スコアID 223642）は1パートのピアノ版で、別の演奏用候補（155502）はユーフォニアム版だった。全曲吹奏楽版（492895）はPDFのみでMusicXMLを取得できないため、吹奏楽収録には追加していない。[PDMX Zenodo](https://zenodo.org/records/15571083)
 
