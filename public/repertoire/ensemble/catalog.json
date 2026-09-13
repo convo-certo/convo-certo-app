@@ -173,6 +173,26 @@
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   },
   {
+    "id": "fucik-florentiner-double-reed",
+    "title": "フチーク：フロレンティーナ行進曲 木管合奏版",
+    "composer": "Julius Fucik",
+    "parts": [
+      "Oboe",
+      "Oboe",
+      "English Horn",
+      "English Horn",
+      "Bassoon",
+      "Bassoon",
+      "Contrabassoon"
+    ],
+    "measures": 269,
+    "category": "wind",
+    "featured": true,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/117137",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
     "id": "library-163219",
     "title": "ドヴォルザーク：交響曲第9番《新世界より》第2楽章",
     "composer": "Antonin Dvorak",

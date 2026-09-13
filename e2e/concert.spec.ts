@@ -352,3 +352,13 @@ for (const [name, expectedParts] of [["交響曲第40番", 12], ["交響曲第4�
     expect(errors).toEqual([]);
   });
 }
+
+test("Florentiner wind arrangement parses, displays and starts", async ({ page }) => {
+  await page.goto("/perform");
+  const catalog = page.getByRole("region", { name: "MusicXMLライブラリ", exact: true });
+  await catalog.getByLabel("楽譜の編成").selectOption("wind");
+  await catalog.getByLabel("収録楽譜を検索").fill("フロレンティーナ");
+  await catalog.getByRole("button", { name: /この総譜で演奏/ }).click();
+  await expect(page.getByRole("button", { name: "▶ 演奏開始", exact: true })).toBeEnabled({ timeout: 25000 });
+  await expect(page.locator(".part-row")).toHaveCount(6);
+});

@@ -28,7 +28,7 @@ it("bundles a searchable, attributed catalogue with featured orchestral and wind
   const catalog = JSON.parse(readFileSync("public/repertoire/ensemble/catalog.json", "utf8")) as { id: string; title: string; parts: string[]; category: string; featured: boolean }[];
   const manifest = JSON.parse(readFileSync("public/repertoire/ensemble/sources.json", "utf8")) as { id: string; licenseConflict: boolean; scoreLicense: string; sha256: string }[];
   expect(catalog.length).toBeGreaterThanOrEqual(30);
-    expect(catalog.filter((item) => item.featured)).toHaveLength(8);
+    expect(catalog.filter((item) => item.featured)).toHaveLength(9);
   for (const item of catalog) {
     const xml = readFileSync(`public/repertoire/ensemble/${item.id}.musicxml`, "utf8");
     expect(xml).toContain("<score-partwise");
