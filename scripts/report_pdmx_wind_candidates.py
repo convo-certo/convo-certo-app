@@ -22,6 +22,7 @@ def main() -> None:
             if not any(term in text for term in TERMS) or int(row.get("n_tracks") or 0) < 5:
                 continue
             eligible = row["license"] in {"cc-zero", "publicdomain"} and row["license_conflict"] == "False" and row["has_paywall"] == "False" and row["subset:all_valid"] == "True"
+            review_status = "metadata-eligible-manual-review" if eligible else "reject-until-rights-resolved"
             candidates.append({
                 "songName": row.get("song_name", ""),
                 "title": row.get("title", ""),
@@ -33,6 +34,7 @@ def main() -> None:
                 "allValid": row["subset:all_valid"] == "True",
                 "metadataEligible": eligible,
                 "manualReviewRequired": True,
+                "reviewStatus": review_status,
                 "historicalComposerSignal": any(name in row.get("composer_name", "").lower() for name in HISTORICAL_COMPOSERS),
                 "mxlPath": row["mxl"],
             })
