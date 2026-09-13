@@ -277,7 +277,7 @@ export function PerformanceView({ stage = false }: { stage?: boolean }) {
       const issues = inspectMusicXMLPlayback(xml);
       const base = session ? assignPerformanceSeat(source, session.seatId) : source;
       const parsed = session ? transposeScore(base, session.shift) : base;
-      if (!parsed.title.trim()) parsed.title = file.name.replace(/\.(musicxml|xml)$/i, "");
+      if (!parsed.title.trim()) parsed.title = file.name.replace(/\.(musicxml|xml|mxl)$/i, "");
       await audioRef.current?.prepare(parsed.parts, setBusy);
       if (!mounted.current) return;
       const key = parsed.parts.find((part) => part.isSolo)?.transposeSemitones ?? 0;
