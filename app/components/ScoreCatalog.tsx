@@ -5,7 +5,7 @@ const licenseLabel = (license: string) => license === "CC0-1.0" ? "公開利用�
 export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: File) => Promise<void> }) {
   const [scores, setScores] = useState<CatalogScore[]>([]);
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("orchestra");
+  const [category, setCategory] = useState("");
   const [clarinetOnly, setClarinetOnly] = useState(false);
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
