@@ -138,14 +138,14 @@ test("MusicXML becomes the performance source and rehearsal directives round-tri
   expect(errors).toEqual([]);
 });
 
-test("verified wind catalogue exposes twelve playable scores", async ({ page }) => {
+test("verified wind catalogue exposes thirteen playable scores", async ({ page }) => {
   await page.goto("/perform");
   const catalog = page.getByRole("region", { name: "MusicXMLライブラリ" });
   await expect(catalog.getByText(/クラリネット席 \d+譜/)).toBeVisible();
   await catalog.getByLabel("楽譜の編成").selectOption("wind");
-  await expect(catalog.getByText("12譜", { exact: true })).toBeVisible();
+  await expect(catalog.getByText("13譜", { exact: true })).toBeVisible();
   await catalog.getByLabel("クラリネット席ありのみ").check();
-  await expect(catalog.getByText("12譜", { exact: true })).toHaveCount(0);
+  await expect(catalog.getByText("13譜", { exact: true })).toHaveCount(0);
   const newWorld = catalog.locator("article").filter({ hasText: "新世界より" });
   await expect(newWorld).toBeVisible();
   await expect(newWorld.getByLabel("クラリネット席の有無")).toHaveText("クラリネット席あり");

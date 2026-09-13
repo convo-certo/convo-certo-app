@@ -1039,5 +1039,31 @@
     "scoreLicense": "PDM-1.0",
     "scoreSource": "https://scorebase.org/scores/160646",
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
+    "id": "holst-jupiter-woodwind-chorale",
+    "title": "ホルスト：《木星》コラール 木管合奏版",
+    "composer": "Gustav Holst",
+    "parts": [
+      "Flute",
+      "Flute",
+      "Oboe",
+      "Oboe",
+      "B♭ Clarinet",
+      "B♭ Clarinet",
+      "Bass Clarinet",
+      "Bassoon",
+      "Alto Saxophone",
+      "Alto Saxophone",
+      "Tenor Saxophone",
+      "Baritone Saxophone",
+      "Oboe"
+    ],
+    "measures": 41,
+    "category": "wind",
+    "featured": true,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/102483",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   }
 ]

@@ -345,5 +345,14 @@
     "title": "コレッリ：サラバンド ニ短調 金管アンサンブル版",
     "category": "wind",
     "featured": false
+  },
+  {
+    "id": "holst-jupiter-woodwind-chorale",
+    "scorebaseId": 102483,
+    "stem": "QmU3np36uGQ8wabvMXCV5J48YJT8K7VGtzZptztVWyttrF",
+    "title": "ホルスト：《木星》コラール 木管合奏版",
+    "category": "wind",
+    "featured": true,
+    "composer": "Gustav Holst"
   }
 ]
