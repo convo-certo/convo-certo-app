@@ -32,6 +32,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     ["バッハ 管弦楽組曲第1番", "収録済み・権利確認済み"],
     ["モーツァルト トルコ行進曲", "収録済み・権利確認済み"],
     ["ホルスト《木星》金管アンサンブル版", "収録済み・権利確認済み"],
+    ["コレッリ：サラバンド ニ短調", "収録済み・権利確認済み"],
   ];
   return <section className="concert-panel" aria-label="MusicXMLライブラリ">
     <h3>好きな楽器で、オーケストラの中へ</h3>

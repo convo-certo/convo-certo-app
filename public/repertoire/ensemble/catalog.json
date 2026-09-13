@@ -1021,5 +1021,23 @@
     "scoreLicense": "CC0-1.0",
     "scoreSource": "https://scorebase.org/scores/87043",
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
+    "id": "corelli-sarabande-brass-ensemble",
+    "title": "コレッリ：サラバンド ニ短調 金管アンサンブル版",
+    "composer": "Arcangelo Corelli",
+    "parts": [
+      "B♭ Trumpet 1",
+      "B♭ Trumpet 2",
+      "Horn in F",
+      "Trombone",
+      "Tuba"
+    ],
+    "measures": 38,
+    "category": "wind",
+    "featured": false,
+    "scoreLicense": "PDM-1.0",
+    "scoreSource": "https://scorebase.org/scores/160646",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   }
 ]
