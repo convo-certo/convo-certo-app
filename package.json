@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/prepare-notices.mjs && react-router build && node scripts/exclude-local-editions.mjs",
+    "build": "node scripts/prepare-notices.mjs && node scripts/verify-ensemble-rights.mjs && react-router build && node scripts/exclude-local-editions.mjs",
     "dev": "react-router dev",
     "start": "npx serve build/client",
     "typecheck": "react-router typegen && tsc",
@@ -14,6 +14,7 @@
     "e2e:headed": "playwright test --headed",
     "repertoire:prepare": "uv run --with mido scripts/prepare_repertoire.py",
     "ensemble:prepare": "uv run scripts/prepare_ensemble_scores.py",
+    "ensemble:verify": "node scripts/verify-ensemble-rights.mjs",
     "musicxml:from-midi": "uv run --with music21 scripts/convert_midi_to_musicxml.py",
     "instruments:prepare": "uv run scripts/prepare_instruments.py",
     "native:build": "node scripts/build-native.mjs",
