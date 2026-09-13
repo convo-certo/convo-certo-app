@@ -320,6 +320,9 @@ test("ClariMate MIDI connects, reports written pitch and advances wait practice"
 test("wind catalogue loads a full score and offers MusicXML download", async ({ page }) => {
   await page.goto("/perform");
   const catalog = page.getByRole("region", { name: "MusicXMLライブラリ", exact: true });
+  await expect(catalog.getByText("優先曲の収録状況")).toBeVisible();
+  await catalog.getByText("優先曲の収録状況").click();
+  await expect(catalog.getByText("ベートーヴェン交響曲第5番 第1楽章")).toBeVisible();
   await catalog.getByLabel("楽譜の編成").selectOption("wind");
   await catalog.getByLabel("収録楽譜を検索").fill("新世界");
   await expect(catalog.locator(".catalog-score")).toHaveCount(1);
