@@ -13,6 +13,8 @@ test("custom timewise score, spatial assignment and score page preserve playback
   await page.getByRole("button", {name:"席 chair-1: Cello",exact:true}).click();
   await page.getByLabel("席の楽器", {exact:true}).selectOption("clarinet");
   await expect(page.getByLabel("席の楽器", {exact:true})).toHaveValue("clarinet");
+  await page.getByLabel("席の楽器", {exact:true}).selectOption("alto_sax");
+  await expect(page.getByLabel("席の楽器", {exact:true})).toHaveValue("alto_sax");
   await page.getByLabel("席の楽器", {exact:true}).selectOption("cello");
   const draggedSeat = page.getByRole("button", {name:"席 chair-1: Cello",exact:true});
   const seatBox = await draggedSeat.locator("circle").boundingBox();
