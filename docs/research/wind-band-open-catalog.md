@@ -114,3 +114,5 @@ ScoreBaseではK.581相当の検索結果（スコアID 238394、クラリネッ
 3. 自前MusicXMLの変更履歴と校正結果を保存し、ファイル自体はCC0で公開できる状態にする。CC0は権利者が自分の権利を放棄し、商用利用や改変を許可する仕組み。[Creative Commons CC0](https://creativecommons.org/publicdomain/zero/1.0/)
 4. Clarimateでクラリネット担当を吹き、休符、入り、テンポ変化、伴奏の音量、楽器配置を実演確認する。
 5. 権利が曖昧な作品はアプリに同梱せず、ユーザーが自分のMusicXMLを読み込む機能だけで扱う。
+
+配布前の`npm run ensemble:verify`では、catalogとsourcesのタイトル・出典URL・ライセンス・IDの一致、HTTPS出典、版ステータス、MusicXMLの存在・権利要素・SHA-256、管楽・金管合奏10曲以上を機械的に確認する。これは人手による編曲版の再配布判断を置き換えず、レビュー対象の漏れを防ぐためのゲートである。
