@@ -5,8 +5,8 @@ import { defaultChairs, type OrchestraChair } from "~/lib/orchestra-space";
 import { instrumentForPart, type OrchestraAudio } from "~/lib/orchestra-audio";
 import type { ScorePart } from "~/lib/types";
 
-const commonInstruments = ["clarinet", "flute", "oboe", "bassoon", "french_horn", "trumpet", "trombone", "tuba", "violin", "viola", "cello", "contrabass", "string_ensemble_1", "timpani", "acoustic_grand_piano"];
-const instrumentLabels: Record<string, string> = { clarinet: "クラリネット", flute: "フルート", oboe: "オーボエ", bassoon: "ファゴット", french_horn: "ホルン", trumpet: "トランペット", trombone: "トロンボーン", tuba: "チューバ", violin: "ヴァイオリン", viola: "ヴィオラ", cello: "チェロ", contrabass: "コントラバス", string_ensemble_1: "弦楽合奏", timpani: "ティンパニ", acoustic_grand_piano: "ピアノ" };
+const commonInstruments = ["clarinet", "flute", "piccolo", "oboe", "english_horn", "bassoon", "french_horn", "trumpet", "trombone", "tuba", "soprano_sax", "alto_sax", "tenor_sax", "baritone_sax", "violin", "viola", "cello", "contrabass", "string_ensemble_1", "orchestral_harp", "timpani", "marimba", "glockenspiel", "harpsichord", "acoustic_guitar_nylon", "acoustic_grand_piano"];
+const instrumentLabels: Record<string, string> = { clarinet: "クラリネット", flute: "フルート", piccolo: "ピッコロ", oboe: "オーボエ", english_horn: "イングリッシュホルン", bassoon: "ファゴット", french_horn: "ホルン", trumpet: "トランペット", trombone: "トロンボーン", tuba: "チューバ", soprano_sax: "ソプラノサックス", alto_sax: "アルトサックス", tenor_sax: "テナーサックス", baritone_sax: "バリトンサックス", violin: "ヴァイオリン", viola: "ヴィオラ", cello: "チェロ", contrabass: "コントラバス", string_ensemble_1: "弦楽合奏", orchestral_harp: "ハープ", timpani: "ティンパニ", marimba: "マリンバ", glockenspiel: "グロッケンシュピール", harpsichord: "チェンバロ", acoustic_guitar_nylon: "クラシックギター", acoustic_grand_piano: "ピアノ" };
 
 export function OrchestraStage({ parts, audio, beat, active, initialSpace, onSpaceChange, mutedParts = [] }: { parts: ScorePart[]; audio: OrchestraAudio; beat: number; active: boolean; mutedParts?: number[]; initialSpace?: OrchestraSpace; onSpaceChange?: (space: OrchestraSpace) => void }) {
   const [chairs, setChairs] = useState(() => initialSpace?.chairs ?? defaultChairs(parts));
