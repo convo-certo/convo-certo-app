@@ -138,6 +138,18 @@ test("MusicXML becomes the performance source and rehearsal directives round-tri
   expect(errors).toEqual([]);
 });
 
+test("verified wind catalogue exposes ten playable scores", async ({ page }) => {
+  await page.goto("/perform");
+  const catalog = page.getByRole("region", { name: "MusicXMLライブラリ" });
+  await catalog.getByLabel("楽譜の編成").selectOption("wind");
+  await expect(catalog.getByText("10譜", { exact: true })).toBeVisible();
+  const march = catalog.locator("article").filter({ hasText: "トルコ行進曲" });
+  await expect(march).toBeVisible();
+  await march.getByRole("button", { name: /この総譜で演奏/ }).click();
+  await expect(page.getByRole("button", { name: "▶ 演奏開始", exact: true })).toBeEnabled({ timeout: 20000 });
+  await expect(page.getByLabel("奏者パート").locator("option").filter({ hasText: /Clarinette|Clarinet/ })).toHaveCount(1);
+});
+
 test("phrase instructions shape playback and survive MusicXML export", async ({ page }) => {
   await page.goto("/perform");
   await page.getByLabel("MusicXMLで演奏する", { exact: true }).setInputFiles("public/scores/sample-duet.musicxml");
