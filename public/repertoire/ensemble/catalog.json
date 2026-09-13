@@ -1157,5 +1157,31 @@
     "scoreLicense": "CC0-1.0",
     "scoreSource": "https://scorebase.org/scores/85195",
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
+    "id": "handel-water-music-wind-ensemble",
+    "title": "ヘンデル：《水上の音楽》管楽器入り合奏版",
+    "composer": "George Frideric Handel",
+    "parts": [
+      "Flûte",
+      "Flûte",
+      "Guitare acoustique",
+      "Violon",
+      "Clarinette en Si♭",
+      "Saxophone Alto",
+      "Trompette en Si♭",
+      "Trombone",
+      "Euphonium",
+      "Tuba en Si♭",
+      "Piano",
+      "Glockenspiel ",
+      "Simplifié Sib"
+    ],
+    "measures": 42,
+    "category": "wind",
+    "featured": false,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/152783",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   }
 ]
