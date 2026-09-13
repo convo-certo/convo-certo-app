@@ -46,6 +46,13 @@ export function inspectMusicXMLPlayback(xml: string): PlaybackIssue[] {
     return count ? [{ id: rule.id, title: rule.title, description: rule.description, count, locations: [...locations.values()].slice(0, 4), locationCount: locations.size }] : [];
   });
   const overlong = parts.flatMap(part => overlongMeasures(part).map(measure => ({ part: names.get(part.getAttribute('id')) ?? 'パート', measure: measure.getAttribute('number') ?? '?' })));
+  const transposing = parts.flatMap(part => {
+    const name = names.get(part.getAttribute('id')) ?? 'パート';
+    if (!/(clarinet|horn|trumpet|saxophone|bassoon)/i.test(name) || part.querySelector('attributes transpose')) return [];
+    const measure = part.querySelector('measure');
+    return [{ part: name, measure: measure?.getAttribute('number') ?? '1' }];
+  });
+  if (transposing.length) issues.push({ id: 'missing-transpose', title: '移調情報のない移調楽器', description: 'クラリネット、ホルン、トランペット、サクソフォン、ファゴットなどのパート名に対してMusicXMLのtranspose要素がありません。実音と記譜音を確認してから演奏してください。', count: transposing.length, locations: transposing, locationCount: transposing.length });
   if (overlong.length) issues.push({ id: 'measure-overrun', title: '拍子より長い小節', description: '音符・休符の長さが記録された拍子を超えています。認識・書き出しの誤り、または特殊な記譜の可能性があります。伴奏と譜面がずれることがあるため、元の楽譜で該当小節を確認してください。音符を自動で短くする修正は行いません。', count: overlong.length, locations: overlong.slice(0, 4), locationCount: overlong.length });
   return issues;
 }
