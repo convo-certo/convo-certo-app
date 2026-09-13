@@ -24,6 +24,6 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     </article>)}</div>
     {filtered.length > limit && <button onClick={() => setLimit(limit + 10)}>さらに10譜表示</button>}
     <p className="concert-muted"><a href="/repertoire/ensemble/sources.json">各ファイルのライセンス表示・出典・照合記録</a>。CC0表示と内部の権利表示の矛盾がない版を選定しています。</p>
-    <p className="concert-muted">優先収集：ベートーヴェンのピアノ協奏曲第1番 第2楽章。再配布可能なMusicXML総譜はまだ確保できていません。<a href="https://imslp.org/wiki/Piano_Concerto_No.1,_Op.15_(Beethoven,_Ludwig_van)" target="_blank" rel="noreferrer">原曲の楽譜情報</a></p>
+    <p className="concert-muted">優先収集：ベートーヴェン交響曲第5・6・7番。5番第1楽章は収録済み、6・7番は全曲総譜の検証と収録を進めています。<a href="https://imslp.org/wiki/Symphony_No.5%2C_Op.67_(Beethoven%2C_Ludwig_van)" target="_blank" rel="noreferrer">原曲の楽譜情報</a></p>
   </section>;
 }

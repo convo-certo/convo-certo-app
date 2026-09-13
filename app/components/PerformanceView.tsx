@@ -529,7 +529,7 @@ export function PerformanceView({ stage = false }: { stage?: boolean }) {
       <section className="concert-panel" aria-label="MusicXML総譜で共奏">
         <h3>オーケストラの席へ</h3>
         <p>総譜からあなたの担当パートを空けます。声部が分かれた譜面では、同じ楽器の相手を残して共奏できます。</p>
-        <p className="concert-muted">希望のベートーヴェンはピアノ協奏曲第1番 第2楽章。MusicXML総譜は確認中です。</p>
+        <p className="concert-muted">優先収集：ベートーヴェン交響曲第5・6・7番。5番第1楽章はすぐ演奏でき、6・7番は全曲総譜を確認中です。</p>
         <div className="concert-controls">
           {[{ id: "mozart-k622-1", label: "モーツァルト：クラリネット協奏曲 第1楽章 · MusicXML総譜", second: false }, { id: "mozart-k622-3", label: "モーツァルト：クラリネット協奏曲 第3楽章 · MusicXML総譜", second: false }, { id: "mozart-k622-2", label: "モーツァルト：クラリネット協奏曲 第2楽章 · MusicXML総譜", second: false }].map((item) => <button key={item.id} disabled={!!busy} onClick={async () => {
             try {
