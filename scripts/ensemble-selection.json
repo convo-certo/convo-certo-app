@@ -372,5 +372,14 @@
     "category": "wind",
     "featured": false,
     "composer": "Gustav Holst（編曲：Ian Burchfield）"
+  },
+  {
+    "id": "sousa-stars-and-stripes-forever",
+    "scorebaseId": 85195,
+    "stem": "QmSYFNwdr4BLSh5e1VzpTwRh3u162GV6QNrKVgF6UuYkbh",
+    "title": "スーザ：《星条旗よ永遠なれ》吹奏楽版",
+    "composer": "John Philip Sousa",
+    "category": "wind",
+    "featured": true
   }
 ]

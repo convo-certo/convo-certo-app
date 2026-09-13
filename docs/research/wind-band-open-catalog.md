@@ -4,11 +4,11 @@
 
 候補の再検索は `npm run ensemble:candidates` で実行する。PDMXのメタデータから管楽・金管・行進曲系を抽出し、`docs/research/pdmx-wind-candidates.json` とアプリから参照できる `public/repertoire/ensemble/pdmx-wind-candidates.json` を更新する。このレポートは収録許可リストではなく、各行を原譜・編曲者・MusicXML内部の権利表示まで確認してから `scripts/ensemble-selection.json` に追加する。
 
-## 収録済み14エントリー
+## 収録済み15エントリー
 
-候補のうち、現在は次の14エントリーをMusicXMLとして収録済み。いずれもPDMXの`cc-zero`または`publicdomain`、`license_conflict=False`、`has_paywall=False`、`subset:all_valid=True`を満たし、内部の権利要素がないことを生成スクリプトで検査している。
+候補のうち、現在は次の15エントリーをMusicXMLとして収録済み。いずれもPDMXの`cc-zero`または`publicdomain`、`license_conflict=False`、`has_paywall=False`、`subset:all_valid=True`を満たし、内部の権利要素がないことを生成スクリプトで検査している。
 
-この14曲のうち、パート名からクラリネット席を検出できるのは4曲（ドヴォルザーク、シュトラウス、モーツァルト、ホルスト）である。残りは金管・木管別編成や管楽器を含む合奏として、席の追加・楽器変更機能で試せる。
+この15曲のうち、パート名からクラリネット席を検出できるのは5曲（ドヴォルザーク、シュトラウス、モーツァルト、ホルスト、スーザ）である。残りは金管・木管別編成や管楽器を含む合奏として、席の追加・楽器変更機能で試せる。
 
 | 収録ID | 作品・編成 | パート数 |
 | --- | --- | ---: |
@@ -26,6 +26,7 @@
 | `corelli-sarabande-brass-ensemble` | コレッリ《サラバンド》金管アンサンブル版 | 5 |
 | `holst-jupiter-woodwind-chorale` | ホルスト《木星》コラール木管合奏版 | 13 |
 | `holst-jupiter-low-brass-quintet` | ホルスト《木星》低音金管五重奏版 | 5 |
+| `sousa-stars-and-stripes-forever` | スーザ《星条旗よ永遠なれ》吹奏楽版 | 31 |
 
 ## 追加候補（今後の調査）
 
