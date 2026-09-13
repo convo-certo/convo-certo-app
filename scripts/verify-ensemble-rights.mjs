@@ -6,6 +6,9 @@ const root = new URL("..", import.meta.url).pathname;
 const directory = join(root, "public/repertoire/ensemble");
 const catalog = JSON.parse(readFileSync(join(directory, "catalog.json"), "utf8"));
 const sources = JSON.parse(readFileSync(join(directory, "sources.json"), "utf8"));
+const candidateReport = JSON.parse(readFileSync(join(directory, "pdmx-wind-candidates.json"), "utf8"));
+if (!candidateReport.rightsNote || !Array.isArray(candidateReport.candidates) || candidateReport.candidates.length > 100) throw new Error("吹奏楽候補レポートの権利注記または件数が不正です。");
+if (candidateReport.candidates.some((candidate) => candidate.manualReviewRequired !== true)) throw new Error("吹奏楽候補レポートに手動確認フラグのない候補があります。");
 if (catalog.length !== sources.length) throw new Error("catalog.jsonとsources.jsonの件数が一致しません。");
 const sourceById = new Map(sources.map((source) => [source.id, source]));
 for (const item of catalog) {
