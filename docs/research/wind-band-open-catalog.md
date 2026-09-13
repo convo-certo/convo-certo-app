@@ -21,6 +21,18 @@ PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**
 
 ## リード作品と課題曲
 
+## クラリネット優先ロードマップ
+
+吹奏楽候補とは別に、ユーザー体験の優先順位を次の順に固定する。
+
+1. モーツァルト：クラリネット協奏曲 K.622（第1〜3楽章）
+2. モーツァルト：クラリネット五重奏曲 K.581（第1〜4楽章）
+3. ブラームス：クラリネットソナタ Op.120-2（第1〜3楽章）
+4. ベートーヴェン：交響曲第5番、第6番《田園》第7番
+5. チャイコフスキー：交響曲第5番 第1楽章
+
+モーツァルト協奏曲は既に3楽章のMusicXML総譜を収録済み。K.581は公開スコアを確認済みだが、収録用の検証済みMusicXMLは未確保。ブラームスの原典初版はIMSLPでPublic Domain表示を確認できる。[Mozart K.581](https://imslp.org/wiki/Clarinet_Quintet%2C_K.581_%28Mozart%2C_Wolfgang_Amadeus%29) [Brahms Op.120-2](https://imslp.org/wiki/Clarinet_Sonata_No.2%2C_Op.120_No.2_%28Brahms%2C_Johannes%29)
+
 アルフレッド・リードの作品は、本人が2005年に亡くなっており、現在の死後70年基準では自由収録の対象にしない。[Keiser Productionsの略歴](https://keiserproductions.com/composer3/?tid=6902739C-817A-4490-A515-E6638762F888)にある *Armenian Dances*、*El Camino Real*、*A Festival Prelude*、*The Hounds of Spring* などは、出版社からMusicXML化・表示・伴奏生成・商用配布の許諾を得る候補として別のライセンス待ちリストに置く。
 
 吹奏楽コンクールの課題曲も、作曲者や編曲者が存命であることが多く、演奏できることと譜面データを再配布できることは別。まずは権利者から、アプリ内表示、MusicXMLの同梱、派生編集、生成伴奏、TestFlight配布の範囲を含む許諾を取る。

@@ -46,8 +46,8 @@ def main() -> None:
     manifest = []
     for name, scorebase_id, stem, title in SCORES:
         row = rows.get(stem)
-        if not row or row["license"] != "cc-zero" or row["license_conflict"] != "False" or row["has_paywall"] != "False" or row["subset:all_valid"] != "True":
-            raise ValueError(f"Verified, nonconflicting CC0 metadata is required: {stem}")
+        if not row or row["license"] not in {"cc-zero", "publicdomain"} or row["license_conflict"] != "False" or row["has_paywall"] != "False" or row["subset:all_valid"] != "True":
+            raise ValueError(f"Verified, nonconflicting public-domain metadata is required: {stem}")
         url = f"https://scorebase.org/scores/{scorebase_id}/file/mxl?download=true"
         archive = CACHE / "ensemble" / f"{scorebase_id}.mxl"
         fetch(url, archive)
@@ -60,7 +60,7 @@ def main() -> None:
         record = {
             "id": name, "title": title, "scoreSource": f"https://scorebase.org/scores/{scorebase_id}",
             "originalSource": root.findtext("identification/source"), "dataset": DATASET,
-            "datasetLicense": "CC-BY-4.0", "scoreLicense": "CC0-1.0",
+            "datasetLicense": "CC-BY-4.0", "scoreLicense": "CC0-1.0" if row["license"] == "cc-zero" else "PDM-1.0",
             "licenseConflict": False, "metadataPath": row["metadata"], "datasetPath": row["mxl"],
             "sha256": hashlib.sha256(xml).hexdigest(), "verifiedAt": date.today().isoformat(),
             "metadata": row,
@@ -68,13 +68,13 @@ def main() -> None:
         selection = next((item for item in SELECTION if item["id"] == name), {})
         record.update({"composer": row["composer_name"], "parts": [part.findtext("part-name", "") for part in root.findall("part-list/score-part")], "measures": len(root.findall("part")[0].findall("measure")), "category": selection.get("category", "orchestra"), "featured": selection.get("featured", False), "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"})
         manifest.append(record)
-        print(f"{name}: {len(root.findall('part'))} parts, CC0 metadata checked")
+        print(f"{name}: {len(root.findall('part'))} parts, public-domain metadata checked")
     (OUT / "sources.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
     fields = ["id", "title", "composer", "parts", "measures", "category", "featured", "scoreLicense", "scoreSource", "editionStatus"]
     (OUT / "catalog.json").write_text(json.dumps([{key: record[key] for key in fields} for record in manifest], ensure_ascii=False, indent=2) + "\n")
     (OUT / "README.md").write_text(
         "# Ensemble MusicXML sources\n\n"
-        "These scores are CC0 according to the per-score PDMX metadata. "
+        "These scores are marked CC0 or Public Domain according to the per-score PDMX metadata. "
         "Entries were checked for license_conflict=False, no paywall, valid files, and no internal rights statement. "
         "The MusicXML is distributed unchanged. sources.json records exact files, hashes and metadata.\n\n"
         "PDMX dataset: Phillip Long, Zachary Novack, Julian McAuley and Taylor Berg-Kirkpatrick, "

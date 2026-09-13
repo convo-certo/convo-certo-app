@@ -317,14 +317,15 @@ test("ClariMate MIDI connects, reports written pitch and advances wait practice"
   await expect(page.getByRole("heading", { name: "あなたの楽器 · Piano", exact: true })).toBeVisible();
 });
 
-test("orchestral catalogue loads a full score and offers MusicXML download", async ({ page }) => {
+test("wind catalogue loads a full score and offers MusicXML download", async ({ page }) => {
   await page.goto("/perform");
   const catalog = page.getByRole("region", { name: "MusicXMLライブラリ", exact: true });
+  await catalog.getByLabel("楽譜の編成").selectOption("wind");
   await catalog.getByLabel("収録楽譜を検索").fill("新世界");
   await expect(catalog.locator(".catalog-score")).toHaveCount(1);
   const download = page.waitForEvent("download");
   await catalog.getByRole("link", { name: "MusicXMLをダウンロード" }).click();
-  expect((await download).suggestedFilename()).toBe("library-163219.musicxml");
+  expect((await download).suggestedFilename()).toBe("dvorak-new-world-4-woodwind.musicxml");
   await catalog.getByRole("button", { name: /この総譜で演奏/ }).click();
   await expect(page.getByRole("button", { name: "▶ 演奏開始", exact: true })).toBeEnabled({ timeout: 20000 });
   await expect(page.getByLabel("奏者パート").locator("option")).toContainText(["Flute"]);

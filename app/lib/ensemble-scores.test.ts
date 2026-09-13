@@ -25,17 +25,18 @@ it("loads the complete Mozart Adagio score instead of a MIDI conversion", () => 
 });
 
 it("bundles a searchable, attributed catalogue and five orchestral editions with strings", () => {
-  const catalog = JSON.parse(readFileSync("public/repertoire/ensemble/catalog.json", "utf8")) as { id: string; title: string; parts: string[]; featured: boolean }[];
+  const catalog = JSON.parse(readFileSync("public/repertoire/ensemble/catalog.json", "utf8")) as { id: string; title: string; parts: string[]; category: string; featured: boolean }[];
   const manifest = JSON.parse(readFileSync("public/repertoire/ensemble/sources.json", "utf8")) as { id: string; licenseConflict: boolean; scoreLicense: string; sha256: string }[];
   expect(catalog.length).toBeGreaterThanOrEqual(30);
-  expect(catalog.filter((item) => item.featured)).toHaveLength(5);
+    expect(catalog.filter((item) => item.featured)).toHaveLength(7);
   for (const item of catalog) {
     const xml = readFileSync(`public/repertoire/ensemble/${item.id}.musicxml`, "utf8");
     expect(xml).toContain("<score-partwise");
     expect((xml.match(/<score-part id=/g) ?? []).length, item.title).toBe(item.parts.length);
     expect(createHash("sha256").update(xml).digest("hex")).toBe(manifest.find((source) => source.id === item.id)?.sha256);
-    expect(manifest.find((source) => source.id === item.id)).toMatchObject({ scoreLicense: "CC0-1.0", licenseConflict: false });
-    if (item.featured) {
+    expect(manifest.find((source) => source.id === item.id)).toMatchObject({ licenseConflict: false });
+    expect(["CC0-1.0", "PDM-1.0"]).toContain(manifest.find((source) => source.id === item.id)?.scoreLicense);
+    if (item.featured && item.category === "orchestra") {
       expect(item.parts.some((part) => /violin|violino/i.test(part)), item.title).toBe(true);
       expect(item.parts.some((part) => /clarinet/i.test(part)), item.title).toBe(true);
     }
