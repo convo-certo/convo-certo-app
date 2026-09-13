@@ -1,0 +1,22 @@
+name: Verify ConvoCerto
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: astral-sh/setup-uv@v5
+      - run: npm ci
+      - run: npm run ensemble:verify
+      - run: npm run typecheck
+      - run: npm test -- --run
+      - run: npm run build
