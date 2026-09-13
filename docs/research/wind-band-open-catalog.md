@@ -4,6 +4,21 @@
 
 ## 収録候補10曲
 
+候補のうち、現在は次の10エントリーをMusicXMLとして収録済み。いずれもPDMXの`cc-zero`または`publicdomain`、`license_conflict=False`、`has_paywall=False`、`subset:all_valid=True`を満たし、内部の権利要素がないことを生成スクリプトで検査している。
+
+| 収録ID | 作品・編成 | パート数 |
+| --- | --- | ---: |
+| `dvorak-new-world-4-woodwind` | ドヴォルザーク《新世界より》第4楽章 木管アンサンブル | 16 |
+| `strauss-radetzky-wind-ensemble` | シュトラウス1世 ラデツキー行進曲 | 8 |
+| `fucik-florentiner-double-reed` | フチーク フロレンティーナ行進曲 | 7 |
+| `byrd-earl-of-oxford-march-brass` | ウィリアム・バード オックスフォード伯の行進曲 | 5 |
+| `chesnokov-salvation-is-created-brass` | チェスノコフ Salvation Is Created | 11 |
+| `handel-la-march-d-major` | ヘンデル La March ニ長調 | 11 |
+| `bizet-arlesienne-brass` | ビゼー《アルルの女》金管版 | 5 |
+| `bizet-arlesienne-brass-expanded` | ビゼー《アルルの女》拡張金管版 | 6 |
+| `bach-orchestral-suite-1` | J.S.バッハ 管弦楽組曲第1番 BWV 1066 | 6 |
+| `mozart-turkish-march-orchestra` | モーツァルト トルコ行進曲（クラリネット入り） | 15 |
+
 | 作品 | 作曲者 | 吹奏楽譜の確認先 | 現時点の扱い |
 | --- | --- | --- | --- |
 | フロレンティーナ行進曲 Op.214 | Julius Fučík | [IMSLP](https://imslp.org/wiki/Florentiner_Marsch%2C_Op.214_%28Fu%C4%8D%C3%ADk%2C_Julius%29) | PD候補。1908年の吹奏楽版を優先して採譜 |
