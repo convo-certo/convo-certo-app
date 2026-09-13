@@ -37,7 +37,7 @@ PDMXの検索台帳では、**Holst: Second Suite for Military Band Op.28 No.2**
 
 モーツァルト協奏曲は既に3楽章のMusicXML総譜を収録済み。K.581は公開スコアを確認済みだが、収録用の検証済みMusicXMLは未確保。ブラームスの原典初版はIMSLPでPublic Domain表示を確認できる。[Mozart K.581](https://imslp.org/wiki/Clarinet_Quintet%2C_K.581_%28Mozart%2C_Wolfgang_Amadeus%29) [Brahms Op.120-2](https://imslp.org/wiki/Clarinet_Sonata_No.2%2C_Op.120_No.2_%28Brahms%2C_Johannes%29)
 
-ベートーヴェンの5・6・7番は、クラリネット担当を中心にした優先キューとして扱う。5番第1楽章は、12パート・514小節の検証済みMusicXMLを収録済み。6番は公開ページ上でオーケストラ版とCC0表示を確認できる候補があるが、現時点でMusicXMLの配布エンドポイントが404になるため同梱しない。7番は第2楽章の10パート版がPDMXの`no_license_conflict`・`all_valid`を満たす一方、全曲総譜ではないため、まずは全楽章版の確保を優先する。
+ベートーヴェンの5・6・7番は、クラリネット担当を中心にした優先キューとして扱う。5番第1楽章は、12パート・514小節の検証済みMusicXMLを収録済み。6番はScoreBaseのオーケストラ版（スコアID 60123、CC0表示、10パート・第1楽章）を取得して収録済み。7番は第2楽章の10パート版がPDMXの`no_license_conflict`・`all_valid`を満たす一方、全曲総譜ではないため、まずは全楽章版の確保を優先する。
 
 K.581はIMSLPに初版スコアとパート譜が揃っている。公開PDFをそのままMusicXMLとして再配布せず、自前浄書後に小節数・5パート（クラリネット＋弦4部）・調号・アーティキュレーションを校正してから収録する。
 
