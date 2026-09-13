@@ -15,12 +15,25 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     ["ベートーヴェン交響曲第7番", "全曲MusicXMLを検証中"],
     ["モーツァルト クラリネット五重奏曲 K.581", "5パートを浄書・校正中"],
   ];
+  const windCandidates = [
+    ["ラデツキー行進曲", "収録済み"],
+    ["フロレンティーナ行進曲", "収録済み"],
+    ["ドヴォルザーク《新世界より》第4楽章", "収録済み"],
+    ["ホルスト 第二組曲", "個別MusicXMLを検証中"],
+    ["フチーク 軍隊の子供たち", "公開版を確認中"],
+    ["フチーク ファンファーレ・クレンゲ", "公開版を確認中"],
+    ["スーザ The Free-Lance March", "公開版を確認中"],
+    ["スーザ Ancient and Honorable Artillery Company", "公開版を確認中"],
+    ["アルフォード Holyrood", "公開版を確認中"],
+    ["アルフォード The Vanished Army", "公開版を確認中"],
+  ];
   return <section className="concert-panel" aria-label="MusicXMLライブラリ">
     <h3>好きな楽器で、オーケストラの中へ</h3>
     <p><a href="/repertoire/ensemble/ConvoCerto-MusicXML.zip" download>MusicXML一式をZIPでダウンロード</a></p>
     <p>MusicXML {scores.length}譜。総譜のパートを選んで共奏できます。★は優先収録曲です。</p>
     <div className="concert-controls"><input aria-label="収録楽譜を検索" placeholder="曲名・作曲家・楽器名" value={query} onChange={(event) => { setQuery(event.target.value); setLimit(10); }} /><select aria-label="楽譜の編成" value={category} onChange={(event) => { setCategory(event.target.value); setLimit(10); }}><option value="orchestra">管弦楽編成</option><option value="wind">吹奏楽・木管合奏</option><option value="chamber">室内楽・伴奏付き</option><option value="solo">独奏</option><option value="">すべて</option></select><span>{filtered.length}譜</span></div>
     <details className="concert-roadmap"><summary>優先曲の収録状況</summary><ul>{priorityRoadmap.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul></details>
+    <details className="concert-roadmap"><summary>吹奏楽候補 10曲</summary><ul>{windCandidates.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul></details>
     {error && <p role="alert">{error}</p>}
     <div className="catalog-grid">{filtered.slice(0, limit).map((score) => <article className="catalog-score" key={score.id}>
       <h4>{score.featured ? "★ " : ""}{score.title}</h4>
