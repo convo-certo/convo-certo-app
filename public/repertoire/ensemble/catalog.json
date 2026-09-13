@@ -291,6 +291,24 @@
     "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
   },
   {
+    "id": "byrd-earl-of-oxford-march-brass",
+    "title": "ウィリアム・バード：オックスフォード伯の行進曲 金管合奏版",
+    "composer": "William Byrd (1540-1623)",
+    "parts": [
+      "B♭ Trumpet 1",
+      "B♭ Trumpet 2",
+      "Horn in F",
+      "Trombone",
+      "Tuba"
+    ],
+    "measures": 24,
+    "category": "wind",
+    "featured": false,
+    "scoreLicense": "CC0-1.0",
+    "scoreSource": "https://scorebase.org/scores/147673",
+    "editionStatus": "パート構成を確認。原譜との全音符の校合は未実施。"
+  },
+  {
     "id": "mozart-k581-clarinet-quintet",
     "title": "モーツァルト：クラリネット五重奏曲 K.581 全4楽章",
     "composer": "Wolfgang Amadeus Mozart",
