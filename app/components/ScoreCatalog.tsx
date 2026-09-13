@@ -35,6 +35,13 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     ["ヘンデル：水上の音楽", "PDMX公開版の編成確認待ち"],
     ["クラーク：ウィリアム王の行進曲", "PDMX公開版の編成確認待ち"],
   ] as const;
+  const permissionQueue = [
+    ["Alfred Reed：アルメニアン・ダンス Part I", "出版社・権利者のMusicXML利用許諾待ち"],
+    ["Alfred Reed：エル・カミーノ・レアル", "出版社・権利者のMusicXML利用許諾待ち"],
+    ["Alfred Reed：春の猟犬", "出版社・権利者のMusicXML利用許諾待ち"],
+    ["Alfred Reed：A Festival Prelude", "出版社・権利者のMusicXML利用許諾待ち"],
+    ["吹奏楽コンクール課題曲（各年度）", "作曲者・編曲者・指定版ごとの許諾確認待ち"],
+  ] as const;
   return <section className="concert-panel" aria-label="MusicXMLライブラリ">
     <h3>好きな楽器で、オーケストラの中へ</h3>
     <p><a href="/repertoire/ensemble/ConvoCerto-MusicXML.zip" download>MusicXML一式をZIPでダウンロード</a></p>
@@ -43,6 +50,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     <details className="concert-roadmap"><summary>優先曲の収録状況</summary><ul>{priorityRoadmap.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul></details>
     <details className="concert-roadmap"><summary>公開利用可能な管楽・金管合奏 {verifiedWindScores.length}曲</summary><ul>{verifiedWindScores.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul></details>
     <details className="concert-roadmap"><summary>吹奏楽の追加候補 {windCandidates.length}曲</summary><ul>{windCandidates.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul><p className="concert-muted">候補は権利と版の確認が終わるまで配布カタログに追加しません。許諾済みのMusicXMLは持ち込みから演奏できます。</p></details>
+    <details className="concert-roadmap"><summary>許諾待ちの人気吹奏楽作品 {permissionQueue.length}件</summary><ul>{permissionQueue.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul><p className="concert-muted">許諾範囲はアプリ内表示、伴奏生成、移調・編集、商用配布を分けて確認します。</p></details>
     {error && <p role="alert">{error}</p>}
     <div className="catalog-grid">{filtered.slice(0, limit).map((score) => <article className="catalog-score" key={score.id}>
       <h4>{score.featured ? "★ " : ""}{score.title}</h4>
