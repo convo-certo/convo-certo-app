@@ -3,10 +3,10 @@ import { PerformanceView } from "~/components/PerformanceView";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "ConvoCerto - Performance" },
+    { title: "ConvoCerto — あなたの席で共奏する" },
     {
       name: "description",
-      content: "ConvoCerto interactive accompaniment performance view.",
+      content: "MusicXMLから担当を選び、楽譜を見ながらオーケストラやピアノ伴奏と練習する。",
     },
   ];
 }

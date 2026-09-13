@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-09-10T22:32:38.339Z",
+  "rows": [
+    {
+      "file": ".repertoire-cache/beethoven-op15/omr-first-text/cantorion-largo.mxl",
+      "sha256": "add0260ec08b9df39dd4328cb0648b8f042a5fdfcfad8aaeaa8ef991eb774a5e",
+      "issues": [
+        {
+          "id": "measure-overrun",
+          "title": "拍子より長い小節",
+          "description": "音符・休符の長さが記録された拍子を超えています。認識・書き出しの誤り、または特殊な記譜の可能性があります。伴奏と譜面がずれることがあるため、元の楽譜で該当小節を確認してください。音符を自動で短くする修正は行いません。",
+          "count": 28,
+          "locations": [
+            {
+              "part": "Clarinetti in B. ‘",
+              "measure": "1"
+            },
+            {
+              "part": "Clarinetti in B. ‘",
+              "measure": "2"
+            },
+            {
+              "part": "Clarinetti in B. ‘",
+              "measure": "9"
+            },
+            {
+              "part": "Clarinetti in B. ‘",
+              "measure": "10"
+            }
+          ],
+          "locationCount": 28
+        }
+      ]
+    },
+    {
+      "file": ".repertoire-cache/beethoven-op15/omr-original-image/page-000.mxl",
+      "sha256": "74f513cb9c251ecf811e12101cd50c1f3558be45338929b877abe8b67f8f8365",
+      "issues": [
+        {
+          "id": "measure-overrun",
+          "title": "拍子より長い小節",
+          "description": "音符・休符の長さが記録された拍子を超えています。認識・書き出しの誤り、または特殊な記譜の可能性があります。伴奏と譜面がずれることがあるため、元の楽譜で該当小節を確認してください。音符を自動で短くする修正は行いません。",
+          "count": 37,
+          "locations": [
+            {
+              "part": "Voice",
+              "measure": "3"
+            },
+            {
+              "part": "Voice",
+              "measure": "10"
+            },
+            {
+              "part": "Voice",
+              "measure": "11"
+            },
+            {
+              "part": "Voice",
+              "measure": "12"
+            }
+          ],
+          "locationCount": 37
+        }
+      ]
+    }
+  ],
+  "scope": "Measure duration warnings only; no pitch or edition approval"
+}

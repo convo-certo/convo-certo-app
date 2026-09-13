@@ -1,0 +1,73 @@
+import { test, expect } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
+
+test('portable practice restores ensemble settings over conflicting settings in another browser', async ({page,browser}) => {
+  await page.goto('/perform');
+  await page.getByLabel('MusicXMLで演奏する',{exact:true}).setInputFiles('public/scores/sample-duet.musicxml');
+  await expect(page.getByRole('button',{name:'この練習を保存',exact:true})).toBeEnabled();
+  await page.getByLabel('演奏テンポ',{exact:true}).fill('88');
+  await page.getByLabel('楽譜への追従方式').selectOption('sequence');
+  await page.getByLabel('合奏の主導者',{exact:true}).selectOption('conductor');
+  await page.getByLabel('共奏 反応をなじませる秒数',{exact:true}).fill('0.7');
+  await page.getByLabel('奏者の微細なずれ',{exact:true}).fill('0.8');
+  await page.getByLabel('耳の左右',{exact:true}).fill('2');
+  const reference = await page.evaluate(async () => {
+    const parserPath = '/app/lib/musicxml-parser.ts', signaturePath = '/app/lib/score-signature.ts';
+    const { parseMusicXML } = await import(parserPath);
+    const { workSignature } = await import(signaturePath);
+    const score = parseMusicXML(await (await fetch('/scores/sample-duet.musicxml')).text());
+    return {version:1,title:'Portable test expression',scoreTitle:score.title,sourcePartId:'P1',workSignature:workSignature(score),source:{type:'recorded-input',takeId:'synthetic-test',recordedAt:'2026-09-11'},points:[0,1,2].map(beat=>({beat,tempoRatio:0.8,gain:1.2,articulation:0.7}))};
+  });
+  await page.getByText('参考演奏と表現プロファイル',{exact:true}).click();
+  await page.getByLabel('表現プロファイルを読み込む').setInputFiles({name:'expression.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(reference))});
+  await expect(page.getByText(/Portable test expression/)).toBeVisible();
+  await page.locator('.part-row button').first().click();
+  await expect(page.locator('.part-row button').first()).toHaveAttribute('aria-pressed','true');
+  await page.getByRole('button',{name:'この練習を保存',exact:true}).click();
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button',{name:/の練習ファイルを書き出す$/}).click();
+  const download=await downloadPromise;
+  const bytes=await readFile((await download.path())!);
+  expect(JSON.parse(bytes.toString()).score.session.mutedPartIds).toEqual(['P2']);
+  const context=await browser.newContext();
+  const second=await context.newPage();
+  try {
+    await second.goto('http://localhost:5187/perform');
+    await second.getByLabel('MusicXMLで演奏する',{exact:true}).setInputFiles('public/scores/sample-duet.musicxml');
+    await second.getByLabel('楽譜への追従方式').selectOption('nearest');
+    await second.getByLabel('合奏の主導者',{exact:true}).selectOption('player');
+    await second.evaluate(async () => {
+      const path = '/app/lib/orchestra-audio.ts';
+      const { OrchestraAudio } = await import(path);
+      const original = OrchestraAudio.prototype.setPartVolume;
+      (window as any).restoredVolumes = [];
+      OrchestraAudio.prototype.setPartVolume = function (index: number, level: number) { (window as any).restoredVolumes.push([index,level]); return original.call(this,index,level); };
+    });
+    await second.getByLabel('練習ファイルを読み込む',{exact:true}).setInputFiles({name:'practice.convo.json',mimeType:'application/json',buffer:bytes});
+    const library=second.getByRole('region',{name:'マイ楽譜',exact:true});
+    await library.getByRole('button',{name:'ConvoCerto Sample Duet',exact:true}).click();
+    await expect(second.locator('.part-row button').first()).toHaveAttribute('aria-pressed','true');
+    expect(await second.evaluate(() => (window as any).restoredVolumes)).toContainEqual([1,0]);
+    await expect(second.getByLabel('演奏テンポ',{exact:true})).toHaveValue('88');
+    await expect(second.getByLabel('奏者の微細なずれ',{exact:true})).toHaveValue('0.8');
+    await expect(second.getByLabel('耳の左右',{exact:true})).toHaveValue('2');
+    await expect(second.getByLabel('楽譜への追従方式')).toHaveValue('sequence');
+    await expect(second.getByLabel('合奏の主導者',{exact:true})).toHaveValue('conductor');
+    await expect(second.getByLabel('共奏 反応をなじませる秒数',{exact:true})).toHaveValue('0.7');
+    await expect(second.getByRole('button',{name:'▶ 演奏開始',exact:true})).toBeVisible();
+    await second.getByText('参考演奏と表現プロファイル',{exact:true}).click();
+    await expect(second.getByText(/Portable test expression/)).toBeVisible();
+    await second.getByRole('button',{name:'テイクを記録して演奏',exact:true}).click();
+    await second.getByRole('button',{name:'テイクを終了',exact:true}).click();
+    const takeDownloadPromise=second.waitForEvent('download');
+    await second.getByRole('button',{name:'テイクの記録を保存',exact:true}).click();
+    const takeDownload=await takeDownloadPromise;
+    const take=JSON.parse(await readFile((await takeDownload.path())!, 'utf8'));
+    expect(take.reference).toEqual(reference);
+    const invalid=JSON.parse(bytes.toString());invalid.score.session.space.chairs[0].partIndex=999;
+    await second.getByLabel('練習ファイルを読み込む',{exact:true}).setInputFiles({name:'bad.convo.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(invalid))});
+    await expect(second.getByRole('alert')).toContainText('不正');
+    await expect(library.getByRole('button',{name:/をマイ楽譜から削除$/})).toHaveCount(1);
+    await expect(second.getByLabel('演奏テンポ',{exact:true})).toHaveValue('88');
+  } finally {await context.close();}
+});

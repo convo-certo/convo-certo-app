@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-09-10T22:26:28.082Z",
+  "catalog": "https://cantorion.org/music/1596/Piano-Concerto-No.-1-2.-Largo-(full-score)",
+  "url": "https://archive.org/download/Cantorion_sheet_music_collection_3/2b5ff74f93c71661b4732545c7c5bfb1.pdf",
+  "file": ".repertoire-cache/beethoven-op15/cantorion-largo.pdf",
+  "bytes": 629693,
+  "sha256": "b739deeb0ec73a50660b85be3a8295cc290d92c9c1d50a03abc414dbc2281706",
+  "archiveSHA1Verified": "069dcbefbf8394ddf6632499c525585edab92dfa",
+  "pages": 11,
+  "catalogLicense": "Public domain (catalog statement; edition review incomplete)",
+  "visuallyInspectedPages": [
+    1,
+    11
+  ],
+  "visiblePartsOnFirstPage": [
+    "Clarinetti in B",
+    "Fagotti",
+    "Corni in Es",
+    "Pianoforte",
+    "Violino I",
+    "Violino II",
+    "Viola",
+    "Violoncello e Basso"
+  ],
+  "publicationEdition": "Not yet identified",
+  "musicXMLStatus": "Not yet obtained",
+  "distributionStatus": "Not bundled"
+}

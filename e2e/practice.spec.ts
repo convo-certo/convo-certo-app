@@ -1,0 +1,33 @@
+import { test, expect } from "@playwright/test";
+
+test("practice playback supports seeking, count-in, loops and score changes", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/step1");
+  await page.locator("select").first().selectOption("/scores/sample-duet.musicxml");
+  const progress = page.getByRole("slider", { name: "再生位置" });
+  await expect(progress).toBeVisible();
+  await progress.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(progress).toHaveAttribute("aria-valuenow", "0");
+  await page.keyboard.press("ArrowRight");
+  await expect(progress).toHaveAttribute("aria-valuenow", "1");
+  await page.getByRole("button", { name: "ループ開始位置を設定" }).click();
+  await page.getByRole("button", { name: "ループ終了位置を設定" }).click();
+  await expect(page.getByRole("button", { name: "ループを解除" })).toBeVisible();
+  await page.getByLabel("カウントイン").selectOption("0");
+  await page.locator('button:has-text("▶")').click();
+  await expect(page.getByText("演奏中", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "メトロノーム" }).click();
+  await expect(page.getByRole("button", { name: "メトロノーム" })).toHaveAttribute("aria-pressed", "true");
+  await page.locator('button:has-text("■")').click();
+  await expect(progress).toHaveAttribute("aria-valuenow", "0");
+  await page.getByLabel("カウントイン").selectOption("1");
+  await page.locator('button:has-text("▶")').click();
+  await expect(page.getByText("カウントイン中…")).toBeVisible();
+  await page.locator('button:has-text("■")').click();
+  await page.locator("select").first().selectOption("/scores/schubert-lindenbaum.musicxml");
+  await expect(page.getByRole("button", { name: "ループを解除" })).toHaveCount(0);
+  await expect(progress).toHaveAttribute("aria-valuenow", "0");
+  expect(errors).toEqual([]);
+});

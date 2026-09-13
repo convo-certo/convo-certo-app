@@ -32,3 +32,8 @@ backend/.venv/
 backend/.pytest_cache/
 backend/.ruff_cache/
 *.egg-info/
+
+.repertoire-cache/
+public/repertoire/local/
+
+/verification-results/

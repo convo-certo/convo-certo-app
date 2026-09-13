@@ -1,0 +1,97 @@
+{
+  "parts": [
+    {
+      "id": "P3",
+      "name": "Clarinetti in B.",
+      "notes": 452
+    },
+    {
+      "id": "P4",
+      "name": "Fagotti.",
+      "notes": 499
+    },
+    {
+      "id": "P5",
+      "name": "Corni in Es .",
+      "notes": 451
+    },
+    {
+      "id": "P6",
+      "name": "Pianoforte .",
+      "notes": 1449
+    },
+    {
+      "id": "P7",
+      "name": "Violino l .",
+      "notes": 356
+    },
+    {
+      "id": "P8",
+      "name": "Violino ll .",
+      "notes": 369
+    },
+    {
+      "id": "P9",
+      "name": "Viola.",
+      "notes": 355
+    },
+    {
+      "id": "P10",
+      "name": "Basso.",
+      "notes": 311
+    }
+  ],
+  "pianoMeasures": [
+    {
+      "measure": "18",
+      "staves": [
+        "1",
+        "2"
+      ],
+      "notes": 3
+    },
+    {
+      "measure": "19",
+      "staves": [
+        "1",
+        "2"
+      ],
+      "notes": 13
+    },
+    {
+      "measure": "20",
+      "staves": [
+        "1",
+        "2"
+      ],
+      "notes": 7
+    },
+    {
+      "measure": "21",
+      "staves": [
+        "1",
+        "2"
+      ],
+      "notes": 14
+    }
+  ],
+  "issues": [
+    {
+      "id": "ornaments",
+      "count": 12
+    },
+    {
+      "id": "fermata",
+      "count": 8
+    },
+    {
+      "id": "wedge",
+      "count": 18
+    },
+    {
+      "id": "measure-overrun",
+      "count": 321
+    }
+  ],
+  "totalBeats": 511.45833333333337
+}

@@ -22,6 +22,8 @@ export function Step2KaraokeView() {
     currentMeasure: 1,
     currentBeat: 0,
     tempo: 50,
+    countingIn: false,
+    countInBeat: 0,
   });
   const [midiDevices, setMidiDevices] = useState<MidiDeviceInfo[]>([]);
   const [selectedMidiDevice, setSelectedMidiDevice] = useState<string | null>(null);

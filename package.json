@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "react-router build",
+    "build": "node scripts/prepare-notices.mjs && react-router build && node scripts/exclude-local-editions.mjs",
     "dev": "react-router dev",
     "start": "npx serve build/client",
     "typecheck": "react-router typegen && tsc",
@@ -11,22 +11,35 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "e2e": "playwright test",
-    "e2e:headed": "playwright test --headed"
+    "e2e:headed": "playwright test --headed",
+    "repertoire:prepare": "uv run --with mido scripts/prepare_repertoire.py",
+    "ensemble:prepare": "uv run scripts/prepare_ensemble_scores.py",
+    "instruments:prepare": "uv run scripts/prepare_instruments.py",
+    "native:build": "node scripts/build-native.mjs",
+    "native:test": "build/native/ConvoCerto.app/Contents/MacOS/ConvoCerto --smoke-test",
+    "verify:release": "node scripts/verify-release.mjs",
+    "native:unit": "node scripts/test-native-midi.mjs",
+    "research:benchmark": "node scripts/benchmark-followers.mjs",
+    "research:compare": "node scripts/benchmark-followers.mjs --matchmaker",
+    "notices:prepare": "node scripts/prepare-notices.mjs",
+    "native:package": "node scripts/package-native.mjs",
+    "native:recovery": "node scripts/test-native-recovery.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mediapipe/tasks-vision": "^0.10.32",
+    "@mediapipe/tasks-vision": "0.10.32",
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",
     "@react-router/node": "^7.12.0",
+    "fflate": "^0.8.3",
+    "isbot": "^5",
     "opensheetmusicdisplay": "^1.9.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router": "7.12.0",
     "sass": "^1.97.3",
-    "tone": "^15.1.22",
-    "isbot": "^5"
+    "tone": "^15.1.22"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

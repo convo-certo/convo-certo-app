@@ -1,0 +1,162 @@
+{
+  "tool": "Audiveris 5.11.0 macosx-arm64",
+  "toolRelease": "https://github.com/Audiveris/audiveris/releases/tag/5.11.0",
+  "input": "docs/research/beethoven-op15-pdf-source.json",
+  "processedPages": [
+    1
+  ],
+  "toolRunsExitCode": 0,
+  "variants": [
+    {
+      "variant": "omr-first",
+      "mxl": ".repertoire-cache/beethoven-op15/omr-first/cantorion-largo.mxl",
+      "sha256": "c8697bac829331b727a86effe7eabad4a91369c753a6c952dc28e68f5fc99dbc",
+      "parts": [
+        {
+          "id": "P1",
+          "name": "Voice",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.5
+        },
+        {
+          "id": "P2",
+          "name": "Voice",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.5
+        },
+        {
+          "id": "P3",
+          "name": "Voice",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.5
+        },
+        {
+          "id": "P4",
+          "name": "Piano",
+          "measures": 11,
+          "staves": "2",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.0
+        },
+        {
+          "id": "P5",
+          "name": "Voice",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.5
+        },
+        {
+          "id": "P6",
+          "name": "Voice",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.0
+        },
+        {
+          "id": "P7",
+          "name": "Voice",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.0
+        },
+        {
+          "id": "P8",
+          "name": "Voice",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.5
+        }
+      ]
+    },
+    {
+      "variant": "omr-first-text",
+      "mxl": ".repertoire-cache/beethoven-op15/omr-first-text/cantorion-largo.mxl",
+      "sha256": "add0260ec08b9df39dd4328cb0648b8f042a5fdfcfad8aaeaa8ef991eb774a5e",
+      "parts": [
+        {
+          "id": "P1",
+          "name": "Clarinetti in B. ‘",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.5
+        },
+        {
+          "id": "P2",
+          "name": "Fagolli.",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.5
+        },
+        {
+          "id": "P3",
+          "name": "Voice",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.5
+        },
+        {
+          "id": "P4",
+          "name": "Piano",
+          "measures": 11,
+          "staves": "2",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.0
+        },
+        {
+          "id": "P5",
+          "name": "Violino I .",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.5
+        },
+        {
+          "id": "P6",
+          "name": "Voice",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.0
+        },
+        {
+          "id": "P7",
+          "name": "Voice",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.0
+        },
+        {
+          "id": "P8",
+          "name": "Basso.",
+          "measures": 11,
+          "staves": "1",
+          "transpose": null,
+          "firstMeasureQuarterBeats": 4.5
+        }
+      ]
+    }
+  ],
+  "transcriptionAccepted": false,
+  "blockers": [
+    "First piano measure omits visible opening chord",
+    "First measure duration differs from written 4/4",
+    "Clarinet and horn transposition not exported",
+    "Instrument names incomplete even with English OCR"
+  ],
+  "nextWork": "Correct first-page segmentation, durations, note content and transpositions against PDF before scaling to all 11 pages. Identify historical edition before release.",
+  "productBundled": false
+}

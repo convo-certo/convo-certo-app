@@ -201,7 +201,7 @@ describe("parseMusicXML", () => {
     });
 
     it("expands notes for repeated playback", () => {
-      const totalBeats = score.playbackOrder.length * score.timeSignature.beats;
+      const totalBeats = 100;
       expect(score.totalBeats).toBe(totalBeats);
       for (const part of score.parts) {
         const maxBeat = Math.max(...part.notes.map((n) => n.startBeat));

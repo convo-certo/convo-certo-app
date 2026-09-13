@@ -24,19 +24,26 @@ export function PoseDetectorView({ isActive, locale = "ja" }: PoseDetectorViewPr
   const initAnalyzer = useCallback(async () => {
     if (!videoRef.current) return;
 
+    setError(null);
+    const analyzer = new PoseAnalyzer();
+    analyzerRef.current = analyzer;
     try {
-      const analyzer = new PoseAnalyzer();
       await analyzer.init(videoRef.current);
+      if (analyzerRef.current !== analyzer) return;
       const stream = await analyzer.startCamera();
+      if (analyzerRef.current !== analyzer) return;
       if (stream) {
         analyzerRef.current = analyzer;
         setIsReady(true);
       } else {
-        setError("Camera access denied");
+        analyzer.dispose();
+        setError("カメラを開始できませんでした。アクセス許可を確認して入れ直してください。");
       }
     } catch (err) {
+      analyzer.dispose();
+      if (analyzerRef.current !== analyzer) return;
       setError(
-        `Failed to initialize pose detection: ${err instanceof Error ? err.message : String(err)}`
+        err instanceof Error ? err.message : "姿勢認識を準備できませんでした。"
       );
     }
   }, []);
@@ -115,7 +122,7 @@ export function PoseDetectorView({ isActive, locale = "ja" }: PoseDetectorViewPr
       )}
 
       {error && (
-        <div
+        <div role="alert"
           style={{
             position: "absolute",
             inset: 0,

@@ -1,0 +1,186 @@
+{
+  "checkedOn": "2026-09-11",
+  "requestedWork": {
+    "composer": "Ludwig van Beethoven",
+    "catalogue": "Op.15",
+    "concertoNumber": 1,
+    "movement": 2,
+    "title": "Largo",
+    "requiredFormat": "MusicXML full orchestral score",
+    "performerSeat": "Clarinet"
+  },
+  "status": "not-acquired",
+  "catalogue": {
+    "path": ".repertoire-cache/PDMX.csv",
+    "sha256": "fc2187e7e09185f4b28be57b6478a96a1243a037f8fd13624f17de2d8bfd44bd",
+    "query": "Beethoven AND (concerto OR konzert OR op.15), title/subtitle/song_name/composer_name case-insensitive",
+    "candidateCount": 14,
+    "exactWorkFound": false,
+    "candidates": [
+      {
+        "title": "Beethoven Piano Concerto No. 5 (2nd movement) Arr. for 2 pianos",
+        "song_name": "Piano Concerto No.5 Op.73",
+        "composer_name": "Ludwig van Beethoven",
+        "path": "./data/1/49/QmbVQ8okyVGK1DsVgXiG6mER3Gbh2PVPXTUJc634H6ZB2G.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "2"
+      },
+      {
+        "title": "Beethoven Piano Concerto No. 5 (3rd Movement) Arr. for 2 pianos",
+        "song_name": "Piano Concerto No.5 Op.73",
+        "composer_name": "Ludwig van Beethoven",
+        "path": "./data/2/8/Qmc9qcedgkCvgKUSgZdxSZDMxpH4jKa7omFXJHadYKv7AF.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "2"
+      },
+      {
+        "title": "Piano Concerto No. 5 E flat Major 2nd movement Beethoven",
+        "song_name": "Piano Concerto No.5 Op.73",
+        "composer_name": "NA",
+        "path": "./data/14/27/QmWJWKc45vNHfj1CQ1HhzPQm8DeiB4JAYub22WWGfyNRK7.json",
+        "license": "publicdomain",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "13"
+      },
+      {
+        "title": "Beethoven - Piano Concerto No. 5 in E-flat Major Op. 73 Emperor III. Rondo: Allegro",
+        "song_name": "Piano Concerto No.5 Op.73",
+        "composer_name": "Ludwig van Beethoven",
+        "path": "./data/7/30/QmPLMZb14DXGeUJxNNE7kUcuz6eZhaMDp7MzjJWv3kdtfz.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "15"
+      },
+      {
+        "title": "Beethoven Piano Concerto No. 5 Mvm. 2 (4 hands: Secondo)",
+        "song_name": "Piano Concerto No.5 Op.73",
+        "composer_name": "Beethoven",
+        "path": "./data/3/27/QmdJC89UkMyWzZUwrACnLrL5NzdFoX1b3jAZvX9yeDvPzv.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "1"
+      },
+      {
+        "title": "Beethoven Piano Concerto No. 4 1st Movement (Arr. for 2 pianos)",
+        "song_name": "Piano Concerto No.4 Op.58",
+        "composer_name": "Ludwig van Beethoven",
+        "path": "./data/16/15/QmYduNGjqmZqgUkXD2x92ynhe9NPaaSrnTwEdjeZV72jmb.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "2"
+      },
+      {
+        "title": "Beethoven Piano Concerto No. 5 (1st Movement) Arr. for 2 Pianos",
+        "song_name": "Piano Concerto No.5 Op.73",
+        "composer_name": "Ludwig van Beethoven",
+        "path": "./data/10/1/QmS216ehi14R6fRRx2YsrV9xtNg7tueEUh4gnMVf37n5q5.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "2"
+      },
+      {
+        "title": "Beethoven Piano Concerto No. 4 3rd Mvmt (Arr. for 2 pianos)",
+        "song_name": "Piano Concerto No.4 Op.58",
+        "composer_name": "Ludwig van Beethoven",
+        "path": "./data/12/56/QmUz7SbFUQDstJxL6AGU8FqaJpnxZLGupt1YmTA2K1FWwn.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "2"
+      },
+      {
+        "title": "Beethoven - Piano Concerto No. 5 in E-flat Major Op. 73 Emperor: II",
+        "song_name": "Piano Concerto No.5 Op.73",
+        "composer_name": "Ludwig van Beethoven",
+        "path": "./data/9/5/QmR6ezJ8wcD8QLcuDF5AEDvWEgo8ZPsvLXyz2utomZQntc.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "13"
+      },
+      {
+        "title": "Movement II from Piano Sonata No 8 Pathétique Tuba Quartet",
+        "song_name": "Piano Concerto No.4 Op.58",
+        "composer_name": "Ludwig van Beethoven Arr. by Henriotto",
+        "path": "./data/4/4/Qme5yfdUyNs6JWD6QQNqZsPYfiQP5jExRxQowzgqH8jzyy.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "4"
+      },
+      {
+        "title": "Violin Concerto in D Major - L. van Beethoven Op. 61",
+        "song_name": "Violin Concerto in D major Op.61",
+        "composer_name": "Ludwig van Beethoven",
+        "path": "./data/4/35/QmeohJwzq1tQKbsG78rGy6cCfwuGAkWP5P71af55ydctMA.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "22"
+      },
+      {
+        "title": "Beethoven Piano Concerto No. 5 2nd Movement fragment (Piano Solo)",
+        "song_name": "Piano Concerto No.5 Op.73",
+        "composer_name": "Ludwig van Beethoven",
+        "path": "./data/4/39/QmeQPaxdA8ESfmdXeioeQBYShS8EiNyidipdiZnH4R9q3F.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "1"
+      },
+      {
+        "title": "Piano Concerto No.5 in Eb Major Op. 73 Emperor",
+        "song_name": "Piano Concerto No.5 Op.73",
+        "composer_name": "Ludwig Van Beethoven",
+        "path": "./data/8/3/QmQ4iuikDPX8eiJ5yF8zqW4BEpopgAh8GuGo9AJWqctdY7.json",
+        "license": "cc-zero",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "12"
+      },
+      {
+        "title": "Beethoven- Piano sonata E-dur 2nd movement also known as Violin Concerto e-moll 3rd movement",
+        "song_name": "Violin Concerto in D major Op.61",
+        "composer_name": "Ludwig van Beethoven (1770 - 1827)",
+        "path": "./data/11/32/QmTMQdDvM9a5W97TPSG4F7PG5M3eC7vtLXBPmb9PjAxkv7.json",
+        "license": "publicdomain",
+        "license_conflict": "False",
+        "has_paywall": "False",
+        "n_tracks": "2"
+      }
+    ]
+  },
+  "sources": [
+    {
+      "url": "https://imslp.org/wiki/Special:ImagefromIndex/505853",
+      "edition": "Breitkopf & Härtel, 1862, plate B.65; Dover 1984 reprint",
+      "format": "PDF",
+      "listedPages": 75,
+      "listedLicense": "Public Domain",
+      "retrieval": "human-verification page returned instead of PDF",
+      "inspectedScorePages": 0
+    },
+    {
+      "url": "https://www.free-scores.com/download-sheet-music.php?pdf=23857",
+      "format": "PDF",
+      "listedMovement": "II. Largo",
+      "retrieval": "catalogue listing verified; PDF not acquired"
+    },
+    {
+      "url": "https://ja.musescore.com/user/28020870/scores/6014969",
+      "format": "catalogue page",
+      "result": "third-movement piano solo; related Largo result not retrieved; direct page request HTTP 403"
+    }
+  ],
+  "commercialClearance": false,
+  "nextAction": "Acquire an authorized full score, inspect the Largo pages, then transcribe or obtain licensed MusicXML and independently collate every part. Do not substitute Beethoven Op.73."
+}

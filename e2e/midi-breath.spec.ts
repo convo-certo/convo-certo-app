@@ -1,0 +1,71 @@
+import { test, expect } from '@playwright/test';
+
+test('sustained MIDI monitor audio follows breath per channel and stops on disconnect', async ({ page }) => {
+  await page.goto('/perform');
+  const result = await page.evaluate(async () => {
+    const modulePath = '/app/lib/midi-manager.ts';
+    const { MidiManager } = await import(modulePath);
+    const input = { id: 'breath-test', name: 'ClariMate Test', state: 'connected', onmidimessage: null as any };
+    const access = { inputs: new Map([[input.id, input]]), onstatechange: null as any };
+    Object.defineProperty(navigator, 'requestMIDIAccess', { configurable: true, value: async () => access });
+    const manager = new MidiManager();
+    try {
+      await manager.init(); await manager.initAudio(); manager.selectInput(input.id);
+      manager.setNoteCallback((message: any) => manager.monitorNote(message));
+      const context = manager.getAudioContext();
+      const analyser = context.createAnalyser(); analyser.fftSize = 2048;
+      const samples = new Float32Array(analyser.fftSize);
+      const send = (status: number, data1: number, data2: number) => input.onmidimessage({data:new Uint8Array([status,data1,data2])});
+      const rms = async () => {
+        const deadline = context.currentTime + 0.25;
+        while (context.currentTime < deadline) await new Promise(resolve => setTimeout(resolve, 20));
+        analyser.getFloatTimeDomainData(samples);
+        return Math.sqrt(samples.reduce((sum, value) => sum + value * value, 0) / samples.length);
+      };
+      send(0xb3, 11, 127); send(0x93, 69, 100);
+      manager.monitorChannels.get(3).gain.connect(analyser);
+      const full = await rms();
+      send(0xb3, 11, 32); const soft = await rms();
+      send(0xb4, 2, 0); const otherChannel = await rms();
+      send(0xb3, 2, 0); const silent = await rms();
+      send(0xb3, 11, 127); const priority = await rms();
+      send(0xb3, 121, 0); const reset = await rms();
+      send(0xb3, 2, 127); const restored = await rms();
+      send(0x93, 69, 100); await rms();
+      send(0x83, 69, 0); const released = await rms();
+      send(0x93, 69, 100); const attacked = await rms();
+      send(0xb3, 123, 0); const allNotesOff = await rms();
+      send(0x93, 69, 100);
+      manager.monitorChannels.get(3).gain.connect(analyser);
+      await rms();
+      manager.setLocalSoundEnabled(false); const disabled = await rms();
+      manager.setLocalSoundEnabled(true); const enabledWithoutNote = await rms();
+      send(0x93, 69, 100);
+      manager.monitorChannels.get(3).gain.connect(analyser);
+      await rms();
+      const late = input.onmidimessage;
+      input.state = 'disconnected'; access.onstatechange();
+      late({data:new Uint8Array([0x93,69,127])});
+      const disconnected = await rms();
+      const channelsAfterDisconnect = manager.monitorChannels.size;
+      analyser.disconnect();
+      return {full, soft, otherChannel, silent, priority, reset, restored, released, attacked, allNotesOff, disabled, enabledWithoutNote, disconnected, channelsAfterDisconnect};
+    } finally { manager.dispose(); }
+  });
+  expect(result.full).toBeGreaterThan(0.01);
+  expect(result.soft / result.full).toBeGreaterThan(0.20);
+  expect(result.soft / result.full).toBeLessThan(0.30);
+  expect(result.otherChannel / result.soft).toBeGreaterThan(0.95);
+  expect(result.otherChannel / result.soft).toBeLessThan(1.05);
+  expect(result.silent).toBeLessThan(0.0001);
+  expect(result.priority).toBeLessThan(0.0001);
+  expect(result.reset / result.full).toBeGreaterThan(0.95);
+  expect(result.allNotesOff).toBeLessThan(0.0001);
+  expect(result.disabled).toBeLessThan(0.0001);
+  expect(result.enabledWithoutNote).toBeLessThan(0.0001);
+  expect(result.restored / result.full).toBeGreaterThan(0.95);
+  expect(result.released).toBeLessThan(0.0001);
+  expect(result.attacked).toBeGreaterThan(0.01);
+  expect(result.disconnected).toBeLessThan(0.0001);
+  expect(result.channelsAfterDisconnect).toBe(0);
+});

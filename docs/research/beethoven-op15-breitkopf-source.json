@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-09-10T22:40:05.267Z",
+  "file": ".repertoire-cache/beethoven-op15/imslp-505853-full.pdf",
+  "source": "https://vmirror.imslp.org/files/imglnks/usimg/0/0a/IMSLP505853-PMLP4230-Beethoven_-_Piano_Concerto_No.1_in_C_major%2C_Op.15.pdf",
+  "catalog": "https://imslp.org/wiki/Piano_Concerto_No.1,_Op.15_(Beethoven,_Ludwig_van)",
+  "catalogEdition": "Ludwig van Beethovens Werke, Serie 9, No.65, Breitkopf und Härtel [1862], plate B.65; Dover 1984 reprint",
+  "catalogCopyright": "Public Domain",
+  "bytes": 12159207,
+  "sha256": "aaddab396a8c462641744f00d2bc8d7b20b183421af4925d3fe88176f36bbac5",
+  "pages": 75,
+  "encrypted": false,
+  "largoPages": [
+    37,
+    47
+  ],
+  "nextMovementPage": 48,
+  "firstLargoEmbeddedImage": {
+    "width": 7328,
+    "height": 5536,
+    "ppi": 600
+  },
+  "visuallyInspectedLargoEndpoints": [
+    37,
+    47
+  ],
+  "comparison": "Same opening and ending page layouts as Cantorion 11-page scan; inferred shared engraving, not proof of identical files or every note",
+  "publicationReleaseApproved": false
+}

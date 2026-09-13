@@ -1,6 +1,8 @@
+import { playbackBeatForSource } from "~/lib/score-position";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ScoreDisplay } from "./ScoreDisplay";
 import { TempoSlider } from "./TempoSlider";
+import { ProgressBar } from "./ProgressBar";
 import { StageLayout } from "./StageLayout";
 import { PlaybackEngine } from "~/lib/playback-engine";
 import type { PlaybackState } from "~/lib/playback-engine";
@@ -21,10 +23,22 @@ export function Step1PlaybackView() {
     currentMeasure: 1,
     currentBeat: 0,
     tempo: 50,
+    countingIn: false,
+    countInBeat: 0,
   });
   const [language] = useState<Locale>("ja");
   const [audioInitialized, setAudioInitialized] = useState(false);
   const [mutedParts, setMutedParts] = useState<Set<number>>(new Set());
+  const [metronomeOn, setMetronomeOn] = useState(false);
+  const [countIn, setCountIn] = useState(1);
+  const [error, setError] = useState<string | null>(null);
+  const [loopA, setLoopA] = useState<number | null>(null);
+  const [loopB, setLoopB] = useState<number | null>(null);
+
+  const isPlaying =
+    playbackState.engineState === "playing" ||
+    playbackState.engineState === "waiting" ||
+    playbackState.engineState === "listening";
 
   useEffect(() => {
     const midi = new MidiManager();
@@ -40,6 +54,12 @@ export function Step1PlaybackView() {
       midi.setTempo(state.tempo);
       setPlaybackState(state);
     });
+
+    engine.setClickOutputCallback((accent, audioTime) => {
+      midi.playClick(accent, audioTime);
+    });
+
+    engine.setCountInMeasures(1);
 
     engineRef.current = engine;
     midiRef.current = midi;
@@ -58,6 +78,9 @@ export function Step1PlaybackView() {
 
   const applyScore = useCallback(
     (parsed: ParsedScore, xml: string) => {
+      setError(null);
+      setLoopA(null);
+      setLoopB(null);
       setScore(parsed);
       setMusicXML(xml);
       setMutedParts(new Set());
@@ -73,7 +96,7 @@ export function Step1PlaybackView() {
         const { score, musicXML } = await loadScoreFromPath(path);
         applyScore(score, musicXML);
       } catch (err) {
-        console.error("Failed to load sample score:", err);
+        setError("楽譜を読み込めませんでした。ファイルを確認して、もう一度お試しください。");
       }
     },
     [initAudio, applyScore]
@@ -83,10 +106,15 @@ export function Step1PlaybackView() {
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (!file) return;
-      await initAudio();
-      const text = await file.text();
-      const parsed = parseUploadedScore(text);
-      applyScore(parsed, text);
+      try {
+        await initAudio();
+        const text = await file.text();
+        const parsed = parseUploadedScore(text);
+        applyScore(parsed, text);
+      } catch {
+        setError("楽譜を読み込めませんでした。非圧縮の MusicXML ファイルを選択してください。");
+      }
+      event.target.value = "";
     },
     [initAudio, applyScore]
   );
@@ -108,6 +136,102 @@ export function Step1PlaybackView() {
     engineRef.current?.setTempoMap(events);
   }, []);
 
+  const handleSeek = useCallback((beat: number) => {
+    engineRef.current?.seekToBeat(beat);
+  }, []);
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.target instanceof Element && e.target.closest("input, select, textarea, button, a, [contenteditable], [role=slider]")) return;
+
+      switch (e.code) {
+        case "Space":
+          e.preventDefault();
+          if (isPlaying) {
+            engineRef.current?.stop();
+          } else if (score) {
+            initAudio().then(() => engineRef.current?.start());
+          }
+          break;
+        case "Escape":
+          engineRef.current?.stop();
+          break;
+        case "ArrowRight":
+          e.preventDefault();
+          if (score) {
+            const currentIdx = engineRef.current
+              ? Math.min(
+                  score.measureStartBeats.length - 1,
+                  score.measureStartBeats.findIndex((b) => b > playbackState.currentBeat)
+                )
+              : 0;
+            if (currentIdx >= 0) engineRef.current?.seekToMeasure(currentIdx);
+          }
+          break;
+        case "ArrowLeft":
+          e.preventDefault();
+          if (score) {
+            const beats = score.measureStartBeats;
+            let idx = 0;
+            for (let i = beats.length - 1; i >= 0; i--) {
+              if (beats[i] < playbackState.currentBeat - 0.1) {
+                idx = i;
+                break;
+              }
+            }
+            engineRef.current?.seekToMeasure(Math.max(0, idx));
+          }
+          break;
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isPlaying, score, playbackState.currentBeat, initAudio]);
+
+  const handleToggleMetronome = useCallback(() => {
+    setMetronomeOn((prev) => {
+      const next = !prev;
+      engineRef.current?.setMetronomeEnabled(next);
+      return next;
+    });
+  }, []);
+
+  const handleCountInChange = useCallback((measures: number) => {
+    setCountIn(measures);
+    engineRef.current?.setCountInMeasures(measures);
+  }, []);
+
+  const handleSetLoopA = useCallback(() => {
+    const beat = playbackState.currentBeat;
+    const measureIdx = score?.measureStartBeats.findIndex((b, i, arr) =>
+      i === arr.length - 1 || arr[i + 1] > beat
+    ) ?? -1;
+    const startBeat = measureIdx >= 0 ? score!.measureStartBeats[measureIdx] : beat;
+    setLoopA(startBeat);
+    if (loopB != null && loopB <= startBeat) setLoopB(null);
+    engineRef.current?.setLoop(startBeat, loopB);
+  }, [playbackState.currentBeat, score, loopB]);
+
+  const handleSetLoopB = useCallback(() => {
+    const beat = playbackState.currentBeat;
+    const measureIdx = score?.measureStartBeats.findIndex((b) => b > beat) ?? -1;
+    const endBeat = measureIdx >= 0 ? score!.measureStartBeats[measureIdx] : score?.totalBeats ?? beat;
+    if (loopA != null && loopA >= endBeat) {
+      setLoopA(null);
+      engineRef.current?.setLoop(null, endBeat);
+    } else {
+      engineRef.current?.setLoop(loopA, endBeat);
+    }
+    setLoopB(endBeat);
+  }, [playbackState.currentBeat, score, loopA]);
+
+  const handleClearLoop = useCallback(() => {
+    setLoopA(null);
+    setLoopB(null);
+    engineRef.current?.setLoop(null, null);
+  }, []);
+
   const handleToggleMute = useCallback((partIndex: number) => {
     setMutedParts((prev) => {
       const next = new Set(prev);
@@ -122,13 +246,9 @@ export function Step1PlaybackView() {
     });
   }, []);
 
-  const isPlaying =
-    playbackState.engineState === "playing" ||
-    playbackState.engineState === "waiting" ||
-    playbackState.engineState === "listening";
-
   return (
     <StageLayout locale={language}>
+      {error && <p role="alert" style={{ color: "#b71c1c" }}>{error}</p>}
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div
           style={{
@@ -157,7 +277,7 @@ export function Step1PlaybackView() {
               {t(language, "uploadMusicXML")}
               <input
                 type="file"
-                accept=".xml,.musicxml,.mxl"
+                accept=".xml,.musicxml"
                 onChange={handleFileUpload}
                 style={{ display: "none" }}
               />
@@ -245,10 +365,120 @@ export function Step1PlaybackView() {
               />
             </div>
 
+            <button
+              aria-label="メトロノーム"
+              aria-pressed={metronomeOn}
+              onClick={handleToggleMetronome}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+                padding: "6px 12px",
+                borderRadius: 6,
+                border: metronomeOn ? "2px solid #1976d2" : "1px solid #ccc",
+                background: metronomeOn ? "#e3f2fd" : "transparent",
+                color: metronomeOn ? "#1565c0" : "#666",
+                cursor: "pointer",
+                fontSize: 13,
+                fontWeight: metronomeOn ? 600 : 400,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {metronomeOn ? "Click ON" : "Click"}
+            </button>
+
+            <select
+              aria-label="カウントイン"
+              value={countIn}
+              onChange={(e) => handleCountInChange(Number(e.target.value))}
+              style={{
+                padding: "6px 8px",
+                borderRadius: 6,
+                border: "1px solid #ccc",
+                fontSize: 13,
+                background: "transparent",
+                cursor: "pointer",
+              }}
+            >
+              <option value={0}>カウントインなし</option>
+              <option value={1}>1小節カウントイン</option>
+              <option value={2}>2小節カウントイン</option>
+            </select>
+
             <div style={{ fontSize: 13, color: "#666", whiteSpace: "nowrap" }}>
-              {playbackState.engineState === "playing"
-                ? t(language, "statePlaying")
-                : t(language, "stateIdle")}
+              {playbackState.countingIn
+                ? `カウント: ${playbackState.countInBeat + 1}`
+                : playbackState.engineState === "playing"
+                  ? t(language, "statePlaying")
+                  : t(language, "stateIdle")}
+            </div>
+          </div>
+        )}
+
+        {score && (
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ flex: 1 }}>
+              <ProgressBar
+                currentBeat={playbackState.currentBeat}
+                totalBeats={score.totalBeats}
+                measureStartBeats={score.measureStartBeats}
+                isPlaying={isPlaying}
+                countingIn={playbackState.countingIn}
+                loopStartBeat={loopA}
+                loopEndBeat={loopB}
+                onSeek={handleSeek}
+              />
+            </div>
+            <div style={{ display: "flex", gap: 4 }}>
+              <button
+                aria-label="ループ開始位置を設定"
+                onClick={handleSetLoopA}
+                style={{
+                  padding: "4px 8px",
+                  borderRadius: 4,
+                  border: loopA != null ? "2px solid #ff9800" : "1px solid #ccc",
+                  background: loopA != null ? "#fff3e0" : "transparent",
+                  color: loopA != null ? "#e65100" : "#666",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                A
+              </button>
+              <button
+                aria-label="ループ終了位置を設定"
+                onClick={handleSetLoopB}
+                style={{
+                  padding: "4px 8px",
+                  borderRadius: 4,
+                  border: loopB != null ? "2px solid #ff9800" : "1px solid #ccc",
+                  background: loopB != null ? "#fff3e0" : "transparent",
+                  color: loopB != null ? "#e65100" : "#666",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                B
+              </button>
+              {(loopA != null || loopB != null) && (
+                <button
+                  aria-label="ループを解除"
+                  onClick={handleClearLoop}
+                  style={{
+                    padding: "4px 8px",
+                    borderRadius: 4,
+                    border: "1px solid #ccc",
+                    background: "transparent",
+                    color: "#999",
+                    cursor: "pointer",
+                    fontSize: 12,
+                  }}
+                >
+                  ×
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -331,6 +561,7 @@ export function Step1PlaybackView() {
 
         {score && musicXML ? (
           <ScoreDisplay
+            onSeek={async (beat) => { await initAudio(); engineRef.current?.seekToBeat(playbackBeatForSource(score, beat, playbackState.currentBeat)); engineRef.current?.start(); }}
             musicXML={musicXML}
             currentMeasure={playbackState.currentMeasure}
             currentBeat={playbackState.currentBeat}

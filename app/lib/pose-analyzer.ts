@@ -21,7 +21,8 @@ const NOD_THRESHOLD = 0.015;
 const SMOOTHING_WINDOW = 5;
 
 export class PoseAnalyzer {
-  private poseLandmarker: unknown = null;
+  private poseLandmarker: (Pick<import("@mediapipe/tasks-vision").PoseLandmarker, "close" | "detectForVideo">) | null = null;
+  private disposed = false;
   private video: HTMLVideoElement | null = null;
   private isRunning = false;
   private animationFrameId: number | null = null;
@@ -38,10 +39,10 @@ export class PoseAnalyzer {
       const { PoseLandmarker, FilesetResolver } = vision;
 
       const filesetResolver = await FilesetResolver.forVisionTasks(
-        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.32/wasm"
       );
 
-      this.poseLandmarker = await PoseLandmarker.createFromOptions(
+      const landmarker = await PoseLandmarker.createFromOptions(
         filesetResolver,
         {
           baseOptions: {
@@ -53,22 +54,28 @@ export class PoseAnalyzer {
           numPoses: 1,
         }
       );
+      if (this.disposed) { landmarker.close(); return; }
+      this.poseLandmarker = landmarker;
     } catch (err) {
-      console.warn("[PoseAnalyzer] MediaPipe initialization failed:", err);
+      throw new Error("姿勢認識を準備できませんでした。接続を確認してカメラを入れ直してください。", { cause: err });
     }
   }
 
   async startCamera(): Promise<MediaStream | null> {
-    if (!this.video) return null;
-
+    if (!this.video || !this.poseLandmarker || this.disposed) return null;
+    let stream: MediaStream | null = null;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user", width: 640, height: 480 },
       });
+      if (this.disposed) { stream.getTracks().forEach(track => track.stop()); return null; }
       this.video.srcObject = stream;
       await this.video.play();
+      if (this.disposed) { stream.getTracks().forEach(track => track.stop()); return null; }
       return stream;
     } catch (err) {
+      stream?.getTracks().forEach(track => track.stop());
+      if (this.video) this.video.srcObject = null;
       console.warn("[PoseAnalyzer] Camera access failed:", err);
       return null;
     }
@@ -89,7 +96,10 @@ export class PoseAnalyzer {
   }
 
   dispose(): void {
+    this.disposed = true;
     this.stop();
+    this.poseLandmarker?.close();
+    this.poseLandmarker = null;
     if (this.video?.srcObject) {
       const tracks = (this.video.srcObject as MediaStream).getTracks();
       tracks.forEach((t) => t.stop());

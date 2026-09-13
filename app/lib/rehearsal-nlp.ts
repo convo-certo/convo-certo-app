@@ -10,6 +10,7 @@
  */
 
 import type {
+  ExpressionDirective,
   RehearsalCommand,
   RoleDirective,
   RoleMode,
@@ -26,7 +27,7 @@ const jaRules: PatternRule[] = [
   // "32小節目はリード強め" / "32小節目をリードにして"
   {
     pattern:
-      /(\d+)\s*小節目?(?:は|を|の)\s*(?:リード|lead)\s*(強め|弱め|普通)?/i,
+      /(\d+)\s*小節目?(?:は|を|の)\s*(?:リード|lead)\s*(?:を)?\s*(強め|弱め|普通)?/i,
     extract(match) {
       const measure = parseInt(match[1]);
       const strengthMap: Record<string, RoleStrength> = {
@@ -80,7 +81,7 @@ const jaRules: PatternRule[] = [
   },
   // "テンポを120にして" / "テンポ上げて" / "テンポ下げて"
   {
-    pattern: /テンポ(?:を)?\s*(\d+)?(?:にして|に設定)?/i,
+    pattern: /テンポ(?:を)?\s*(\d+)(?:にして|に設定)?/i,
     extract(match) {
       const tempo = match[1] ? parseInt(match[1]) : undefined;
       return {
@@ -99,6 +100,7 @@ const jaRules: PatternRule[] = [
       return {
         type: "set_tempo",
         tempo: delta,
+        tempoMode: "relative",
         rawText: match[0],
       };
     },
@@ -178,7 +180,7 @@ const enRules: PatternRule[] = [
   },
 ];
 
-function roleDirective(
+export function roleDirective(
   mode: RoleMode,
   strength: RoleStrength
 ): RoleDirective {
@@ -201,7 +203,22 @@ export function parseRehearsalCommand(
   text: string
 ): RehearsalCommand | null {
   const trimmed = text.trim();
-  if (!trimmed) return null;
+  if (!trimmed || /しない|しなく|やめて|ではなく|じゃなく|待たない/.test(trimmed)) return null;
+
+  const range = trimmed.match(/(\d+)\s*(?:小節目?)?\s*(?:〜|～|から|-)\s*(\d+)\s*小節/);
+  const measure = range ? Number(range[1]) : Number(trimmed.match(/(\d+)\s*小節/)?.[1]) || undefined;
+  if (/(入り|息|呼吸|ブレス|合図).*(待って|待つ|合わせて)/.test(trimmed)) return { type: "set_wait", measureNumber: measure, wait: { type: "listen" }, rawText: trimmed };
+  const expressions: [RegExp, ExpressionDirective["preset"]][] = [
+    [/歌う|歌って|カンタービレ/, "singing"],
+    [/柔らか|やわらか|寄り添|控えめ/, "tender"],
+    [/盛り上げ|前へ|クレッシェンド/, "building"],
+    [/語尾|収め|おさめ|リタルダンド|落ち着/, "settling"],
+    [/軽やか|軽く|歯切れ/, "light"],
+  ];
+  const matches = expressions.filter(([pattern]) => pattern.test(trimmed));
+  if (matches.length > 1) return null;
+  const intent = matches[0];
+  if (intent) return { type: "set_expression", measureNumber: measure, expression: { preset: intent[1], amount: /少し|ちょっと/.test(trimmed) ? 0.35 : /もっと|大きく|たっぷり/.test(trimmed) ? 0.85 : 0.6, ...(range ? { endMeasure: Number(range[2]) } : {}) }, rawText: trimmed };
 
   // Try Japanese rules first
   for (const rule of jaRules) {
@@ -226,6 +243,10 @@ export function parseRehearsalCommand(
 export function getCommandExamples(): { ja: string[]; en: string[] } {
   return {
     ja: [
+      "9〜12小節は歌うように",
+      "16小節は語尾を収めて",
+      "ここは柔らかく寄り添って",
+      "次の入りは待って",
       "32小節目はリード強め",
       "16小節目をフォローにして",
       "冒頭で2秒待って",

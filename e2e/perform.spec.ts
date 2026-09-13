@@ -1,180 +1,25 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Perform page (legacy)", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/perform");
-  });
-
-  test("renders the ConvoCerto header", async ({ page }) => {
-    await expect(page.locator("h1")).toHaveText("ConvoCerto");
-  });
-
-  test("shows the Japanese subtitle", async ({ page }) => {
-    await expect(page.locator("text=インタラクティブ音楽演奏エージェント")).toBeVisible();
-  });
-
-  test("has a sample score dropdown", async ({ page }) => {
-    const select = page.locator("header select");
-    await expect(select).toBeVisible();
-    const options = select.locator("option");
-    await expect(options).toHaveCount(4);
-  });
-
-  test("shows placeholder when no score loaded", async ({ page }) => {
-    await expect(
-      page.locator("text=MusicXML ファイルを読み込んでください")
-    ).toBeVisible();
-  });
-
-  test("loads Mozart K.622 sample score", async ({ page }) => {
-    const select = page.locator("header select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
-
-    await expect(page.locator("text=スコア情報")).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(
-      page.locator("text=/タイトル.*K\\.622/")
-    ).toBeVisible();
-  });
-
-  test("shows score info sidebar after loading", async ({ page }) => {
-    const select = page.locator("header select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
-
-    await expect(page.locator("text=スコア情報")).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(page.locator("text=テンポ").first()).toBeVisible();
-    await expect(page.locator("text=50 BPM")).toBeVisible();
-    await expect(page.locator("text=小節数")).toBeVisible();
-  });
-
-  test("renders OSMD score display after loading", async ({ page }) => {
-    const select = page.locator("header select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
-
-    await page.waitForSelector("svg", { timeout: 15000 });
-    const svgCount = await page.locator("svg").count();
-    expect(svgCount).toBeGreaterThan(0);
-  });
-
-  test("transport controls are disabled without score", async ({ page }) => {
-    const playButton = page.locator('button:has-text("▶")');
-    await expect(playButton).toBeDisabled();
-  });
-
-  test("transport controls are enabled after loading score", async ({
-    page,
-  }) => {
-    const select = page.locator("header select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
-
-    await expect(page.locator("text=スコア情報")).toBeVisible({
-      timeout: 10000,
-    });
-
-    const playButton = page.locator('button:has-text("▶"), button:has-text("■")').first();
-    await expect(playButton).toBeEnabled();
-  });
-
-  test("can start and stop playback", async ({ page }) => {
-    const select = page.locator("header select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
-
-    await expect(page.locator("text=スコア情報")).toBeVisible({
-      timeout: 10000,
-    });
-
-    await expect(
-      page.locator("text=開始合図を待機中...").first()
-    ).toBeVisible({ timeout: 5000 });
-
-    const stopButton = page.locator('button:has-text("■")');
-    await stopButton.click();
-
-    await expect(page.locator("text=準備完了").first()).toBeVisible({
-      timeout: 5000,
-    });
-  });
-
-  test("shows lead/follow indicator after loading", async ({ page }) => {
-    const select = page.locator("header select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
-
-    await expect(page.locator("text=AI リード")).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(page.locator("text=奏者追従")).toBeVisible();
-  });
-
-  test("shows annotation badges", async ({ page }) => {
-    const select = page.locator("header select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
-
-    await expect(page.locator("text=follow:moderate").first()).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(page.locator("text=follow:strong").first()).toBeVisible();
-    await expect(page.locator("text=lead:moderate").first()).toBeVisible();
-  });
-
-  test("can toggle rehearsal mode", async ({ page }) => {
-    const select = page.locator("header select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
-
-    await expect(page.locator("text=スコア情報")).toBeVisible({
-      timeout: 10000,
-    });
-
-    const rehearsalBtn = page.locator("text=リハーサル").first();
-    await rehearsalBtn.click();
-
-    await expect(
-      page.locator("text=リハーサルコマンド")
-    ).toBeVisible({ timeout: 5000 });
-  });
-
-  test("loads sample duet score", async ({ page }) => {
-    const select = page.locator("header select");
-    await select.selectOption("/scores/sample-duet.musicxml");
-
-    await expect(page.locator("text=スコア情報")).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(page.locator("text=100 BPM")).toBeVisible();
-  });
-
-  test("loads Mozart K.581 Trio score", async ({ page }) => {
-    const select = page.locator("header select");
-    await select.selectOption("/scores/mozart-k581-trio.musicxml");
-
-    await expect(page.locator("text=スコア情報")).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(page.locator("text=120 BPM")).toBeVisible();
-  });
-});
-
 test.describe("Home page", () => {
-  test("renders home with stage cards", async ({ page }) => {
+  test("renders the concert welcome page", async ({ page }) => {
     const response = await page.goto("/");
     expect(response?.status()).toBe(200);
     await expect(page.locator("h1")).toHaveText("ConvoCerto");
   });
 
-  test("shows 4 stage cards", async ({ page }) => {
+  test("keeps previous practice pages available under an explicit disclosure", async ({ page }) => {
     await page.goto("/");
+    await page.getByText("以前の練習画面を開く", {exact:true}).click();
     await expect(page.locator("text=楽譜表示 + 再生")).toBeVisible();
     await expect(page.locator("text=カラオケモード")).toBeVisible();
     await expect(page.locator("text=追従伴奏")).toBeVisible();
     await expect(page.locator("text=フルリハーサル")).toBeVisible();
   });
 
-  test("navigates to Step 1 from home", async ({ page }) => {
+  test("starts the integrated concert from the main action", async ({ page }) => {
     await page.goto("/");
-    await page.locator("text=Step 1 から始める").click();
-    await expect(page).toHaveURL("/step1");
+    await page.getByRole("link", {name:"共奏を始める"}).click();
+    await expect(page).toHaveURL("/perform");
   });
 });
 
@@ -189,8 +34,9 @@ test.describe("Step 1 - Score Display + Playback", () => {
   });
 
   test("has stage navigation", async ({ page }) => {
-    const navLinks = page.locator("nav a");
-    await expect(navLinks).toHaveCount(4);
+    await page.getByRole("navigation", {name:"主な画面"}).getByRole("link", {name:"共奏へ", exact:true}).click();
+    await expect(page).toHaveURL(/\/perform$/);
+    await expect(page.getByLabel("MusicXMLで演奏する", {exact:true})).toBeVisible();
   });
 
   test("shows score placeholder when no score loaded", async ({ page }) => {
@@ -199,9 +45,9 @@ test.describe("Step 1 - Score Display + Playback", () => {
     ).toBeVisible();
   });
 
-  test("loads and displays Mozart K.622", async ({ page }) => {
-    const select = page.locator("select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
+  test("loads and displays sample duet", async ({ page }) => {
+    const select = page.locator("select").first();
+    await select.selectOption("/scores/sample-duet.musicxml");
 
     await page.waitForSelector("svg", { timeout: 15000 });
     const svgCount = await page.locator("svg").count();
@@ -209,8 +55,8 @@ test.describe("Step 1 - Score Display + Playback", () => {
   });
 
   test("can start and stop playback", async ({ page }) => {
-    const select = page.locator("select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
+    const select = page.locator("select").first();
+    await select.selectOption("/scores/sample-duet.musicxml");
 
     await page.waitForSelector("svg", { timeout: 15000 });
 
@@ -246,8 +92,8 @@ test.describe("Step 3 - Adaptive Accompaniment", () => {
 
   test("shows lead/follow indicator after loading score", async ({ page }) => {
     await page.goto("/step3");
-    const select = page.locator("select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
+    const select = page.locator("select").first();
+    await select.selectOption("/scores/sample-duet.musicxml");
 
     await expect(page.locator("text=AI リード")).toBeVisible({
       timeout: 10000,
@@ -257,49 +103,26 @@ test.describe("Step 3 - Adaptive Accompaniment", () => {
 });
 
 test.describe("Step 4 - Full Rehearsal", () => {
-  test("renders step 4 page", async ({ page }) => {
+  test("opens the integrated repertoire rehearsal", async ({ page }) => {
     await page.goto("/step4");
     await expect(page.locator("h2")).toContainText("Step 4");
-  });
-
-  test("shows transport controls with rehearsal button", async ({ page }) => {
-    await page.goto("/step4");
-    await expect(page.locator("text=リハーサル").first()).toBeVisible();
-  });
-
-  test("can toggle rehearsal mode after loading score", async ({ page }) => {
-    await page.goto("/step4");
-    const select = page.locator("select");
-    await select.selectOption("/scores/mozart-k622-adagio.musicxml");
-
-    await expect(page.locator("text=スコア情報")).toBeVisible({
-      timeout: 10000,
-    });
-
-    const rehearsalBtn = page.locator("text=リハーサル").first();
-    await rehearsalBtn.click();
-
-    await expect(
-      page.locator("text=リハーサルコマンド")
-    ).toBeVisible({ timeout: 5000 });
+    await expect(page.getByRole("heading", { name: "クラリネット協奏曲", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "クラリネットソナタ第2番", exact: true })).toBeVisible();
   });
 });
 
 test.describe("Stage navigation", () => {
-  test("navigates between steps via header nav", async ({ page }) => {
-    await page.goto("/step1");
-
-    await page.locator("nav a").nth(1).click();
-    await expect(page).toHaveURL("/step2");
-
-    await page.locator("nav a").nth(2).click();
-    await expect(page).toHaveURL("/step3");
-
-    await page.locator("nav a").nth(3).click();
-    await expect(page).toHaveURL("/step4");
-
-    await page.locator("nav a").nth(0).click();
-    await expect(page).toHaveURL("/step1");
+  test("opens credits separately while keeping the rehearsal score", async ({ page }) => {
+    await page.goto("/perform");
+    await page.getByLabel("MusicXMLで演奏する", {exact:true}).setInputFiles("public/scores/sample-duet.musicxml");
+    await expect(page.locator(".printable-score svg").first()).toBeVisible();
+    const popup = page.waitForEvent("popup");
+    await page.getByRole("navigation", {name:"主な画面"}).getByRole("link", {name:"出典・クレジット"}).click();
+    const credits = await popup;
+    await expect(credits.getByRole("heading", {name:/出典|クレジット/}).first()).toBeVisible();
+    await credits.close();
+    await expect(page).toHaveURL(/\/perform$/);
+    await expect(page.locator(".printable-score svg").first()).toBeVisible();
   });
 
   test("navigates home from header logo", async ({ page }) => {

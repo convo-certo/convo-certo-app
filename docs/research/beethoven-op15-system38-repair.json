@@ -1,0 +1,25 @@
+{
+  "source": ".repertoire-cache/beethoven-op15/omr-breitkopf-largo/imslp-505853-full.musicxml",
+  "sourceSHA256": "e64e152a1f19b6c9ee70e516a550ea332c660fe6afd5328dc9d8d7e263e5a06d",
+  "output": ".repertoire-cache/beethoven-op15/omr-breitkopf-largo/largo-system38-repaired.musicxml",
+  "outputSHA256": "2e94a3360b74d0243c2acf6d6fbd902993e9a389cd9d3d762b4316fa1a3fda1f",
+  "scorePage": 38,
+  "system": 2,
+  "draftMeasures": [
+    18,
+    19,
+    20,
+    21
+  ],
+  "partsBefore": 10,
+  "partsAfter": 8,
+  "pitchedNotesPreserved": 4352,
+  "operation": "Move P1/P2/P3 to clarinet/bassoon/horn; merge original P4/P5 into piano staves 1/2; restore key and clef at boundaries",
+  "remaining": [
+    "Other systems with split piano or shifted cutaway winds",
+    "Unverified note recognition and rhythm",
+    "Missing transpositions",
+    "Measure count mismatch"
+  ],
+  "acceptedForPerformance": false
+}

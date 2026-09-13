@@ -1,0 +1,43 @@
+import { createHash } from "node:crypto";
+import { expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { parseMusicXML } from "./musicxml-parser";
+import { assignPerformanceSeat, listPerformanceSeats, playerPart } from "./performance-seats";
+
+it("loads the actual Emperor slow movement with piano and a complete combined clarinet part", () => {
+  const score = parseMusicXML(readFileSync("public/repertoire/ensemble/beethoven-op73-2.musicxml", "utf8"));
+  expect(score.parts).toHaveLength(13);
+  expect(score.totalMeasures).toBe(82);
+  expect(score.measureNumbers).toHaveLength(83);
+  const seat = listPerformanceSeats(score).find((seat) => /clarinet/i.test(seat.name) && seat.voice == null)!;
+  expect(seat).toBeDefined();
+  const selected = assignPerformanceSeat(score, seat.id);
+  expect(playerPart(selected)!.notes.length).toBeGreaterThan(100);
+  expect(selected.parts.find((part) => /piano/i.test(part.name))!.notes.length).toBeGreaterThan(500);
+  expect(selected.parts.every((part) => part.notes.every((note) => Number.isFinite(note.pitch) && note.durationBeats > 0 && note.startBeat < selected.totalBeats))).toBe(true);
+});
+
+it("loads the complete Mozart Adagio score instead of a MIDI conversion", () => {
+  const score = parseMusicXML(readFileSync("public/repertoire/ensemble/mozart-k622-2.musicxml", "utf8"));
+  expect(score.parts).toHaveLength(12);
+  expect(score.totalMeasures).toBe(98);
+  expect(playerPart(score)?.name).toMatch(/clarinet/i);
+});
+
+it("bundles a searchable, attributed catalogue and five orchestral editions with strings", () => {
+  const catalog = JSON.parse(readFileSync("public/repertoire/ensemble/catalog.json", "utf8")) as { id: string; title: string; parts: string[]; featured: boolean }[];
+  const manifest = JSON.parse(readFileSync("public/repertoire/ensemble/sources.json", "utf8")) as { id: string; licenseConflict: boolean; scoreLicense: string; sha256: string }[];
+  expect(catalog.length).toBeGreaterThanOrEqual(30);
+  expect(catalog.filter((item) => item.featured)).toHaveLength(5);
+  for (const item of catalog) {
+    const xml = readFileSync(`public/repertoire/ensemble/${item.id}.musicxml`, "utf8");
+    expect(xml).toContain("<score-partwise");
+    expect((xml.match(/<score-part id=/g) ?? []).length, item.title).toBe(item.parts.length);
+    expect(createHash("sha256").update(xml).digest("hex")).toBe(manifest.find((source) => source.id === item.id)?.sha256);
+    expect(manifest.find((source) => source.id === item.id)).toMatchObject({ scoreLicense: "CC0-1.0", licenseConflict: false });
+    if (item.featured) {
+      expect(item.parts.some((part) => /violin|violino/i.test(part)), item.title).toBe(true);
+      expect(item.parts.some((part) => /clarinet/i.test(part)), item.title).toBe(true);
+    }
+  }
+}, 30000);

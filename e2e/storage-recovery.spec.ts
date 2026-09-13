@@ -1,0 +1,47 @@
+import { test, expect } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
+
+test('failed local storage remains visible and current practice can be exported without saving', async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = IDBFactory.prototype.open;
+    (window as any).storageUnavailable = true;
+    IDBFactory.prototype.open = function (...args: Parameters<IDBFactory['open']>) {
+      if ((window as any).storageUnavailable && args[0] === 'convocerto-library') throw new DOMException('Storage unavailable', 'SecurityError');
+      return original.apply(this, args);
+    };
+  });
+  await page.goto('/perform');
+  await expect(page.getByRole('alert')).toContainText('保存済みの楽譜がないという意味ではありません');
+  await page.getByLabel('MusicXMLで演奏する', { exact: true }).setInputFiles('public/scores/sample-duet.musicxml');
+  await page.getByLabel('演奏テンポ', { exact: true }).fill('83');
+  await page.locator('.part-row button').first().click();
+  await page.getByRole('button', { name: 'この練習を保存', exact: true }).click();
+  await expect(page.getByRole('alert').filter({ hasText: '練習を保存できませんでした' })).toBeVisible();
+  const pending = page.waitForEvent('download');
+  await page.getByRole('button', { name: '今の練習をファイルに書き出す', exact: true }).click();
+  const download = await pending;
+  const bytes = await readFile((await download.path())!);
+  const practice = JSON.parse(bytes.toString());
+  expect(practice.score.session).toMatchObject({ tempo: 83, mutedPartIds: ['P2'] });
+  expect(practice.score.xml).toContain('score-partwise');
+  await page.getByLabel('演奏テンポ', { exact: true }).fill('120');
+  await page.getByLabel('練習ファイルを読み込む', { exact: true }).setInputFiles({ name: 'backup.convo.json', mimeType: 'application/json', buffer: bytes });
+  await expect(page.getByRole('status').filter({ hasText: '保存せずに練習できます' })).toBeVisible();
+  await expect(page.getByLabel('演奏テンポ', { exact: true })).toHaveValue('120');
+  await page.getByRole('button', { name: '保存せず、この練習を開く', exact: true }).click();
+  await expect(page.getByLabel('演奏テンポ', { exact: true })).toHaveValue('83');
+  await expect(page.locator('.part-row button').first()).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: '■ 停止', exact: true })).toHaveCount(0);
+  await page.getByLabel('練習ファイルを読み込む', { exact: true }).setInputFiles({ name: 'bad.convo.json', mimeType: 'application/json', buffer: Buffer.from('{') });
+  await expect(page.getByRole('alert').filter({ hasText: 'JSONが壊れています' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '保存せず、この練習を開く', exact: true })).toHaveCount(0);
+  await expect(page.getByLabel('演奏テンポ', { exact: true })).toHaveValue('83');
+  await page.evaluate(() => { (window as any).storageUnavailable = false; });
+  await page.getByRole('button', { name: 'マイ楽譜を再読み込み', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'マイ楽譜を再読み込み', exact: true })).toHaveCount(0);
+  await page.getByLabel('練習ファイルを読み込む', { exact: true }).setInputFiles({ name: 'backup.convo.json', mimeType: 'application/json', buffer: bytes });
+  await page.getByRole('region', { name: 'マイ楽譜', exact: true }).getByRole('button', { name: 'ConvoCerto Sample Duet', exact: true }).click();
+  await expect(page.getByLabel('演奏テンポ', { exact: true })).toHaveValue('83');
+  await expect(page.locator('.part-row button').first()).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: '▶ 演奏開始', exact: true })).toBeEnabled();
+});

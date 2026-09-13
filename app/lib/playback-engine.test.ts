@@ -234,3 +234,130 @@ describe("PlaybackEngine", () => {
     });
   });
 });
+
+describe("practice transport", () => {
+  let engine: PlaybackEngine;
+  let now: number;
+  let notes: Array<{ note: NoteEvent; audioTime?: number }>;
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    now = 0;
+    notes = [];
+    engine = new PlaybackEngine({ getAudioTime: () => now });
+    const score = parseMusicXML(loadFixture("sample-duet.musicxml"));
+    score.tempo = 120;
+    score.parts[0].notes = Array.from({ length: 16 }, (_, startBeat) => ({
+      pitch: 60, startBeat, durationBeats: 0.5, velocity: 80, partIndex: 0,
+    }));
+    score.parts = [score.parts[0]];
+    engine.loadScore(score);
+    engine.setNoteOutputCallback((note, _delay, audioTime) => notes.push({ note, audioTime }));
+  });
+
+  afterEach(() => {
+    engine.stop();
+    vi.useRealTimers();
+  });
+
+  function advance(seconds: number) {
+    for (let i = 0; i < Math.round(seconds / 0.025); i++) {
+      now += 0.025;
+      vi.advanceTimersByTime(25);
+    }
+  }
+
+  it("plays the first note once, including after restart", () => {
+    engine.start();
+    advance(0.2);
+    expect(notes.filter(({ note }) => note.startBeat === 0)).toHaveLength(1);
+    engine.stop();
+    engine.start();
+    expect(notes.filter(({ note }) => note.startBeat === 0)).toHaveLength(2);
+  });
+
+  it("starts at the position selected while stopped", () => {
+    engine.seekToBeat(4);
+    engine.start();
+    expect(notes[0].note.startBeat).toBe(4);
+    advance(0.5);
+    expect(engine.getState().currentBeat).toBeCloseTo(5);
+    expect(notes.every(({ note }) => note.startBeat >= 4)).toBe(true);
+  });
+
+  it("keeps the selected position through count-in and ignores duplicate starts", () => {
+    engine.seekToBeat(4);
+    engine.setCountInMeasures(1);
+    engine.start();
+    advance(1);
+    engine.start();
+    expect(notes).toHaveLength(0);
+    advance(1.05);
+    expect(engine.getState().countingIn).toBe(false);
+    expect(notes[0].note.startBeat).toBe(4);
+    expect(notes[0].audioTime).toBeCloseTo(2, 1);
+  });
+
+  it("repeats the loop start without scheduling notes beyond its end", () => {
+    engine.setLoop(0, 2);
+    engine.start();
+    advance(2.2);
+    expect(notes.filter(({ note }) => note.startBeat === 0).length).toBeGreaterThanOrEqual(3);
+    expect(notes.every(({ note }) => note.startBeat < 2)).toBe(true);
+  });
+
+  it("does not replay old clicks when the metronome is enabled mid-song", () => {
+    const clicks = vi.fn();
+    engine.setClickOutputCallback(clicks);
+    engine.start();
+    advance(2.2);
+    engine.setMetronomeEnabled(true);
+    advance(0.4);
+    expect(clicks).toHaveBeenCalledTimes(1);
+    expect(clicks.mock.calls[0][1]).toBeGreaterThanOrEqual(2.2);
+  });
+
+  it("resets position, count-in and loop when loading another score", () => {
+    engine.setLoop(4, 8);
+    engine.seekToBeat(4);
+    engine.setCountInMeasures(1);
+    engine.start();
+    engine.loadScore(parseMusicXML(loadFixture("sample-duet.musicxml")));
+    expect(engine.getState()).toMatchObject({ currentBeat: 0, engineState: "idle", countingIn: false });
+    expect(engine.getLoop()).toEqual({ startBeat: null, endBeat: null });
+    advance(3);
+    expect(notes).toHaveLength(0);
+  });
+
+  it("keeps playing when only the loop end is set", () => {
+    engine.setLoop(null, 2);
+    engine.start();
+    advance(2);
+    expect(notes.some(({ note }) => note.startBeat > 2)).toBe(true);
+  });
+
+  it("counts eighth-note beats using the time signature denominator", () => {
+    const score = parseMusicXML(loadFixture("sample-duet.musicxml"));
+    score.tempo = 120;
+    score.timeSignature = { beats: 6, beatType: 8 };
+    score.timeSignatureChanges = [];
+    engine.loadScore(score);
+    const clicks = vi.fn();
+    engine.setClickOutputCallback(clicks);
+    engine.setCountInMeasures(1);
+    engine.start();
+    advance(1.475);
+    expect(engine.getState().countingIn).toBe(true);
+    expect(clicks).toHaveBeenCalledTimes(6);
+    expect(clicks.mock.calls.map((call) => call[1])).toEqual([0, 0.25, 0.5, 0.75, 1, 1.25]);
+    advance(0.05);
+    expect(engine.getState().countingIn).toBe(false);
+  });
+
+  it("rejects reversed loops and non-finite seek positions", () => {
+    engine.setLoop(8, 4);
+    expect(engine.getLoop().endBeat).toBeNull();
+    engine.seekToBeat(NaN);
+    expect(engine.getState().currentBeat).toBe(0);
+  });
+});

@@ -1,0 +1,250 @@
+{
+  "issues": [
+    {
+      "id": "measure-overrun",
+      "title": "拍子より長い小節",
+      "description": "音符・休符の長さが記録された拍子を超えています。認識・書き出しの誤り、または特殊な記譜の可能性があります。伴奏と譜面がずれることがあるため、元の楽譜で該当小節を確認してください。音符を自動で短くする修正は行いません。",
+      "count": 23,
+      "locations": [
+        {
+          "part": "Clarinetti in B.",
+          "measure": "3"
+        },
+        {
+          "part": "Clarinetti in B.",
+          "measure": "11"
+        },
+        {
+          "part": "Fagotti.",
+          "measure": "3"
+        },
+        {
+          "part": "Fagotti.",
+          "measure": "11"
+        }
+      ],
+      "locationCount": 23
+    }
+  ],
+  "parts": [
+    {
+      "id": "P1",
+      "name": "Clarinetti in B."
+    },
+    {
+      "id": "P2",
+      "name": "Fagotti."
+    },
+    {
+      "id": "P3",
+      "name": "Corni in Es ."
+    },
+    {
+      "id": "P4",
+      "name": "Pianoforte ."
+    },
+    {
+      "id": "P5",
+      "name": "Violino l ."
+    },
+    {
+      "id": "P6",
+      "name": "Violino ll ."
+    },
+    {
+      "id": "P7",
+      "name": "Viola."
+    },
+    {
+      "id": "P8",
+      "name": "Basso."
+    }
+  ],
+  "firstMeasures": [
+    {
+      "id": "P1",
+      "count": 12,
+      "first": [
+        {
+          "duration": "96"
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "count": 12,
+      "first": [
+        {
+          "duration": "96"
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "count": 12,
+      "first": [
+        {
+          "duration": "96"
+        }
+      ]
+    },
+    {
+      "id": "P4",
+      "count": 12,
+      "first": [
+        {
+          "pitch": "\n          C\n          4\n        ",
+          "duration": "48",
+          "staff": "1"
+        },
+        {
+          "pitch": "\n          E\n          -1\n          4\n        ",
+          "duration": "48",
+          "staff": "1"
+        },
+        {
+          "pitch": "\n          C\n          5\n        ",
+          "duration": "48",
+          "staff": "1"
+        },
+        {
+          "pitch": "\n          D\n          -1\n          5\n        ",
+          "duration": "12",
+          "staff": "1"
+        },
+        {
+          "pitch": "\n          C\n          5\n        ",
+          "duration": "12",
+          "staff": "1"
+        },
+        {
+          "pitch": "\n          B\n          -1\n          4\n        ",
+          "duration": "12",
+          "staff": "1"
+        },
+        {
+          "pitch": "\n          A\n          -1\n          4\n        ",
+          "duration": "12",
+          "staff": "1"
+        },
+        {
+          "pitch": "\n          A\n          -1\n          2\n        ",
+          "duration": "48",
+          "staff": "2"
+        },
+        {
+          "pitch": "\n          E\n          -1\n          3\n        ",
+          "duration": "48",
+          "staff": "2"
+        },
+        {
+          "pitch": "\n          A\n          -1\n          3\n        ",
+          "duration": "48",
+          "staff": "2"
+        },
+        {
+          "pitch": "\n          A\n          -1\n          2\n        ",
+          "duration": "24",
+          "staff": "2"
+        },
+        {
+          "pitch": "\n          C\n          3\n        ",
+          "duration": "24",
+          "staff": "2"
+        },
+        {
+          "pitch": "\n          E\n          -1\n          3\n        ",
+          "duration": "24",
+          "staff": "2"
+        },
+        {
+          "pitch": "\n          A\n          -1\n          2\n        ",
+          "duration": "24",
+          "staff": "2"
+        },
+        {
+          "pitch": "\n          C\n          3\n        ",
+          "duration": "24",
+          "staff": "2"
+        },
+        {
+          "pitch": "\n          E\n          -1\n          3\n        ",
+          "duration": "24",
+          "staff": "2"
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "count": 12,
+      "first": [
+        {
+          "pitch": "\n          C\n          4\n        ",
+          "duration": "48"
+        },
+        {
+          "pitch": "\n          C\n          4\n        ",
+          "duration": "24"
+        },
+        {
+          "pitch": "\n          C\n          4\n        ",
+          "duration": "24"
+        }
+      ]
+    },
+    {
+      "id": "P6",
+      "count": 12,
+      "first": [
+        {
+          "pitch": "\n          A\n          -1\n          3\n        ",
+          "duration": "48"
+        },
+        {
+          "pitch": "\n          A\n          -1\n          3\n        ",
+          "duration": "24"
+        },
+        {
+          "pitch": "\n          A\n          -1\n          3\n        ",
+          "duration": "24"
+        }
+      ]
+    },
+    {
+      "id": "P7",
+      "count": 12,
+      "first": [
+        {
+          "pitch": "\n          E\n          -1\n          3\n        ",
+          "duration": "48"
+        },
+        {
+          "pitch": "\n          E\n          -1\n          3\n        ",
+          "duration": "24"
+        },
+        {
+          "pitch": "\n          E\n          -1\n          3\n        ",
+          "duration": "24"
+        }
+      ]
+    },
+    {
+      "id": "P8",
+      "count": 12,
+      "first": [
+        {
+          "pitch": "\n          A\n          -1\n          2\n        ",
+          "duration": "48"
+        },
+        {
+          "pitch": "\n          A\n          -1\n          2\n        ",
+          "duration": "24"
+        },
+        {
+          "pitch": "\n          A\n          -1\n          2\n        ",
+          "duration": "24"
+        }
+      ]
+    }
+  ]
+}

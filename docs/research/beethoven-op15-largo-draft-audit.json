@@ -1,0 +1,203 @@
+{
+  "createdAt": "2026-09-10T22:41:59.190Z",
+  "source": "docs/research/beethoven-op15-breitkopf-source.json",
+  "tool": "Audiveris 5.11.0",
+  "requestedPages": "37-47",
+  "exitCode": 0,
+  "mxl": ".repertoire-cache/beethoven-op15/omr-breitkopf-largo/imslp-505853-full.mxl",
+  "xml": ".repertoire-cache/beethoven-op15/omr-breitkopf-largo/imslp-505853-full.musicxml",
+  "mxlSHA256": "078c7f361feae7da7a30ce2342cc6000222c5319522654d4fc8b9dad30c8cd39",
+  "parts": [
+    {
+      "id": "P1",
+      "name": "Voice",
+      "measures": 118,
+      "notes": 27,
+      "transpositionElements": 0
+    },
+    {
+      "id": "P2",
+      "name": "Voice",
+      "measures": 118,
+      "notes": 28,
+      "transpositionElements": 0
+    },
+    {
+      "id": "P3",
+      "name": "Clarinetti in B.",
+      "measures": 118,
+      "notes": 451,
+      "transpositionElements": 0
+    },
+    {
+      "id": "P4",
+      "name": "Fagotti.",
+      "measures": 118,
+      "notes": 504,
+      "transpositionElements": 0
+    },
+    {
+      "id": "P5",
+      "name": "Corni in Es .",
+      "measures": 118,
+      "notes": 457,
+      "transpositionElements": 0
+    },
+    {
+      "id": "P6",
+      "name": "Pianoforte .",
+      "measures": 117,
+      "notes": 1455,
+      "transpositionElements": 0
+    },
+    {
+      "id": "P7",
+      "name": "Violino l .",
+      "measures": 118,
+      "notes": 369,
+      "transpositionElements": 0
+    },
+    {
+      "id": "P8",
+      "name": "Violino ll .",
+      "measures": 118,
+      "notes": 380,
+      "transpositionElements": 0
+    },
+    {
+      "id": "P9",
+      "name": "Viola.",
+      "measures": 118,
+      "notes": 363,
+      "transpositionElements": 0
+    },
+    {
+      "id": "P10",
+      "name": "Basso.",
+      "measures": 117,
+      "notes": 318,
+      "transpositionElements": 0
+    }
+  ],
+  "parsed": {
+    "parts": 10,
+    "totalBeats": 527.625,
+    "measures": 117
+  },
+  "issues": [
+    {
+      "id": "ornaments",
+      "title": "トリル・装飾記号・トレモロ",
+      "description": "記号から細かい音符を生成せず、元の音符だけを演奏します。細かい音符へ展開したMusicXMLなら音列を扱えます。",
+      "count": 12,
+      "locations": [
+        {
+          "part": "Fagotti.",
+          "measure": "20"
+        },
+        {
+          "part": "Corni in Es .",
+          "measure": "86"
+        },
+        {
+          "part": "Pianoforte .",
+          "measure": "7"
+        },
+        {
+          "part": "Pianoforte .",
+          "measure": "23"
+        }
+      ],
+      "locationCount": 12
+    },
+    {
+      "id": "fermata",
+      "title": "フェルマータ",
+      "description": "記号だけでは音を長くしたり伴奏を待機させたりしません。必要な小節の入りに「合図を待つ」を指定できます。小節途中のフェルマータの自動解釈は未対応です。",
+      "count": 8,
+      "locations": [
+        {
+          "part": "Corni in Es .",
+          "measure": "36"
+        },
+        {
+          "part": "Pianoforte .",
+          "measure": "44"
+        },
+        {
+          "part": "Pianoforte .",
+          "measure": "54"
+        },
+        {
+          "part": "Pianoforte .",
+          "measure": "117"
+        }
+      ],
+      "locationCount": 8
+    },
+    {
+      "id": "wedge",
+      "title": "ヘアピンの強弱",
+      "description": "開始と終了がそろうヘアピンを音量に反映します。終点の強弱がなければ24段階の変化を推定します。未完の区間、重複する区間、途中で別の強弱が入る区間、nienteは反映しません。",
+      "count": 18,
+      "locations": [
+        {
+          "part": "Clarinetti in B.",
+          "measure": "14"
+        },
+        {
+          "part": "Fagotti.",
+          "measure": "14"
+        },
+        {
+          "part": "Fagotti.",
+          "measure": "25"
+        },
+        {
+          "part": "Fagotti.",
+          "measure": "43"
+        }
+      ],
+      "locationCount": 14
+    },
+    {
+      "id": "measure-overrun",
+      "title": "拍子より長い小節",
+      "description": "音符・休符の長さが記録された拍子を超えています。認識・書き出しの誤り、または特殊な記譜の可能性があります。伴奏と譜面がずれることがあるため、元の楽譜で該当小節を確認してください。音符を自動で短くする修正は行いません。",
+      "count": 466,
+      "locations": [
+        {
+          "part": "Voice",
+          "measure": "3"
+        },
+        {
+          "part": "Voice",
+          "measure": "9"
+        },
+        {
+          "part": "Voice",
+          "measure": "10"
+        },
+        {
+          "part": "Voice",
+          "measure": "11"
+        }
+      ],
+      "locationCount": 466
+    }
+  ],
+  "measureLocations": [
+    "13",
+    "22",
+    "31",
+    "38",
+    "45",
+    "58",
+    "72",
+    "83",
+    "94",
+    "107"
+  ],
+  "acceptedForPerformance": false,
+  "productBundled": false
+}

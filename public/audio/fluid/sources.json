@@ -1,0 +1,392 @@
+[
+  {
+    "instrument": "acoustic_grand_piano",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/acoustic_grand_piano-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "eb3b985e3b692cfe0c48550a26843fc3da44c7630c0b7bcfd820e87c5122cccc",
+      "C2": "e02c5a80c03871e1889a3bb371d853f92294c1e8538ac06f70df0fd045540207",
+      "C3": "7d0409ea3c40af25c6d3d606f12890f88f896d93c381b6eb8c58497f308b30d3",
+      "C4": "b6d32e0d9d0c2e4b88165a2ec27b8787a970f131a03d96d065f28f158640af96",
+      "C5": "7a4be6dae323ac5564ad1a617b554fd595e5e0a63f19c3581e3ee94c33ae2e4b",
+      "C6": "6a0030c071ccd6c9a722455851d65b18cb86cbfe515772a6ded4c747eda339a0",
+      "C7": "5e4cadc06eb25e2302dcc5bf1af76fe85ed258759d02c46e9169376ade83845e"
+    }
+  },
+  {
+    "instrument": "string_ensemble_1",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/string_ensemble_1-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "dbefa04d0a3f843371796e848704c989bf534d4231832b77a0701764200b1e3d",
+      "C2": "bc8dfb98c0b251be3aa31ddfc95c4c192aeccb7d6250583860553607c04c5a62",
+      "C3": "9e1473b471b22fa129ad63118e378088b45c0cb3767b61b7b21999eb7415f185",
+      "C4": "e2ca8e8308c6ab163508f351617af213923fc59d3d380148f1d0df756db109e3",
+      "C5": "17af2f3d0956ce6b9faacba437f6b48bc43aa1c0f36a700edb7be92df3149239",
+      "C6": "f89dfd4b7472e7b479a2336b4bc95c2b5904818e39a671424ad2c6f9325d7292",
+      "C7": "e8cc3d57967147b4502aa768b916c63a14b4ebebb2739075590901f67f3ab069"
+    }
+  },
+  {
+    "instrument": "flute",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/flute-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "08e7c4695933ecf9224cc8ed54fc6c22260037f210bbf724c26ee938fec164ba",
+      "C2": "646db44d72044c1420a5c3746aa78b9b86b60e8d7b88e326d8f256232e986805",
+      "C3": "15dda29306795d4fd02b8976718bfedf4920a94ea2a63dc409f96a0fa46b5242",
+      "C4": "5cd80bb51e7b11a5bba2a496af78e982dc3f1f216eb13a0c36366142190e35c9",
+      "C5": "761a2afe76c7445aa53453689797ff7152a4187769328e1e66d1f92ceb914a5d",
+      "C6": "54bfb6782319e9f2c6e8b14843ca0f1a635cfc006ae988ac2aef0fff00f9ad90",
+      "C7": "1b3bb3f4a4ae9ebfd82f72b1cdd12efd90f6007a97df7b0f503f555892d1b1de"
+    }
+  },
+  {
+    "instrument": "bassoon",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/bassoon-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "f24a6396ca3fac1506820e3f519a054ef1f88254fcf9e6e8fe3f934291a373f1",
+      "C2": "0f5f5907d7b4fb6dad493550c5b41f4a6a2eaf11d712f6a590d2c6ce99fb9850",
+      "C3": "de9ba7ddae370a84ddfc3b4ad44c32839ec8220e5b85d00cb846431b9950646f",
+      "C4": "58ba558e220c94b6cef034635bc4026d6e7792dae5b2cfa7cd2f195dfc85539f",
+      "C5": "bf8c6c69ac761cd7cc0b9181352052ff276eb4d24afaf5ce0739412f6145c5a2",
+      "C6": "d5bea4a6e3fa357f92ddcb591be1898f5b2f58281203032e034a613be90751bb",
+      "C7": "cd20893f17b39244b0141ce4be12243d1d4d57904f430e332adc32307921562d"
+    }
+  },
+  {
+    "instrument": "french_horn",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/french_horn-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "e023c316ce1be5eb0894a1d2051999d623ed1416197c86821170f5b2ee5b9573",
+      "C2": "3ea59d1d8f3bd4624b68ffbefe82e2ff0cffaf72d069ffa13928ef125a0480ac",
+      "C3": "575331bb867bffd2171da869eedb8ebec7adda4de3e85bd80bc95a97c0ba01df",
+      "C4": "a5559df4fde8c13626418409d0968dcde6ac4cf34286e1083a0bebbaf02b445d",
+      "C5": "3d7c4361214ea914d15163e8d69144794fe920187862c7a119d110bfb44f0861",
+      "C6": "67e3935b82e17a9fefc42a65326c32b697b4095d82af7584c13c199c91a8ad6b",
+      "C7": "30080bea708dd69d46cbda1af6beb9fd191ab0145dbaf1864b21628e1eb61354"
+    }
+  },
+  {
+    "instrument": "contrabass",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/contrabass-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "67a75122f33be311a666c68b7e33cd7043c738f7ba70280960a1469b4943da22",
+      "C2": "cc4f7d896f109545c3760a3490d09c71202f302f9c4db435e0ba8c7ad26a1c63",
+      "C3": "9f50827fe9779076d5654d88d628cbeaf5e941c8547935246c88067dd59d1178",
+      "C4": "cd20893f17b39244b0141ce4be12243d1d4d57904f430e332adc32307921562d",
+      "C5": "cd20893f17b39244b0141ce4be12243d1d4d57904f430e332adc32307921562d",
+      "C6": "cd20893f17b39244b0141ce4be12243d1d4d57904f430e332adc32307921562d",
+      "C7": "cd20893f17b39244b0141ce4be12243d1d4d57904f430e332adc32307921562d"
+    }
+  },
+  {
+    "instrument": "clarinet",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/clarinet-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "7d3da89bdd70fd9ac8cddb55797825558509d486ef5a000aaee58da3b995b584",
+      "C2": "e0048f9d4d2859312d2b168dd4361d17cb9e0e3fafca23ab6e9b3a6108c0735a",
+      "C3": "d33869d4b2e0ad2e73937be741de170cf665bf625a47628ac4079f31075c54d8",
+      "C4": "2e74581b76e55cdda38fe0ec03c8d8a96c05c127ef9e3c24ed0973324a2490fd",
+      "C5": "3466c9871bbb7f73fa18c1b4b35fdc16858f5867abbfdac29d2abb0ab0948ac8",
+      "C6": "93ebe3047066df85836b01bc7a856957268cf873780e9ea1a575e3da0da65c6e",
+      "C7": "550af7076bc15be52326941b64a5090277a680eb90ffd32f6e27792a1c1765af"
+    }
+  },
+  {
+    "instrument": "oboe",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/oboe-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "1bbb3c5e689f557726952996a4e10c69469072c68bce3beca7a93698b3552b6b",
+      "C2": "15534543387231877cc7e7999459d835120ae3cad62af8640989fb2c32ce619f",
+      "C3": "37fd3298a826ac85af0a0a535604cf4833102892dabbe910d9bd9e3c3278a6ba",
+      "C4": "41b7b0fe35942053be44d0a03d36cfdfdc23cdbcf7a50fcafa954fd12e50d0d7",
+      "C5": "4c2631d51770ddcc03600372eced42b2f9b8ac7324fb24c317ebe82b5d003dd7",
+      "C6": "29baae0b733828990128a00b866cb3a398c935ea0a66072598cc9e9510aa2e50",
+      "C7": "6ec7d050ae01d81cb7bf0786b3d18deca4093f44e391b635d57083e6a56a952f"
+    }
+  },
+  {
+    "instrument": "english_horn",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/english_horn-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "8ffe9c6dc95fc108b1fcaf8ba05721cfb4f38916e3e7c56f3341aea9eb753663",
+      "C2": "0b346354e88077459f65c6a16709c02297480f0e8331727cfd9b5ff12c008cf8",
+      "C3": "6829bbc876e0aaf03ad09ea6430fb28c307c0dacf49a135004a1a5718d074e09",
+      "C4": "eabfe480d465aa29fecc28b8aef0cd5383daae9b9a75603baf27a9af6039a80a",
+      "C5": "d0b2157fbebb7972bbbf0eeeb13ad4fbd639eef3c97a59b75cf2f2abc76fb399",
+      "C6": "67da2836b191f40e018aa46dc822f536b9c02e23b58f2395c9405f159d42bcf4",
+      "C7": "cd20893f17b39244b0141ce4be12243d1d4d57904f430e332adc32307921562d"
+    }
+  },
+  {
+    "instrument": "trumpet",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/trumpet-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "46028104ee30016bdd86c3fa4973e3e872b0c1ecad557d241aca3460aa91a9b6",
+      "C2": "9debeb301cac36616f83490e01305f05b4caba1b6d7d2b399c87ee0262e6edbe",
+      "C3": "330b7bfe72f137adee3c0b0dcc7c37d27dc2c68d8e0d40c6416f5bddc9ceb91e",
+      "C4": "d8741f42a2d514dbbf80aff2550dac4d1282901c4b215dcc18c020c64ca4d6d5",
+      "C5": "4ea6680974d2814c59f21819fc26d9afba9dc43d56005fe659d478378bbc5510",
+      "C6": "213b7103c2077d7926961062186d59a25b43be8a756dbac839a18fdc0ea65d98",
+      "C7": "377d7da1a78b06cefd7760d55a57fcc749baa399f5ecfaf86b9f30c7783df9a5"
+    }
+  },
+  {
+    "instrument": "trombone",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/trombone-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "283534d83e7bf7c93b3620c9a164afebb9daf7956d03b659fb32677895e42527",
+      "C2": "3668dfa639af369f957a0a9a2ca4cc1657f742c4b1762dbe03f9a315e7db36c5",
+      "C3": "dc8a0630b54398bada7c75c19b757101b67d74ce5abd3edb984841c7ee866ec4",
+      "C4": "f4fadab65db1f6afb9fe20aa74040ebfb54c7ba7180868ed873af0c1c2c12dc8",
+      "C5": "748c03f8d1b93483c8bbc50766abf5c6b550ca69ecff7f5eaa5ab05f68b26ac0",
+      "C6": "fb7375d66bb7d0db4278000b54cd38ef5049b5153aaa5737ab96e3cf433ec292",
+      "C7": "d6f76de8e1c9bdddcd00d14a05e5010077728897ebbdb1f25fc3929b0635ecfe"
+    }
+  },
+  {
+    "instrument": "tuba",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/tuba-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "bf6cbf133045fd6aa8a54d879257f61a1a04e0d068f0c4212971146872af72fb",
+      "C2": "4904dd8a486474db8277b356e0c83fe4df4405ed2bcace6cd0e243d7963dd528",
+      "C3": "bf3f11e988fb9fd102e98aacdfddcecb9c518ecd31a2fe2418bd4db8a9bc21ab",
+      "C4": "f67e83d1d55f320d0cd0464cf7cb78b2d62a8982efe51b1ed1dc9af442cf323f",
+      "C5": "809e73e289422021c218a1705937036243c635a74f138f68081b913ad9997570",
+      "C6": "cd20893f17b39244b0141ce4be12243d1d4d57904f430e332adc32307921562d",
+      "C7": "cd20893f17b39244b0141ce4be12243d1d4d57904f430e332adc32307921562d"
+    }
+  },
+  {
+    "instrument": "violin",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/violin-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "b78e94b90ac29d933aceae4f32c4f5c73c281eea5912247d2645b21e1fdff154",
+      "C2": "5da09320f408f14141147f398085fd2a651c1493fdfaae704ac8375186584344",
+      "C3": "929e86fd48dac861900fa309bacff3109fe07fba456c350b4838f589510ba314",
+      "C4": "65b06ce5993748a3666704f4fee56661989ef225dc5394d0198be8bfa6f1d9f5",
+      "C5": "190b0646492ff186c51dff70ceb6ed33aecc3ec691cacb895302ae0daa4c6585",
+      "C6": "2751aba9241f7c76ac59155d1e67f9677bb0de37de15e56aee0bd58a9c6834df",
+      "C7": "5ac830f075ea3dfcc3560bd78f2aff7a8673f3a5f2d6a513fc830ffa3994312f"
+    }
+  },
+  {
+    "instrument": "viola",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/viola-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "a9130cfcb055fe83bd6640425c6d0ecba2806768d19e58f0407ea1cff2b1d98c",
+      "C2": "0204d8c7c1dd6a6bde015b02e0a428c1f1966bcb4138231a2434423b78aa75b0",
+      "C3": "a68b1038f94d5f9f865d4c4094248b11404987af936d8fea059a83f82b1f95f6",
+      "C4": "ac0654b37c0d8cc0f4bdc11f67c0f2941cf3cd82af3bc3fdd1816747b4d1df40",
+      "C5": "007f9aaf23a305758b5199c3a1402fa8671f65a640bb10f50fa302a42d11c812",
+      "C6": "afb7392b744d552642d07955471b0ebea0102bea2cfa78e33214906b2dcb722a",
+      "C7": "36666ab50b9e02c4d97d29d21499b1c504dd17426e7bd517edb9ec19bfb84eb3"
+    }
+  },
+  {
+    "instrument": "cello",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/cello-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "d4135b1db90ddbdaca4fc379dc4f934b4a09ee5ec5e80cf5b3e5383709e27ff9",
+      "C2": "b067cad9857d8fd2651ee6b2661fefd8b7305fae8227f6834f203d81c98c1e1c",
+      "C3": "945c6f8243bbe13309a5938fb55483fd215bb760e41c77e21c890714c1d9f7ec",
+      "C4": "0495b262618c14e6b2d37f9457019ffc79d6bcd9b0571f626760aa1a497bb45b",
+      "C5": "8fb8fa3e1e8a855c0fd1466bec0450bfde80e503907407bda1f7f966d63f9fb2",
+      "C6": "075b442347699e1a3d8191a367ed248f28979b791734ed830209e5fb1a4ac7e3",
+      "C7": "3085747b31c9c8eff0a18f5768d796f33e77764a50b977945f1b57d3c3efe206"
+    }
+  },
+  {
+    "instrument": "orchestral_harp",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/orchestral_harp-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "016567afc8986da6b90cba6cc8d9f4ebe460e458751e06ad1ca674d069bbee85",
+      "C2": "753bf9c9c693a19c7b1a7738766313ddfa37f432a1ea2d0d6165dcd3d7bd058c",
+      "C3": "4e1197ade09a5661b0cabe8b1884787d5098319f1cefbd40697d2d18bf193fc9",
+      "C4": "c5db4d0d30e9dd5fd8e5c2bb252b626992e3bbed43c4b968ee9973fbe7364a81",
+      "C5": "99ca80a144204bf898f358be22185f46244eeb6f418450f6ac4b98eba9a8850e",
+      "C6": "1a688dc96d1638251f6ef90bea9374914c1fd6c3801326767bd236ad7d99ae1f",
+      "C7": "f3a8e8a67e1c4fdee7e6280c6395e79f52e187ab2eaa2ceda5beffa67c529a4b"
+    }
+  },
+  {
+    "instrument": "piccolo",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/piccolo-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "4dc200e313fcfd22956a56953c165d2a5a74e90840913ab1018917dbfa378070",
+      "C2": "711fb8ff6c8e4cba4eaa4ddbb29fe7234af3c052903e99c505838e85435f5d70",
+      "C3": "d522c2c7f88c9db4270c08ce5bc60505f47c10a3d9a1ac9b5eb8b2799ae6ec6e",
+      "C4": "6bcd0a879d3fef7882b5031a103d79b083438b73c64c01bae4ac670fc6ec9a0a",
+      "C5": "79504290f942fc6094990f0c1e065d93df14ececb1855ecaeeb10b980bfb900f",
+      "C6": "e8487c01ff2140a444f869737115a9447d99cd4031552aaaf169eddc3bee66a7",
+      "C7": "2786aed9a829c394792e3937c526dc83b6dba01b2f03e00409990d3fe357620f"
+    }
+  },
+  {
+    "instrument": "timpani",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/timpani-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "1a4ac0b8674e4797af098847a14a83bba62ec51ed87a940313b422424102de15",
+      "C2": "28baf5c4dba38f8b8821d774bafab716ffa9c8bcc622fa8550af9c7c5f306bf5",
+      "C3": "b19f1b62bb243e4a497d23f75513b197f5b282059037a0c247daa8bca5efb965",
+      "C4": "c0f01f601b4fa720d7ba73b9e37c9a06f3d4017afc1cd2a43407e7f462e9aa4f",
+      "C5": "f692abff3e23b00fe2f4d81721cbe86ee71539842d896bca5e54add456aae4a0",
+      "C6": "0d8654b5ac7ffecb1265d5dad5e52151f3ef4af746360a605f91cb46f9e26977",
+      "C7": "fd8824af5c048e73bedadd8ad9ed2c6459351dc576d130711d75e8533e4f7af7"
+    }
+  },
+  {
+    "instrument": "alto_sax",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/alto_sax-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "73bd580a0fbad33abe3f91bc21d7579caf73bd9d63a77433a73f4e70190105aa",
+      "C2": "97e8222146625e908b954193319d8b69bcb344e6cca2878d64926f27a60a7f56",
+      "C3": "97c41a65ce31f41fb6b1df3b860a2abf8989f69825bff2802af96d0864f855d9",
+      "C4": "4d3e59d0f84d21720ceee43eccda720370a7a891dfb336258cc8b2fd95c06dac",
+      "C5": "1aed556973313bebb45d0ed056c1d08a05cb8631f419b130ea2b04b47df63aec",
+      "C6": "73c5cc47b036deb27c3fd46f5e44c32d64ab4aac6022c76727583b141680a086",
+      "C7": "cd20893f17b39244b0141ce4be12243d1d4d57904f430e332adc32307921562d"
+    }
+  },
+  {
+    "instrument": "tenor_sax",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/tenor_sax-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "e1a9cf5fa1194d34feedd3cce5979d0ff6fee42b6567ed64f39278e2500ec767",
+      "C2": "7b569f4c10239a2c009bd1bdc66fc39ae32241eb51ab07763b8a42aaa781d2b5",
+      "C3": "f257508f6ed29b0b5a41877802dec936c8e99c0790d73e63d07e469c042e46e1",
+      "C4": "c02b4578e5aa08a0cb57866cdbc25cd55f24c6a5a224a255278f0c8a049ede7b",
+      "C5": "31aaacf7af0306551a45d8135b6ad47b5e08393a0fc44c492056ccd6d5b566ef",
+      "C6": "c8ac61887f16e61b4b8fef91ff24ef156100c87ad5ab4e01dab63be6d356a250",
+      "C7": "89f266697db3cc9731099880fe5a4ad35e384f72fed4c54902a363dda3c897ad"
+    }
+  },
+  {
+    "instrument": "baritone_sax",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/baritone_sax-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "279109acec720106dba50411c64ff043aa39e93495c9adc3b2933178f2585208",
+      "C2": "b3142a8347adbb87b5362c35b49ae4ca4dbfcb2eaf90ef40615015d2abb75dc8",
+      "C3": "b63b86dd6a135d1eb088a1244354ff2fde754af8f3897f369ff3bf0f79ed5ccd",
+      "C4": "bdeace20a01bc9e7d9bd0cbf6186e8e47bcaefa5352636ad804eb32fcfa85fba",
+      "C5": "53468ac51128dea18c713774ba8fbfc56c9b903374cddbbc7dd867c1c52130ca",
+      "C6": "cd20893f17b39244b0141ce4be12243d1d4d57904f430e332adc32307921562d",
+      "C7": "cd20893f17b39244b0141ce4be12243d1d4d57904f430e332adc32307921562d"
+    }
+  },
+  {
+    "instrument": "soprano_sax",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/soprano_sax-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "4154c876458a73b0ad1d389f30b13c67fb4938310356b31292bdafafc7c49fab",
+      "C2": "4fd6da254601975e1b5c51250793e5ea74300ab70170f13a4d696d70efda44d3",
+      "C3": "5ad166675dcc43b43717edc108ad8cdb5165f64d605ea6bb8c76dd7a1f4f68a6",
+      "C4": "1e8a87dab94613e79ebfc3120205a95ac8731e90109e582d5ba0389ca8d1bf96",
+      "C5": "4206039f532b1bb9ca4fe8c0563dc638bacf18b4a64a827244a5b7452cac7e19",
+      "C6": "75bb478a8736bde6bb85b6aa53c8ec34577be4bd258cbe8ad2925e2f328693da",
+      "C7": "f2dad604246c928975fd523c085165622cdfd898210f7d562d087fcdbba35f2f"
+    }
+  },
+  {
+    "instrument": "acoustic_guitar_nylon",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/acoustic_guitar_nylon-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "862de75c8b482571edebf69a8714ea87f1b6b7c75e1ee63758b1492507cb96a7",
+      "C2": "a21e4780b219df5beb886d89ba42c7bc699d417a969911e5f07c50286e285455",
+      "C3": "7a30b518b874f7740034977710aa0efab70d215a3a828e6924717eeb2c244906",
+      "C4": "55c2808ac0fd3f722645f6bffe0f90313e1f3a1b325d56507639f1430b4e010a",
+      "C5": "feed1eec8636d4329da5b3d1d84963e0f5d6c29411d057c8442ca3b4b9e33981",
+      "C6": "71e68e4a562ca8b4b370f1dfa2770243cea8c8a19c413336dc82806c646ac8a5",
+      "C7": "9aefde853ed121ad5d8423ec02ceb7c6cd0d076a1553b444b14e6032b433b607"
+    }
+  },
+  {
+    "instrument": "harpsichord",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/harpsichord-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "b0829bf6427798904ed7629a155697054e7e4b9252f08aac3fea6ee43bde8d87",
+      "C2": "aaee25c6b584c424f3c7648ec05146ea3823e367ee955e5e225ef408287108df",
+      "C3": "383408f7c54e9e84609da9f7a9e742eaa9b8dd1936f9061dd5438b53bdba9ffd",
+      "C4": "08b279004fb4ad0cc5886a7dbbf7740c7e1ec4b80139a859d689b59079631796",
+      "C5": "b6e08be58f97f419d7a4d02e87bc7d437064b768d32c29462abc2860b534a022",
+      "C6": "d8b9fa64b63335589be172f6e12d39e3d8a4667dd0323e0a5f035ce32fbf69d8",
+      "C7": "a46767d35bd5d3926ab7ede49d91d31148007235ade306603779eb86d8129e45"
+    }
+  },
+  {
+    "instrument": "glockenspiel",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/glockenspiel-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "55c80d9fe38e6318c31b8d0b9e2c9c3ca55a60e8b4fa7db131344c435395f576",
+      "C2": "8192578b1101b0fa5b3f506251796bcf9419fd91ccce22f3a824042b591e6887",
+      "C3": "3e130f7f7894c9e015aa4c6c24d4acb1a5782405e078c65dd248d97b152578dc",
+      "C4": "def23ffbbeefffca58395f1a025a1885311f13da2890a54c12f2cff9b23cfd8f",
+      "C5": "3c08a230564daf7d31a3c58607f13352f7036f258e4fc0121f53d6ff30f61774",
+      "C6": "40239d7525ccc7e34c15e4bc93521100a258d8779eac44af8f6b9c7364e65f12",
+      "C7": "e345a23ea4ffc23a093db4e966c4eb1d2ca9d0fa04279ed0bc22dfa3507f28df"
+    }
+  },
+  {
+    "instrument": "marimba",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/marimba-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "7b2d426db934a8087654bb1552369246fceecf642a1a81d105dbf7a2cc3df6ad",
+      "C2": "da2040c6ab4d6c5eb84f5479c84928ef267004a6ddcf954f0d8e634cfc0aed58",
+      "C3": "75777407882b562a507a559b2a962513117cba5db0e6eed8021dd47c055471ee",
+      "C4": "2f1382b9a79050de0be336fc53689ba246f5e516ce81c02f28a0e39e8d1e98f6",
+      "C5": "7a38fcba7fb5ead5225e6322891b92c3ab3e2083997b78299f75b6f8b928ec2f",
+      "C6": "24646a8db53bcf4f614d8e9dad86f056962dd54f2f0f0f2fdbbf90a1caff1c87",
+      "C7": "1d4e2a0c964d7a11054ff5db0cce72041cef7bdfc9c6c64b994b41447151c88d"
+    }
+  }
+]

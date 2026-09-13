@@ -24,7 +24,15 @@ export interface WaitDirective {
 
 // --- Extended MusicXML Measure ---
 
+export interface ExpressionDirective {
+  preset: "singing" | "tender" | "building" | "settling" | "light";
+  amount: number;
+  endMeasure?: number;
+}
+
 export interface MeasureAnnotation {
+  leader?: string;
+  expression?: ExpressionDirective;
   measureNumber: number;
   role?: RoleDirective;
   wait?: WaitDirective;
@@ -33,6 +41,10 @@ export interface MeasureAnnotation {
 // --- Score Data ---
 
 export interface NoteEvent {
+  gainCurve?: { position: number; gain: number }[];
+  voice?: string;
+  staff?: string;
+  articulation?: number;
   /** MIDI note number (0-127) */
   pitch: number;
   /** Start time in beats */
@@ -46,6 +58,9 @@ export interface NoteEvent {
 }
 
 export interface ScorePart {
+  sourcePartId?: string;
+  midiProgram?: number;
+  transposeSemitones?: number;
   id: string;
   name: string;
   /** true = solo part (user), false = accompaniment */
@@ -61,6 +76,9 @@ export interface ExpressionProfile {
 }
 
 export interface ParsedScore {
+  playerPartId?: string;
+  sourceMeasureStartBeats?: number[];
+  tempoEvents?: TempoEvent[];
   title: string;
   tempo: number;
   timeSignature: { beats: number; beatType: number };
@@ -117,6 +135,7 @@ export interface MidiNoteMessage {
   note: number;
   velocity: number;
   timestamp: number;
+  channel?: number;
 }
 
 export interface MidiDeviceInfo {
@@ -154,6 +173,7 @@ export interface MotionCue {
 // --- Rehearsal NLP ---
 
 export type RehearsalCommandType =
+  | "set_expression"
   | "set_role"
   | "set_wait"
   | "set_tempo"
@@ -161,12 +181,14 @@ export type RehearsalCommandType =
   | "reset";
 
 export interface RehearsalCommand {
+  expression?: ExpressionDirective;
   type: RehearsalCommandType;
   measureNumber?: number;
   role?: RoleDirective;
   wait?: WaitDirective;
   tempo?: number;
   dynamics?: number;
+  tempoMode?: "absolute" | "relative";
   rawText: string;
 }
 
