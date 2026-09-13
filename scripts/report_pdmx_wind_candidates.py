@@ -9,6 +9,7 @@ CSV_PATH = ROOT / ".repertoire-cache" / "PDMX.csv"
 OUT_PATH = ROOT / "docs" / "research" / "pdmx-wind-candidates.json"
 PUBLIC_OUT_PATH = ROOT / "public" / "repertoire" / "ensemble" / "pdmx-wind-candidates.json"
 TERMS = ("military band", "wind ensemble", "woodwind", "brass", "march", "water music", "folk song suite")
+HISTORICAL_COMPOSERS = ("bach", "handel", "clarke", "holst", "elgar", "sousa", "fucik", "fučík", "alford", "lully", "mozart", "beethoven", "grieg", "dvor")
 
 
 def main() -> None:
@@ -24,6 +25,7 @@ def main() -> None:
             candidates.append({
                 "songName": row.get("song_name", ""),
                 "title": row.get("title", ""),
+                "composer": row.get("composer_name", ""),
                 "tracks": int(row["n_tracks"]),
                 "license": row["license"],
                 "licenseConflict": row["license_conflict"] == "True",
@@ -31,9 +33,10 @@ def main() -> None:
                 "allValid": row["subset:all_valid"] == "True",
                 "metadataEligible": eligible,
                 "manualReviewRequired": True,
+                "historicalComposerSignal": any(name in row.get("composer_name", "").lower() for name in HISTORICAL_COMPOSERS),
                 "mxlPath": row["mxl"],
             })
-    candidates.sort(key=lambda item: (-item["metadataEligible"], -item["tracks"], item["title"]))
+    candidates.sort(key=lambda item: (-item["historicalComposerSignal"], -item["metadataEligible"], -item["tracks"], item["title"]))
     report = json.dumps({"generatedFrom": "PDMX.csv", "rightsNote": "Metadata eligibility is not a copyright determination; every row requires manual work, edition, and arrangement review.", "candidates": candidates[:100]}, ensure_ascii=False, indent=2) + "\n"
     OUT_PATH.write_text(report)
     PUBLIC_OUT_PATH.write_text(report)
