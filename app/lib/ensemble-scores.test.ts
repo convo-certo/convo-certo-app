@@ -24,6 +24,15 @@ it("loads the complete Mozart Adagio score instead of a MIDI conversion", () => 
   expect(playerPart(score)?.name).toMatch(/clarinet/i);
 });
 
+it("loads the four movement Mozart K.581 quintet with five playable parts", () => {
+  const score = parseMusicXML(readFileSync("public/repertoire/ensemble/mozart-k581-clarinet-quintet.musicxml", "utf8"));
+  expect(score.parts).toHaveLength(5);
+  expect(score.totalMeasures).toBe(498);
+  expect(score.measureNumbers.at(-1)).toBe(498);
+  expect(playerPart(score)?.name).toMatch(/clarinet/i);
+  expect(score.parts.every((part) => part.notes.length > 100)).toBe(true);
+});
+
 it("bundles a searchable, attributed catalogue with featured orchestral and wind scores", () => {
   const catalog = JSON.parse(readFileSync("public/repertoire/ensemble/catalog.json", "utf8")) as { id: string; title: string; parts: string[]; category: string; featured: boolean }[];
   const manifest = JSON.parse(readFileSync("public/repertoire/ensemble/sources.json", "utf8")) as { id: string; licenseConflict: boolean; scoreLicense: string; sha256: string }[];
