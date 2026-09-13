@@ -4,6 +4,8 @@ import { playerVariation, chairLevel } from "./player-variation";
 import { defaultChairs, type OrchestraChair } from "./orchestra-space";
 import type { NoteEvent, ScorePart } from "./types";
 
+const placementInstruments = ["clarinet", "flute", "piccolo", "oboe", "english_horn", "bassoon", "french_horn", "trumpet", "trombone", "tuba", "soprano_sax", "alto_sax", "tenor_sax", "baritone_sax", "violin", "viola", "cello", "contrabass", "string_ensemble_1", "orchestral_harp", "timpani", "marimba", "glockenspiel", "harpsichord", "acoustic_guitar_nylon", "acoustic_grand_piano"];
+
 export function instrumentForPart(part: ScorePart): string {
   const program = part.midiProgram;
   const name = part.name.toLowerCase();
@@ -88,7 +90,7 @@ export class OrchestraAudio {
       limiter.ratio.value = 8;
       this.master.connect(limiter).connect(this.context.destination);
     }
-    const instruments = [...new Set([...parts.map(instrumentForPart), "french_horn"])];
+    const instruments = [...new Set([...parts.map(instrumentForPart), ...placementInstruments])];
     await Promise.all(instruments.map(async (instrument) => {
       if (this.buffers.has(instrument)) return;
       onProgress?.(`音源を準備中: ${instrument.replaceAll("_", " ")}`);

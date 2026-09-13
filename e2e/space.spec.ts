@@ -73,10 +73,11 @@ test('duplicate players apply distinct tuning to actual audio sources', async ({
   await page.getByLabel('MusicXMLで演奏する',{exact:true}).setInputFiles({name:'duet.xml',mimeType:'application/xml',buffer:Buffer.from(xml)});
   await expect(page.getByRole('button',{name:'▶ 演奏開始',exact:true})).toBeEnabled();
   await page.getByRole('button',{name:'席 chair-1: Cello',exact:true}).click();
+  await page.getByLabel('席の楽器',{exact:true}).selectOption('clarinet');
   await page.getByLabel('奏者の微細なずれ',{exact:true}).fill('1');
   await page.getByRole('button',{name:'同じ楽器の奏者を追加',exact:true}).click();
   await expect(page.locator('.orchestra-chair')).toHaveCount(3);
-  await expect(page.getByLabel('席の楽器',{exact:true})).toHaveValue('cello');
+  await expect(page.getByLabel('席の楽器',{exact:true})).toHaveValue('clarinet');
   await page.getByRole('button',{name:'▶ 演奏開始',exact:true}).click();
   await expect.poll(()=>page.evaluate(()=>(window as any).playerSources.length)).toBeGreaterThanOrEqual(2);
   const sources=await page.evaluate(()=>(window as any).playerSources.slice(0,2));
