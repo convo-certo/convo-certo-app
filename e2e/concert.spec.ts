@@ -143,6 +143,8 @@ test("verified wind catalogue exposes ten playable scores", async ({ page }) => 
   const catalog = page.getByRole("region", { name: "MusicXMLライブラリ" });
   await catalog.getByLabel("楽譜の編成").selectOption("wind");
   await expect(catalog.getByText("10譜", { exact: true })).toBeVisible();
+  await catalog.getByLabel("クラリネット席ありのみ").check();
+  await expect(catalog.getByText("10譜", { exact: true })).toHaveCount(0);
   const march = catalog.locator("article").filter({ hasText: "トルコ行進曲" });
   await expect(march).toBeVisible();
   await expect(march.getByLabel("クラリネット席の有無")).toHaveText("クラリネット席あり");

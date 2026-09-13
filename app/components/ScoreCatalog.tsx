@@ -4,11 +4,12 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
   const [scores, setScores] = useState<CatalogScore[]>([]);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("orchestra");
+  const [clarinetOnly, setClarinetOnly] = useState(false);
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => { let cancelled = false; void fetch("/repertoire/ensemble/catalog.json").then((response) => { if (!response.ok) throw new Error(); return response.json(); }).then((data: CatalogScore[]) => { if (!cancelled) setScores(data); }).catch(() => { if (!cancelled) setError("楽譜一覧を読み込めませんでした。"); }); return () => { cancelled = true; }; }, []);
-  const filtered = scores.filter((score) => (!category || score.category === category) && `${score.title} ${score.composer} ${score.parts.join(" ")}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => Number(b.featured) - Number(a.featured));
+  const filtered = scores.filter((score) => (!category || score.category === category) && (!clarinetOnly || score.parts.some((part) => /clarinet|clari[nm]ette|クラリネット/i.test(part))) && `${score.title} ${score.composer} ${score.parts.join(" ")}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => Number(b.featured) - Number(a.featured));
   const priorityRoadmap = [
     ["ベートーヴェン交響曲第5番 第1楽章", "収録済み"],
     ["ベートーヴェン交響曲第6番《田園》第1楽章", "第1楽章を収録済み・全曲を検証中"],
@@ -32,7 +33,7 @@ export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: F
     <h3>好きな楽器で、オーケストラの中へ</h3>
     <p><a href="/repertoire/ensemble/ConvoCerto-MusicXML.zip" download>MusicXML一式をZIPでダウンロード</a></p>
     <p>MusicXML {scores.length}譜。総譜のパートを選んで共奏できます。★は優先収録曲です。</p>
-    <div className="concert-controls"><input aria-label="収録楽譜を検索" placeholder="曲名・作曲家・楽器名" value={query} onChange={(event) => { setQuery(event.target.value); setLimit(10); }} /><select aria-label="楽譜の編成" value={category} onChange={(event) => { setCategory(event.target.value); setLimit(10); }}><option value="orchestra">管弦楽編成</option><option value="wind">吹奏楽・木管合奏</option><option value="chamber">室内楽・伴奏付き</option><option value="solo">独奏</option><option value="">すべて</option></select><span>{filtered.length}譜</span></div>
+    <div className="concert-controls"><input aria-label="収録楽譜を検索" placeholder="曲名・作曲家・楽器名" value={query} onChange={(event) => { setQuery(event.target.value); setLimit(10); }} /><select aria-label="楽譜の編成" value={category} onChange={(event) => { setCategory(event.target.value); setLimit(10); }}><option value="orchestra">管弦楽編成</option><option value="wind">吹奏楽・木管合奏</option><option value="chamber">室内楽・伴奏付き</option><option value="solo">独奏</option><option value="">すべて</option></select><label><input aria-label="クラリネット席ありのみ" type="checkbox" checked={clarinetOnly} onChange={(event) => { setClarinetOnly(event.target.checked); setLimit(10); }} /> クラリネット席あり</label><span>{filtered.length}譜</span></div>
     <details className="concert-roadmap"><summary>優先曲の収録状況</summary><ul>{priorityRoadmap.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul></details>
     <details className="concert-roadmap"><summary>公開利用可能な管楽曲 10曲</summary><ul>{windCandidates.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul></details>
     {error && <p role="alert">{error}</p>}
