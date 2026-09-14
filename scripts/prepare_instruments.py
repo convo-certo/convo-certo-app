@@ -7,7 +7,7 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = Path(__file__).resolve().parents[1]
-INSTRUMENTS = ['acoustic_grand_piano', 'string_ensemble_1', 'flute', 'bassoon', 'french_horn', 'contrabass', 'clarinet', 'oboe', 'english_horn', 'trumpet', 'trombone', 'tuba', 'violin', 'viola', 'cello', 'orchestral_harp', 'piccolo', 'timpani', 'alto_sax', 'tenor_sax', 'baritone_sax', 'soprano_sax', 'acoustic_guitar_nylon', 'harpsichord', 'glockenspiel', 'marimba']
+INSTRUMENTS = ['acoustic_grand_piano', 'string_ensemble_1', 'flute', 'bassoon', 'french_horn', 'contrabass', 'clarinet', 'oboe', 'english_horn', 'trumpet', 'trombone', 'tuba', 'violin', 'viola', 'cello', 'orchestral_harp', 'piccolo', 'timpani', 'alto_sax', 'tenor_sax', 'baritone_sax', 'soprano_sax', 'acoustic_guitar_nylon', 'harpsichord', 'glockenspiel', 'marimba', 'acoustic_bass', 'electric_piano_1', 'electric_piano_2', 'church_organ', 'rock_organ', 'choir_aahs', 'synth_strings_1', 'synth_strings_2']
 
 def prepare(instrument):
     url = f'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/{instrument}-mp3.js'

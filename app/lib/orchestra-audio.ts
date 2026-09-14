@@ -8,7 +8,7 @@ import { placementInstruments } from "./instrument-palette";
 export function instrumentForPart(part: ScorePart): string {
   const program = part.midiProgram;
   const name = part.name.toLowerCase();
-  const programs: Record<number, string> = { 0: "acoustic_grand_piano", 6: "harpsichord", 9: "glockenspiel", 12: "marimba", 24: "acoustic_guitar_nylon", 40: "violin", 41: "viola", 42: "cello", 43: "contrabass", 46: "orchestral_harp", 47: "timpani", 48: "string_ensemble_1", 49: "string_ensemble_1", 56: "trumpet", 57: "trombone", 58: "tuba", 60: "french_horn", 64: "soprano_sax", 65: "alto_sax", 66: "tenor_sax", 67: "baritone_sax", 68: "oboe", 69: "english_horn", 70: "bassoon", 71: "clarinet", 72: "piccolo", 73: "flute" };
+  const programs: Record<number, string> = { 0: "acoustic_grand_piano", 4: "electric_piano_1", 5: "electric_piano_2", 6: "harpsichord", 18: "rock_organ", 19: "church_organ", 9: "glockenspiel", 12: "marimba", 24: "acoustic_guitar_nylon", 32: "acoustic_bass", 40: "violin", 41: "viola", 42: "cello", 43: "contrabass", 46: "orchestral_harp", 47: "timpani", 48: "string_ensemble_1", 49: "string_ensemble_1", 50: "synth_strings_1", 51: "synth_strings_2", 52: "choir_aahs", 56: "trumpet", 57: "trombone", 58: "tuba", 60: "french_horn", 64: "soprano_sax", 65: "alto_sax", 66: "tenor_sax", 67: "baritone_sax", 68: "oboe", 69: "english_horn", 70: "bassoon", 71: "clarinet", 72: "piccolo", 73: "flute" };
   if (program != null && program !== 0 && programs[program]) return programs[program];
   const names: [RegExp, string][] = [
     [/clarinet|クラリネット/, "clarinet"], [/piccolo|ottavino|ピッコロ/, "piccolo"], [/flut|flaut|flûte|フルート/, "flute"],

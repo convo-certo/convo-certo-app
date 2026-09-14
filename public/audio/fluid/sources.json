@@ -388,5 +388,125 @@
       "C6": "24646a8db53bcf4f614d8e9dad86f056962dd54f2f0f0f2fdbbf90a1caff1c87",
       "C7": "1d4e2a0c964d7a11054ff5db0cce72041cef7bdfc9c6c64b994b41447151c88d"
     }
+  },
+  {
+    "instrument": "acoustic_bass",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/acoustic_bass-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "12a8bf4fac2eba98c9050dda17107ece65e33f0d8270c59ef46cc8c6f9552013",
+      "C2": "eed6669bde073a1faecd69e26799765db2bfe7747557afa6381ff4a3f2b1f9fa",
+      "C3": "decea7714f2c8831cf9b3fc16f4779b63413c64317921d901c7fb52e097b88b4",
+      "C4": "5c16ecb3b935747d5348fa2977214ea402e01d89394a06d4a0ccb2f9a96e3a42",
+      "C5": "17d5aed0b2d13d4b00f3c9eb132a942a8e6059fafd63a6c24f44437177a28166",
+      "C6": "526069660783be1e1e745f46ddd00a1333ac8cf1c52bbe178f0f137233545338",
+      "C7": "4956cdcdba00058c95fdede53467a2d6e4659622b3987dc8a3f9a820be4a584a"
+    }
+  },
+  {
+    "instrument": "electric_piano_1",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/electric_piano_1-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "c50b21961b8b6c414bc7ae5237cf629b7bbfcd692a435a4c8a39632c47acea27",
+      "C2": "f65168930ab68381c487c065490e8d56d016cd607ea9e47c9bdeedf01498088b",
+      "C3": "3173362ab63be26db5ea64c35c171299e9836296b3023adb249e2809d20d8cd9",
+      "C4": "096c7cdb68e9a0cb645a932eea80562a5c7d43f17dd94d231135f883e860048d",
+      "C5": "a4f7ce39ade2b62dde4c4283ae202dd729433d54630e25b8d055afcfb9fda019",
+      "C6": "a199829f5b6d6bbcd266fbd48a3309fd5ff42322e0ff001524a66550cace8384",
+      "C7": "c2fd88b6409d639a325338a35497452c485f6a7946be1f3fdae260d9cb09adda"
+    }
+  },
+  {
+    "instrument": "electric_piano_2",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/electric_piano_2-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "1a3cf83ba8a484e20e12da48b9e79b43b394f92d3d37ca0149dc71ba2a762d7a",
+      "C2": "665679c8b3a4df2305ba543bb1ab9dd499ca5c2a6d7ab3aa8144b4a5fa2cb411",
+      "C3": "1d964429333599a7fbcaa58d1de512ca7f5d4b0c3ac17fabedacef0495513e8a",
+      "C4": "a6ebc762641c33f5821c6c228f6b1629075e503b3a715296e59a5d62208b6268",
+      "C5": "1c1753dae48d7deba61b176e506ed63729eb61d0e3d14a40e412611acba70177",
+      "C6": "399fa50846d2fb686f0be74f95732e227156eff00e3ef51f018999b0a80fe4c9",
+      "C7": "6a8269d2648da2ebb70c68a987763ed16c88cddb850845e4b2193458bce94c4c"
+    }
+  },
+  {
+    "instrument": "church_organ",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/church_organ-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "0b05be16bcdd98043f36f669821e4d41d373c5aa472d84a863587ad1ee1b5412",
+      "C2": "fae92527a11c000a1dab69feec92a8fe3af0ac76858c08300f79cab55edbdfd7",
+      "C3": "d8ae1bc6fd6384edd930bc682cfc5740e9798b2f40e88fa8ced2baf73809a517",
+      "C4": "eef411f1b74cfd97ee49ec52b26c3b9cf1ada46bbd8f7399498c2e6d36ce39b7",
+      "C5": "8c089b133e487570c068f90414c0592eeebfdbab1146224ad3554da076cfbc87",
+      "C6": "67353d3fff56f943be08892f69a48d0314bb6f50f43240b31626f0da5e157bea",
+      "C7": "dcff8f9102d37c2a23103ad8d759ecd969f7918f40de144e9c7a83fde7bbf8f3"
+    }
+  },
+  {
+    "instrument": "rock_organ",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/rock_organ-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "586208b0585e5d58ddd3959735fe202a30ab59ba60a963c07d1f0ade0bb583d7",
+      "C2": "f4476792a9183cd4baa17a4ed35993ef8cdb03c3b92ba5513eadc7bbaef07acd",
+      "C3": "d9ea1e8a4f9e7f235c262e090415847f76ab326452c7e8c1ce043e6f75b20bc2",
+      "C4": "7f68545c9efe553e1a85509a82aef473131e7a52944a7f09683a2600ec6b2042",
+      "C5": "898673fb089aae8644809cb51af62f4123f0cad0e201b89bf6ed3bcad1067aca",
+      "C6": "a90bc92d2492bc4ce3800fff5a1650118535ced1d83da03d1ec01f372799ba70",
+      "C7": "b00f55cc51f466b2c1240c74f53bae64556cd7225d670031e68031dde452b77f"
+    }
+  },
+  {
+    "instrument": "choir_aahs",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/choir_aahs-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "6c743bee4caebc27dd014137b856415b64102ce0211b9019ebe6a58391aa80ba",
+      "C2": "5a7e74ad50e0099756369034846509685278e4f0c0f5bd6630de10e61679da66",
+      "C3": "696a1c22a2b91a3206bf6af5c0c2e71972fcaffc5317f7e7b8962a01a054952b",
+      "C4": "9be9ef6a4f78f4de50fa08ec73a63869823a4db80e3b7b28d9b7ebad926e15a4",
+      "C5": "0cfcbd1818d9e7777d772d6fdf7fe5f7e3e26eebef76f6ca4e1c0bffd70b0e52",
+      "C6": "4905e22d0ebf66cfdae555501ee7943d9fb605bbc50f77baf29d6fa1a960baa0",
+      "C7": "cc281aff663ee8eb202fa454d63573864dd8ed9741ad72986b4b130febba8956"
+    }
+  },
+  {
+    "instrument": "synth_strings_1",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/synth_strings_1-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "7b762b321c136953f98ef96176454d2fe73d633ffa94a33320664d5e4cd205dc",
+      "C2": "f8b23d4795455886a5dd5f1ca502e581379fe7bee326870aae443557d0dda092",
+      "C3": "03833d065a039e526412f4e0995ac09bdd24cdaf828ff5a63b820e2922436064",
+      "C4": "744eb5daf45c868a65080f3f88d9d719ac900791cad99a1477ec205e11a7056b",
+      "C5": "a2f0248d6ec4eff545ce365514b9af4dca870fb0c795bd0c0647c58b421cfd49",
+      "C6": "b4288385a256cc419acd39f4f103d1265970bf9ed10d8a0688c8dd6526c66e1a",
+      "C7": "6e786857950a4381a5b62598508367b453e2cb220e908ddef91977d00d3a5a1b"
+    }
+  },
+  {
+    "instrument": "synth_strings_2",
+    "source": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/synth_strings_2-mp3.js",
+    "license": "CC-BY-3.0",
+    "creator": "Frank Wen; MIDI.js Soundfonts rendering by Benjamin Gleitzman",
+    "samples": {
+      "C1": "31f3796d319ee6eed025fe0a55597526f07c2f3b707b9faa0657e4e0521b38cf",
+      "C2": "1c5d54deee9a74de673a74d2ec0670c4790cc34dd81a005f7f68653800f46e02",
+      "C3": "3d9592ea6b284f21c53be30c58335ecc529d6fa581a8f93584009e6d382cbc94",
+      "C4": "95473884e7efc0955d180495439e1bb3e79dcdedea550894f455fae73e56b1b4",
+      "C5": "2b5a8bedea56f01da10dfb0a837641a00526b7eb4b4f647626a947d6c3d33869",
+      "C6": "a2f808186fa71cc02a6f0e24f988067588e4dd92a4c995d8846bf0786ffad27e",
+      "C7": "8ba1eb9b82a380731920725c721a43d97fe594ec9ae2331e2294a8db424258ad"
+    }
   }
 ]
