@@ -1,0 +1,60 @@
+import { expect, test } from "@playwright/test";
+
+test.use({ locale: "en-US" });
+
+test("the guide explains a microphone-free first rehearsal in both languages on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 740 });
+  await page.goto("/guide");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("your first phrase");
+  await expect(page.locator(".practice-lessons > li")).toHaveCount(5);
+  await expect(page.locator(".practice-lessons")).toContainText("Leave the microphone off");
+  await expect(page.locator(".practice-lessons")).toContainText("wind, string, keyboard");
+  await expect(page.locator(".practice-lessons")).toContainText("Export practice file");
+  await page.getByRole("navigation", { name: "Guide contents" }).getByRole("link", { name: /Expression & save/ }).click();
+  await expect(page.getByRole("heading", { name: "Shape it and keep it" })).toBeInViewport();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+  await page.getByLabel("Language", { exact: true }).selectOption("ja");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("はじめの一音まで");
+  await expect(page.locator(".practice-lessons")).toContainText("マイクを接続せずに進む");
+  await expect(page.locator(".practice-lessons")).toContainText("管・弦・鍵盤");
+  await expect(page.locator(".practice-lessons")).toContainText("練習ファイルを書き出す");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+  await page.getByRole("link", { name: "収録曲で試す", exact: false }).click();
+  await expect(page.locator("#starter-scores button").first()).toBeFocused();
+});
+
+test("the in-score guide preserves a piano practice and restores keyboard focus", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/perform");
+  await page.getByLabel("Play a MusicXML score", { exact: true }).setInputFiles("public/scores/sample-duet.musicxml");
+  await page.locator(".studio-part-picker").getByLabel("Your part", { exact: true }).selectOption({ label: "Piano" });
+  await page.getByRole("button", { name: "Practise this part", exact: true }).click();
+  await page.getByRole("button", { name: /Adjust tempo/ }).click();
+  await page.getByLabel("Practice tempo", { exact: true }).fill("88");
+  await page.getByRole("button", { name: "↻ Loop", exact: true }).click();
+  await page.getByLabel("Start bar", { exact: true }).fill("1");
+  await page.getByLabel("End bar", { exact: true }).fill("2");
+  await page.getByRole("button", { name: "Turn loop on", exact: true }).click();
+  await page.getByRole("button", { name: "Save and settings", exact: true }).click();
+  const help = page.getByRole("button", { name: "How to practise", exact: true });
+  await help.click();
+  const guide = page.getByRole("dialog");
+  await expect(guide).toBeVisible();
+  await expect(guide.getByRole("button", { name: "Close guide", exact: true })).toBeFocused();
+  await expect(guide).toContainText("Accompaniment plays even with the microphone off");
+  await page.keyboard.press("Escape");
+  await expect(guide).toBeHidden();
+  await expect(help).toBeFocused();
+  await expect(page.locator(".studio-part > button").first()).toContainText("Piano");
+  await expect(page.getByRole("button", { name: /88 BPM/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "↻ Bars 1–2", exact: true })).toBeVisible();
+  await help.click();
+  await guide.getByRole("button", { name: "5. Shape it and keep it", exact: true }).click();
+  await expect(guide).toContainText("A Without this change");
+  await expect(guide).toContainText("Add to score");
+  await guide.getByRole("button", { name: "Back to practice", exact: true }).click();
+  await expect(guide).toBeHidden();
+  await expect(help).toBeFocused();
+  await expect(page.getByRole("group", { name: "Practice controls" }).getByRole("button")).toHaveCount(6);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+});

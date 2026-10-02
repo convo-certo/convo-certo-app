@@ -1,0 +1,6 @@
+.starter-duet-card { display: flex; flex-direction: column; border: 1px solid #dbe2d3; border-radius: 14px; background: #faf9f4; overflow: hidden; }
+.concert .starter-duet-card > button { width: 100%; border: 0; border-radius: 0; }
+.starter-instrument { display: grid; gap: 7px; margin: 0 20px 16px; font-size: 12px; color: #52634e; }
+.starter-instrument select { width: 100%; min-width: 0; min-height: 40px; padding: 8px 10px; border: 1px solid #c9d3c1; border-radius: 8px; background: #fffefb; color: #233d29; font: inherit; }
+.starter-instrument small { margin-top: 0; font-size: 11px; line-height: 1.6; }
+.starter-grid > div > button { width: 100%; }

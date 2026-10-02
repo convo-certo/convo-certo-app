@@ -1,0 +1,78 @@
+.practice-guide-page { max-width:1100px; margin:0 auto; padding:28px 40px 0; color:#213f36; }
+.practice-guide-header { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.practice-guide-header .brand-lockup { font-size:20px; font-weight:650; }
+.practice-guide-page a:focus-visible, .practice-guide-page summary:focus-visible, .practice-guide-dialog button:focus-visible { outline:3px solid #c69546; outline-offset:4px; }
+.practice-guide-current:focus-visible { outline:2px solid #c69546; outline-offset:-2px; }
+.practice-guide-intro { padding:72px 0 42px; max-width:760px; }
+.practice-guide-eyebrow { color:#687e64; font-size:11px; font-weight:700; letter-spacing:.17em; }
+.practice-guide-intro h1 { font-size:clamp(36px,5vw,58px); line-height:1.25; font-weight:500; letter-spacing:-.045em; margin:18px 0 26px; }
+.practice-guide-intro h1 em { font-family:Georgia,serif; font-weight:400; color:#6e835a; }
+.practice-guide-intro > p:not(.practice-guide-eyebrow):not(.practice-guide-small) { max-width:60ch; font-size:16px; line-height:1.9; color:#526b5d; }
+.practice-guide-actions { display:flex; align-items:center; flex-wrap:wrap; gap:18px 28px; margin:28px 0 16px; }
+.practice-guide-actions a, .practice-guide-finish > a { display:inline-flex; align-items:center; justify-content:space-between; gap:25px; padding:14px 20px; font-size:14px; border-radius:9px; }
+.practice-guide-actions a:first-child, .practice-guide-finish > a { background:#295e4b; color:#fffdf3; }
+.practice-guide-actions a:nth-child(2) { padding-left:0; text-decoration:underline; text-underline-offset:5px; }
+.practice-guide-small { font-size:12px; line-height:1.8; color:#607060; }
+.practice-guide-index { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); border-top:1px solid #d4ded0; border-bottom:1px solid #d4ded0; }
+.practice-guide-index a { display:flex; gap:8px; align-items:baseline; padding:18px 12px; font-size:12px; }
+.practice-guide-index a:first-child { padding-left:0; }
+.practice-guide-index a span { color:#718465; font-size:10px; }
+.practice-guide-index a:hover { background:#f3f6ed; }
+.practice-lessons { list-style:none; padding:0; margin:0; }
+.practice-lessons > li { display:grid; grid-template-columns:84px 1fr; gap:32px; padding:44px 0; border-bottom:1px solid #dce3d6; }
+.practice-lesson-number { font-size:38px; color:#9ca88d; font-family:Georgia,serif; }
+.practice-lessons article { scroll-margin-top:24px; max-width:74ch; }
+.practice-lessons h2, .practice-guide-inputs h2, .practice-guide-questions h2, .practice-guide-finish h2 { font-size:25px; font-weight:550; letter-spacing:-.025em; line-height:1.5; }
+.practice-lesson-summary { font-size:15px; line-height:1.9; margin:12px 0; color:#4b6454; }
+.practice-lesson-control { display:inline-block; font-size:12px; font-weight:600; line-height:1.6; color:#3f644c; background:#eaf0e4; border:1px solid #d6e0cd; border-radius:7px; padding:7px 12px; margin:8px 0 16px; }
+.practice-lessons article > ol, .practice-guide-current > ol { padding-left:22px; list-style:decimal; font-size:14px; line-height:1.9; }
+.practice-lessons article > ol li, .practice-guide-current > ol li { padding-left:7px; margin-bottom:12px; }
+.practice-lessons article > ol li::marker, .practice-guide-current > ol li::marker { color:#688059; font-weight:600; }
+.practice-lesson-note { font-size:12px; color:#647059; line-height:1.8; padding-left:13px; border-left:2px solid #c1caa8; margin-top:20px; }
+.practice-guide-inputs { padding:52px 0 40px; }
+.practice-guide-inputs h2 { margin:12px 0 24px; }
+.practice-guide-inputs > div { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.practice-guide-inputs article { border:1px solid #dbe2d3; border-radius:14px; padding:23px; background:#fafbf6; }
+.practice-guide-inputs article > span { font-size:25px; color:#8e8556; }
+.practice-guide-inputs h3 { font-size:16px; font-weight:600; line-height:1.6; margin:15px 0 10px; }
+.practice-guide-inputs article p { font-size:13px; line-height:1.9; color:#566d5b; }
+.practice-guide-questions { padding:8px 0 32px; }
+.practice-guide-questions h2 { margin-bottom:20px; }
+.practice-guide-questions details { border-top:1px solid #dce3d6; padding:18px 0; }
+.practice-guide-questions summary { cursor:pointer; font-size:14px; font-weight:500; line-height:1.7; }
+.practice-guide-questions details p { font-size:14px; line-height:1.9; margin:14px 0 0; max-width:80ch; color:#546b59; }
+.practice-guide-finish { padding:36px; border-radius:16px; background:#edf2e5; }
+.practice-guide-finish p { font-size:14px; line-height:1.8; margin:12px 0 22px; max-width:75ch; color:#556d58; }
+.practice-guide-footer { display:flex; flex-wrap:wrap; gap:20px; font-size:12px; padding:32px 0; color:#697b64; }
+.practice-guide-dialog { position:fixed; inset:0; margin:auto; padding:24px; width:min(620px,calc(100vw - 32px)); max-height:calc(100dvh - 32px); overflow:auto; color:#213f36; background:#fffef8; border:1px solid #cbd7c2; border-radius:16px; box-shadow:0 20px 100px #132e3b3d; }
+.practice-guide-dialog[open] { display:flex; flex-direction:column; }
+.practice-guide-dialog::backdrop { background:#193c32a8; }
+.practice-guide-dialog > header { display:flex; flex-shrink:0; align-items:center; justify-content:space-between; gap:16px; padding-bottom:10px; }
+.practice-guide-dialog > header p { margin:0; font-size:12px; font-weight:600; color:#64775c; }
+.concert .practice-guide-dialog > header button { padding:3px 12px; font-size:24px; border:0; background:transparent; }
+.practice-guide-dialog > nav { display:flex; flex-shrink:0; gap:8px; padding:8px 0 20px; }
+.concert .practice-guide-dialog > nav button { width:40px; height:40px; padding:0; font-size:13px; }
+.concert .practice-guide-dialog > nav button[aria-pressed=true] { background:#295e4b; border-color:#295e4b; color:white; }
+.concert .practice-guide-dialog h2 { font-size:24px; line-height:1.4; margin:4px 0 10px; }
+.practice-guide-current { min-height:0; overflow:auto; }
+.practice-guide-dialog .practice-lesson-control { margin:0 0 12px; }
+.practice-guide-dialog .practice-lesson-summary { margin:10px 0 18px; font-size:14px; }
+.practice-guide-dialog > footer { display:flex; flex-shrink:0; justify-content:space-between; gap:16px; border-top:1px solid #dce3d6; margin-top:24px; padding-top:18px; }
+.concert .practice-guide-dialog > footer button { min-height:44px; }
+@media(max-width:700px) {
+  .practice-guide-page { padding:22px 22px 0; }
+  .practice-guide-intro { padding:46px 0 30px; }
+  .practice-guide-intro h1 { font-size:clamp(28px,6vw,40px); }
+  .practice-guide-index { grid-template-columns:1fr 1fr; padding:6px 0; }
+  .practice-guide-index a, .practice-guide-index a:first-child { padding:10px 4px; }
+  .practice-lessons > li { grid-template-columns:32px 1fr; gap:14px; padding:30px 0; }
+  .practice-lesson-number { font-size:26px; }
+  .practice-lessons h2, .practice-guide-inputs h2, .practice-guide-questions h2, .practice-guide-finish h2 { font-size:21px; }
+  .practice-guide-inputs > div { grid-template-columns:1fr; }
+  .practice-guide-inputs article { padding:20px; }
+  .practice-guide-inputs h3 { margin-top:8px; }
+  .practice-guide-finish { padding:24px; }
+  .practice-guide-dialog { width:calc(100vw - 20px); max-height:calc(100dvh - 20px); padding:18px; }
+  .concert .practice-guide-dialog h2 { font-size:20px; }
+}
+@media print { .practice-guide-dialog { display:none; } }

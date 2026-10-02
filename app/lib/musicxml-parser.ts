@@ -9,6 +9,7 @@
 import { musicXMLPlaybackOrder } from "./musicxml-navigation";
 import { applyHairpinDynamics, type DynamicMark, type HairpinMark } from "./musicxml-hairpins";
 import { readExpression } from "./expressive-intent";
+import { MusicXMLError } from "./musicxml-error";
 import type {
   ExpressionDirective,
   MeasureAnnotation,
@@ -74,12 +75,25 @@ function parseDurationToBeats(
   return duration / divisions;
 }
 
+function parseExpressionDirective(text: string, measure: number): ExpressionDirective {
+  try {
+    const expression = readExpression(JSON.parse(text.slice("ConvoCerto:expression:".length)));
+    if ((expression.endMeasure ?? measure) < measure) throw new MusicXMLError("expression-invalid", "表情の区間が不正です。");
+    return expression;
+  } catch (cause) {
+    if (cause instanceof MusicXMLError) throw cause;
+    throw new MusicXMLError("expression-invalid", cause instanceof Error ? cause.message : "表情の指示が不正です。", { cause });
+  }
+}
+
 export function parseMusicXML(xmlString: string): ParsedScore {
+  if (!xmlString.trim()) throw new MusicXMLError("file-empty", "楽譜ファイルが空です。MusicXMLとして書き出し直してください。");
   const parser = new DOMParser();
   const doc = parser.parseFromString(xmlString, "application/xml");
 
   const scorePartwise = doc.querySelector("score-partwise");
-  if (doc.querySelector("parsererror") || !scorePartwise) throw new Error("有効な score-partwise MusicXML ファイルを選択してください。");
+  if (doc.querySelector("parsererror")) throw new MusicXMLError("xml-invalid", "有効な score-partwise MusicXML ファイルを選択してください。");
+  if (!scorePartwise) throw new MusicXMLError("format-unsupported", "有効な score-partwise MusicXML ファイルを選択してください。");
   const title =
     doc.querySelector("work-title")?.textContent ??
     doc.querySelector("movement-title")?.textContent ??
@@ -195,13 +209,16 @@ export function parseMusicXML(xmlString: string): ParsedScore {
               annotation.role = role;
               hasAnnotation = true;
             }
+            if (text.startsWith("ConvoCerto:memo:")) {
+              annotation.memo = text.slice("ConvoCerto:memo:".length).slice(0, 120);
+              hasAnnotation = true;
+            }
             if (text.startsWith("ConvoCerto:leader:")) {
               annotation.leader = text.slice("ConvoCerto:leader:".length);
               hasAnnotation = true;
             }
             if (text.startsWith("ConvoCerto:expression:")) {
-              const expression = readExpression(JSON.parse(text.slice("ConvoCerto:expression:".length)));
-              if ((expression.endMeasure ?? effectiveNum) < effectiveNum) throw new Error("表情の区間が不正です。");
+              const expression = parseExpressionDirective(text, effectiveNum);
               annotation.expression = expression;
               hasAnnotation = true;
             }
@@ -216,13 +233,16 @@ export function parseMusicXML(xmlString: string): ParsedScore {
           .querySelectorAll("direction direction-type words")
           .forEach((wordEl) => {
             const text = wordEl.textContent?.trim() ?? "";
+            if (text.startsWith("ConvoCerto:memo:")) {
+              annotation.memo = text.slice("ConvoCerto:memo:".length).slice(0, 120);
+              hasAnnotation = true;
+            }
             if (text.startsWith("ConvoCerto:leader:")) {
               annotation.leader = text.slice("ConvoCerto:leader:".length);
               hasAnnotation = true;
             }
             if (text.startsWith("ConvoCerto:expression:")) {
-              const expression = readExpression(JSON.parse(text.slice("ConvoCerto:expression:".length)));
-              if ((expression.endMeasure ?? effectiveNum) < effectiveNum) throw new Error("表情の区間が不正です。");
+              const expression = parseExpressionDirective(text, effectiveNum);
               annotation.expression = expression;
               hasAnnotation = true;
             }
@@ -315,7 +335,8 @@ export function parseMusicXML(xmlString: string): ParsedScore {
     });
   });
 
-  if (!parts.length || !parts.some((part) => part.notes.length)) throw new Error("MusicXMLに演奏できる音符がありません。");
+  if (!parts.length) throw new MusicXMLError("parts-missing", "MusicXMLに演奏できる音符がありません。");
+  if (!parts.some((part) => part.notes.length)) throw new MusicXMLError("notes-missing", "MusicXMLに演奏できる音符がありません。");
   const soloPart = parts.find((part) => /clarinet|clarinett|clarinette|クラリネット/i.test(part.name) || part.midiProgram === 71) ?? parts[0];
   soloPart.isSolo = true;
   const slotCount = measureNumbers.length;
@@ -373,7 +394,7 @@ export function parseMusicXML(xmlString: string): ParsedScore {
     }
   }
 
-  for (const annotation of measures) if (annotation.expression?.endMeasure != null && annotation.expression.endMeasure > totalMeasures) throw new Error("表情の終了小節が譜面の範囲外です。");
+  for (const annotation of measures) if (annotation.expression?.endMeasure != null && annotation.expression.endMeasure > totalMeasures) throw new MusicXMLError("expression-invalid", "表情の終了小節が譜面の範囲外です。");
   const totalBeats = runningBeat;
   const expandedTempos: TempoEvent[] = [];
   const expandedSignatures: TimeSignatureEvent[] = [];
@@ -414,7 +435,7 @@ export function parseMusicXML(xmlString: string): ParsedScore {
 export function updateMusicXMLAnnotation(
   xmlString: string,
   measureNumber: number,
-  annotation: { role?: RoleDirective; wait?: WaitDirective; expression?: ExpressionDirective; leader?: string }
+  annotation: { role?: RoleDirective; wait?: WaitDirective; expression?: ExpressionDirective; leader?: string; memo?: string }
 ): string {
   const parser = new DOMParser();
   const doc = parser.parseFromString(xmlString, "application/xml");
@@ -429,7 +450,7 @@ export function updateMusicXMLAnnotation(
 
   for (const mark of measureEl.querySelectorAll("rehearsal, words")) {
     const text = mark.textContent?.trim() ?? "";
-    if (parseRoleFromRehearsal(text) || parseWaitDirective(text) || (text.startsWith("ConvoCerto:expression:") || text.startsWith("ConvoCerto:leader:"))) mark.remove();
+    if (parseRoleFromRehearsal(text) || parseWaitDirective(text) || (text.startsWith("ConvoCerto:expression:") || text.startsWith("ConvoCerto:leader:") || text.startsWith("ConvoCerto:memo:"))) mark.remove();
   }
 
   if (annotation.role) {
@@ -478,6 +499,15 @@ export function updateMusicXMLAnnotation(
     words.textContent = "ConvoCerto:expression:" + JSON.stringify(readExpression(annotation.expression));
     type.appendChild(words);
     direction.appendChild(type);
+    measureEl.insertBefore(direction, measureEl.firstChild);
+  }
+  if (annotation.memo?.trim()) {
+    const direction = doc.createElement("direction");
+    const type = doc.createElement("direction-type");
+    const words = doc.createElement("words");
+    words.setAttribute("print-object", "no");
+    words.textContent = "ConvoCerto:memo:" + annotation.memo.trim().slice(0, 120);
+    type.appendChild(words); direction.appendChild(type);
     measureEl.insertBefore(direction, measureEl.firstChild);
   }
   const serializer = new XMLSerializer();

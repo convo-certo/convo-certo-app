@@ -1,12 +1,16 @@
+import { confirmImportedPart, openDisclosure, openEnsembleLab } from "./helpers/studio";
 import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
 
 test("saved take reopens after reload for comparison without changing settings or starting playback", async ({ page }) => {
   const load = async () => {
     await page.getByLabel("MusicXMLで演奏する", { exact: true }).setInputFiles("public/scores/sample-duet.musicxml");
+    await confirmImportedPart(page);
+    await openEnsembleLab(page);
+    await openDisclosure(page, "追従・表現の詳細");
     await expect(page.getByRole("button", { name: "テイクを記録して演奏", exact: true })).toBeEnabled();
   };
-  await page.goto("/perform"); await load();
+  await page.goto("/perform?view=settings"); await load();
   await page.getByLabel("楽譜への追従方式").selectOption("sequence");
   await page.getByRole("button", { name: "テイクを記録して演奏", exact: true }).click();
   await expect(page.getByLabel("保存したテイクを開く")).toBeDisabled();

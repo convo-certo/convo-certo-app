@@ -1,15 +1,25 @@
 import type { MidiNoteMessage } from "./types";
 
 export interface PitchReading { frequency: number; midi: number; cents: number; confidence: number; level: number }
+export const MICROPHONE_MIN_FREQUENCY = 40;
+export const MICROPHONE_MAX_FREQUENCY = 2400;
 
-export function detectPitch(samples: Float32Array, sampleRate: number, tuning = 440): PitchReading | null {
+function signalLevel(samples: Float32Array): number {
   let power = 0;
   for (const sample of samples) power += sample * sample;
   const level = Math.sqrt(power / samples.length);
-  if (level < 0.008 || !Number.isFinite(level)) return null;
+  return Number.isFinite(level) ? level : 0;
+}
+
+export function detectPitch(samples: Float32Array, sampleRate: number, tuning = 440): PitchReading | null {
+  return detectPitchAtLevel(samples, sampleRate, tuning, signalLevel(samples));
+}
+
+function detectPitchAtLevel(samples: Float32Array, sampleRate: number, tuning: number, level: number): PitchReading | null {
+  if (level < 0.008) return null;
   const size = Math.floor(samples.length / 2);
-  const minLag = Math.max(2, Math.floor(sampleRate / 1600));
-  const maxLag = Math.min(size - 1, Math.ceil(sampleRate / 90));
+  const minLag = Math.max(2, Math.floor(sampleRate / MICROPHONE_MAX_FREQUENCY));
+  const maxLag = Math.min(size - 1, Math.ceil(sampleRate / MICROPHONE_MIN_FREQUENCY));
   const normalized = new Float32Array(maxLag + 1);
   let cumulative = 0;
   let selected = 0;
@@ -55,13 +65,14 @@ export class MicrophoneInput {
   tuning = 440;
   onNote: (message: MidiNoteMessage) => void = () => {};
   onReading: (reading: PitchReading | null) => void = () => {};
+  onLevel: (level: number) => void = () => {};
 
   getInputLabel(): string { return this.stream?.getAudioTracks()[0]?.label ?? ""; }
 
   async start(deviceId = ""): Promise<void> {
     this.stop();
     const generation = this.generation;
-    if (!navigator.mediaDevices?.getUserMedia) throw new Error("このブラウザではマイクを使えません。Chromeで開いてください。");
+    if (!navigator.mediaDevices?.getUserMedia) throw new DOMException("このブラウザではマイクを使えません。Chromeで開いてください。", "NotSupportedError");
     const stream = await navigator.mediaDevices.getUserMedia({ audio: { ...(deviceId ? { deviceId: { exact: deviceId } } : {}), echoCancellation: false, noiseSuppression: false, autoGainControl: false }, video: false });
     if (generation !== this.generation) { stream.getTracks().forEach((track) => track.stop()); return; }
     this.stream = stream;
@@ -84,7 +95,7 @@ export class MicrophoneInput {
         tracks.forEach(track => track.removeEventListener("ended", interrupted));
         context.removeEventListener("statechange", stateChanged);
       };
-      if (!context.audioWorklet) throw new Error("この環境ではマイクの連続解析を使えません。");
+      if (!context.audioWorklet) throw new DOMException("この環境ではマイクの連続解析を使えません。", "NotSupportedError");
       await context.audioWorklet.addModule("/audio/microphone-capture.js");
       if (generation !== this.generation) return;
       const capture = new AudioWorkletNode(context, "convocerto-microphone-capture", { channelCount: 1, channelCountMode: "explicit", outputChannelCount: [1] });
@@ -92,7 +103,9 @@ export class MicrophoneInput {
       const origin = performance.now() - context.currentTime * 1000;
       capture.port.onmessage = ({ data }: MessageEvent<{ samples: Float32Array; time: number; quietGap: boolean }>) => {
         if (generation !== this.generation || !Number.isFinite(data.time) || !(data.samples instanceof Float32Array)) return;
-        this.processReading(detectPitch(data.samples, context.sampleRate, this.tuning), origin + data.time * 1000, data.quietGap === true);
+        const level = signalLevel(data.samples);
+        this.onLevel(level);
+        this.processReading(detectPitchAtLevel(data.samples, context.sampleRate, this.tuning, level), origin + data.time * 1000, data.quietGap === true);
       };
       capture.addEventListener("processorerror", interrupted);
       const detach = this.detach;
@@ -159,5 +172,6 @@ export class MicrophoneInput {
     this.lastOnset = 0;
     this.lastLevel = 0;
     this.onReading(null);
+    this.onLevel(0);
   }
 }

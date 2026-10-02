@@ -60,11 +60,11 @@ test('an entirely silent instrument fails preparation and can be retried with va
   AudioContext.prototype.decodeAudioData=async function(){return this.createBuffer(1,1000,this.sampleRate);};
   let error='';
   try {
-   try{await audio.prepare([{id:'C',name:'Clarinet',isSolo:false,notes:[]}]);}catch(cause){error=String(cause);}
+   try{await audio.prepare([{id:'C',name:'Clarinet',isSolo:false,notes:[]}]);}catch(cause){error=cause instanceof Error && 'code' in cause ? String(cause.code) : String(cause);}
    AudioContext.prototype.decodeAudioData=decode;
    await audio.prepare([{id:'C',name:'Clarinet',isSolo:false,notes:[]}]);
    return {error,count:audio.buffers.get('clarinet')?.size};
   }finally{AudioContext.prototype.decodeAudioData=decode;audio.dispose();}
  });
- expect(result.error).toContain('有効な音がありません');expect(result.count).toBe(7);
+ expect(result.error).toBe('sample-silent');expect(result.count).toBe(7);
 });

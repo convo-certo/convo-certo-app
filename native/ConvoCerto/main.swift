@@ -1,6 +1,11 @@
 import AppKit
 import WebKit
 
+func nativeText(_ japanese: String, _ english: String) -> String {
+    let language = Locale.preferredLanguages.first { $0.hasPrefix("ja") || $0.hasPrefix("en") }
+    return language?.hasPrefix("ja") == true ? japanese : english
+}
+
 let soakSeconds: Int? = {
     guard CommandLine.arguments.contains("--soak-test") else { return nil }
     let arguments = CommandLine.arguments
@@ -44,29 +49,50 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         webView.navigationDelegate = self
         webView.uiDelegate = self
         window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1200, height: 850), styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
-        window.title = "ConvoCerto — 共奏"
+        window.title = nativeText("ConvoCerto — 共奏", "ConvoCerto — Play together")
         window.contentView = webView
         downloads = Downloads(testing: smoke); downloads?.window = window; downloads?.webView = webView
         window.center()
-        if smoke { window.orderBack(nil) } else { window.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true) }
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
         let menu = NSMenu()
         let appItem = NSMenuItem(); menu.addItem(appItem)
         let appMenu = NSMenu(); appItem.submenu = appMenu
-        appMenu.addItem(withTitle: "終了", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        appMenu.addItem(withTitle: nativeText("終了", "Quit ConvoCerto"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         let editItem = NSMenuItem(); menu.addItem(editItem)
-        let editMenu = NSMenu(title: "編集"); editItem.submenu = editMenu
-        for (name, action, key) in [("コピー", "copy:", "c"), ("ペースト", "paste:", "v"), ("すべて選択", "selectAll:", "a")] { editMenu.addItem(withTitle: name, action: Selector(action), keyEquivalent: key) }
+        let editMenu = NSMenu(title: nativeText("編集", "Edit")); editItem.submenu = editMenu
+        for (name, action, key) in [(nativeText("コピー", "Copy"), "copy:", "c"), (nativeText("ペースト", "Paste"), "paste:", "v"), (nativeText("すべて選択", "Select All"), "selectAll:", "a")] { editMenu.addItem(withTitle: name, action: Selector(action), keyEquivalent: key) }
         NSApp.mainMenu = menu
-        guard let root = Bundle.main.resourceURL?.appendingPathComponent("web"), FileManager.default.fileExists(atPath: root.appendingPathComponent("index.html").path) else { fail("同梱されたWebアプリが見つかりません。"); return }
+        guard let root = Bundle.main.resourceURL?.appendingPathComponent("web"), FileManager.default.fileExists(atPath: root.appendingPathComponent("index.html").path) else { fail(nativeText("同梱されたWebアプリが見つかりません。", "The bundled web app could not be found.")); return }
+        startServer(root: root)
+        if smoke { DispatchQueue.main.asyncAfter(deadline: .now() + Double(soakSeconds ?? 0) + 60) { self.fail(nativeText("WKWebView検証がタイムアウトしました", "WKWebView verification timed out.")) } }
+    }
+
+    private func startServer(root: URL) {
+        server?.stop()
         do {
             server = try LocalServer(root: root, testing: smoke)
             server?.start { [weak self] error in
                 guard let self else { return }
-                if let error { self.fail("ローカルサーバーを開始できません（ポート \(LocalServer.port)）。\(error)"); return }
+                if let error { self.serverFailed(error, root: root); return }
                 self.webView.load(URLRequest(url: URL(string: "http://127.0.0.1:\(LocalServer.port)/perform")!))
             }
-        } catch { fail(error.localizedDescription) }
-        if smoke { DispatchQueue.main.asyncAfter(deadline: .now() + Double(soakSeconds ?? 0) + 60) { self.fail("WKWebView検証がタイムアウトしました") } }
+        } catch { serverFailed(error, root: root) }
+    }
+
+    private func serverFailed(_ error: Error, root: URL) {
+        if smoke { fail("Local server could not start on port \(LocalServer.port): \(error)"); return }
+        let alert = NSAlert()
+        alert.messageText = nativeText("保存済みの練習を開く接続先が使えません", "The connection for your saved practice is unavailable")
+        alert.informativeText = nativeText(
+            "ConvoCertoがほかに開いていれば終了して、再試行してください。練習データを保護するため、別の接続先には切り替えません。データは削除していません。\n\nポート: \(LocalServer.port)\n\(error.localizedDescription)",
+            "Close any other copy of ConvoCerto and retry. The app will keep the same connection for your saved practice. No practice data has been deleted.\n\nPort: \(LocalServer.port)\n\(error.localizedDescription)")
+        alert.addButton(withTitle: nativeText("再試行", "Retry"))
+        alert.addButton(withTitle: nativeText("終了", "Quit"))
+        alert.beginSheetModal(for: window) { [weak self] response in
+            if response == .alertFirstButtonReturn { self?.startServer(root: root) }
+            else { NSApp.terminate(nil) }
+        }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
@@ -97,7 +123,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) { midi?.disconnect() }
 
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        if smoke && !recoveryTest { fail("表示プロセスが終了しました。"); return }
+        if smoke && !recoveryTest { fail(nativeText("表示プロセスが終了しました。", "The display process ended.")); return }
         offerRecovery()
     }
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
@@ -114,10 +140,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         webView.stopLoading()
         if let sheet = window.attachedSheet { window.endSheet(sheet, returnCode: .cancel) }
         let alert = NSAlert()
-        alert.messageText = "演奏画面が中断しました"
-        alert.informativeText = "画面を開き直すと、マイ楽譜から保存済みの練習を選べます。未保存の変更や演奏位置は復元されません。マイク・MIDIはつなぎ直してください。伴奏は自動では再開しません。"
-        alert.addButton(withTitle: "画面を開き直す")
-        alert.addButton(withTitle: "終了")
+        alert.messageText = nativeText("演奏画面が中断しました", "The practice screen was interrupted")
+        alert.informativeText = nativeText("画面を開き直すと、マイ楽譜から保存済みの練習を選べます。未保存の変更や演奏位置は復元されません。マイク・MIDIはつなぎ直してください。伴奏は自動では再開しません。", "Reopen the screen, then choose saved practice from My scores. Unsaved changes and your playback position will not be restored. Reconnect your microphone or MIDI device. Accompaniment will not restart automatically.")
+        alert.addButton(withTitle: nativeText("画面を開き直す", "Reopen screen"))
+        alert.addButton(withTitle: nativeText("終了", "Quit"))
         alert.beginSheetModal(for: window) { [weak self] response in
             guard let self else { return }
             if response == .alertFirstButtonReturn {
@@ -127,7 +153,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
             } else { NSApp.terminate(nil) }
         }
         if recoveryTest {
-            guard recoveryCount == 1 else { fail("画面復旧が繰り返し失敗しました"); return }
+            guard recoveryCount == 1 else { fail(nativeText("画面復旧が繰り返し失敗しました", "The screen failed again during recovery.")); return }
             print("{\"progress\":\"native-recovery-prompt\"}"); fflush(stdout)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { alert.buttons.first?.performClick(nil) }
         }
@@ -136,7 +162,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         guard smoke, !tested else { return }; tested = true
         let filename = soakSeconds != nil ? "soak.js" : recoveryTest ? "recovery-smoke.js" : "smoke.js"
-        guard let url = Bundle.main.resourceURL?.appendingPathComponent(filename), let script = try? String(contentsOf: url, encoding: .utf8) else { fail("検証スクリプトがありません"); return }
+        guard let url = Bundle.main.resourceURL?.appendingPathComponent(filename), let script = try? String(contentsOf: url, encoding: .utf8) else { fail(nativeText("検証スクリプトがありません", "The verification script could not be found.")); return }
         webView.evaluateJavaScript("window.__convoSoakSeconds = \(soakSeconds ?? 0); window.__convoRecoveryStage = \(recoveryCount);\n" + script) { _, error in if let error { self.fail(error.localizedDescription) } }
     }
 
@@ -150,7 +176,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
 
     private func fail(_ message: String) {
         if smoke { print("NATIVE_TEST_FAILED: \(message)"); fflush(stdout); exit(1) }
-        let alert = NSAlert(); alert.messageText = "ConvoCertoを続けられません"; alert.informativeText = message; alert.runModal(); NSApp.terminate(nil)
+        let alert = NSAlert(); alert.messageText = nativeText("ConvoCertoを続けられません", "ConvoCerto cannot continue"); alert.informativeText = message; alert.runModal(); NSApp.terminate(nil)
     }
 }
 let app = NSApplication.shared

@@ -1,8 +1,10 @@
+import { confirmImportedPart } from "./helpers/studio";
 import { test, expect } from '@playwright/test';
 
 const load = async (page: import('@playwright/test').Page) => {
-  await page.goto('/perform');
+  await page.goto('/perform?view=settings');
   await page.getByLabel('MusicXMLで演奏する', { exact: true }).setInputFiles('public/scores/sample-duet.musicxml');
+  await confirmImportedPart(page);
   await expect(page.getByRole('button', { name: '▶ 演奏開始', exact: true })).toBeEnabled();
 };
 

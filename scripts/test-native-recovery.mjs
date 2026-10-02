@@ -10,6 +10,8 @@ const child=spawn(executable,['--recovery-test'],{stdio:['ignore','pipe','pipe']
 let pending='', terminated=false, prompt=false, passed=false, failure;
 const info=pid=>execFileSync('/usr/bin/lsappinfo',['info','-only','name,bundleid,LSApplicationMemberCoalitionIDKey',String(pid)],{encoding:'utf8'});
 const coalition=text=>text.match(/"LSApplicationMemberCoalitionIDKey"=(\d+)/)?.[1];
+const webContentNames=new Set(['ConvoCerto Web Content','ConvoCertoのWebコンテンツ']);
+const ownedWebContent=(details,group)=>coalition(details)===group && details.includes('"CFBundleIdentifier"="com.apple.WebKit.WebContent"') && webContentNames.has(details.match(/^"LSDisplayName"="([^"]+)"$/m)?.[1]);
 const timeout=setTimeout(()=>{failure=new Error('Recovery process timed out');child.kill('SIGTERM');},90000);
 child.stderr.on('data',data=>process.stderr.write(data));
 child.stdout.on('data',data=>{
@@ -23,13 +25,13 @@ child.stdout.on('data',data=>{
     if(event.progress!=='ready-to-terminate' || terminated) continue;
     try {
       const owner=info(child.pid), group=coalition(owner);
-      if(!group || !owner.includes('"tech.gawatech.convocerto.preview"')) throw new Error('Test app ownership is unknown');
+      if(!group || !owner.includes('"CFBundleIdentifier"="tech.gawatech.convocerto.preview"')) throw new Error('Test app ownership is unknown');
       const candidates=webContentPIDs().filter(pid=>!existingWebContent.has(pid)).filter(pid=>{
-        try {const details=info(pid);return coalition(details)===group && details.includes('"com.apple.WebKit.WebContent"') && details.includes('"LSDisplayName"="ConvoCerto Web Content"');} catch {return false;}
+        try {return ownedWebContent(info(pid),group);} catch {return false;}
       });
       if(candidates.length!==1) throw new Error(`Cannot uniquely identify test Web Content: ${candidates.length}`);
       const target=candidates[0], details=info(target);
-      if(coalition(details)!==group || !details.includes('"com.apple.WebKit.WebContent"') || !details.includes('"LSDisplayName"="ConvoCerto Web Content"')) throw new Error('Web Content ownership changed');
+      if(!ownedWebContent(details,group)) throw new Error('Web Content ownership changed');
       console.log(JSON.stringify({testAppPID:child.pid,webContentPID:target,coalition:group,action:'SIGKILL owned Web Content'}));
       process.kill(target,'SIGKILL'); terminated=true;
     } catch(error) {failure=error;child.kill('SIGTERM');}

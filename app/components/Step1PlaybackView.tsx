@@ -90,7 +90,7 @@ export function Step1PlaybackView() {
   );
 
   const loadSampleScore = useCallback(
-    async (path = "/scores/mozart-k622-adagio.musicxml") => {
+    async (path = "/scores/sample-duet.musicxml") => {
       try {
         await initAudio();
         const { score, musicXML } = await loadScoreFromPath(path);
@@ -299,27 +299,8 @@ export function Step1PlaybackView() {
               <option value="" disabled>
                 {t(language, "loadSample")}
               </option>
-              <option value="/scores/mozart-k622-adagio.musicxml">
-                {t(language, "sampleMozart")}
-              </option>
-              <option value="/scores/weber-concertino-clarinet.musicxml">
-                {t(language, "sampleWeber")}
-              </option>
-              <option value="/scores/sample-duet.musicxml">
-                {t(language, "sampleDuet")}
-              </option>
-              <option value="/scores/mozart-k581-trio.musicxml">
-                {t(language, "sampleK581")}
-              </option>
-              <option value="/scores/mozart-k545-allegro.musicxml">
-                {t(language, "sampleK545")}
-              </option>
-              <option value="/scores/schubert-lindenbaum.musicxml">
-                {t(language, "sampleSchubert")}
-              </option>
-              <option value="/scores/chopin-mazurka-op6no2.musicxml">
-                {t(language, "sampleChopin")}
-              </option>
+              <option value="/scores/sample-duet.musicxml">{t(language, "sampleDuet")}</option>
+              <option value="/repertoire/ensemble/mozart-k622-2.musicxml">{t(language, "sampleMozart")}</option>
             </select>
           </div>
         </div>

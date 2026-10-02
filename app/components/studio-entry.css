@@ -1,0 +1,14 @@
+.studio-entry { display:flex; align-items:center; gap:16px; margin:0 0 16px; }
+.concert .studio-entry > button { display:grid; gap:4px; flex-shrink:0; padding:10px 16px; text-align:left; background:#eaf1e5; border-color:#b7cdb4; }
+.studio-entry > button strong { font-size:13px; font-weight:600; }
+.studio-entry > button span { color:#526a58; font-size:12px; font-variant-numeric:tabular-nums; }
+.studio-entry p, .studio-entry-leadin p { margin:0; color:#526a58; font-size:12px; line-height:1.65; }
+.studio-entry-leadin { display:flex; align-items:center; gap:14px; padding-top:14px; margin-top:14px; border-top:1px solid #dce5d8; }
+.concert .studio-entry-leadin > button { flex-shrink:0; min-height:40px; font-size:12px; }
+.studio-save-action { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+.studio-save-action .studio-save-status { margin:0; }
+@media(max-width:640px) {
+  .studio-entry, .studio-entry-leadin { flex-direction:column; align-items:stretch; gap:8px; }
+  .concert .studio-entry > button { grid-template-columns:1fr auto; align-items:center; padding:10px 12px; }
+  .concert .studio-entry-leadin > button { text-align:left; padding:9px 12px; }
+}

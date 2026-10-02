@@ -7,6 +7,61 @@ function tone(frequency: number, sampleRate = 48000): Float32Array {
 }
 
 describe("clarinet microphone input", () => {
+  it("reports microphone levels even when sound has no recognizable pitch and resets on stop", async () => {
+    type Frame = { samples: Float32Array; time: number; quietGap: boolean };
+    let capture!: Capture;
+    class Context extends EventTarget {
+      state = "running"; currentTime = 0; sampleRate = 48000; destination = {};
+      audioWorklet = { addModule: () => Promise.resolve() };
+      resume() { return Promise.resolve(); }
+      close() { this.state = "closed"; return Promise.resolve(); }
+      createMediaStreamSource() { return { connect() {}, disconnect() {} }; }
+    }
+    class Capture extends EventTarget {
+      port: { onmessage: ((event: { data: Frame }) => void) | null; close: () => void } = { onmessage: null, close() {} };
+      constructor() { super(); capture = this; }
+      connect() {} disconnect() {}
+    }
+    const track = Object.assign(new EventTarget(), { readyState: "live", stop() { this.readyState = "ended"; } });
+    vi.stubGlobal("AudioContext", Context); vi.stubGlobal("AudioWorkletNode", Capture);
+    vi.stubGlobal("navigator", { mediaDevices: { getUserMedia: async () => ({ getAudioTracks: () => [track], getTracks: () => [track] }) } });
+    const microphone = new MicrophoneInput();
+    const level = vi.fn(); const reading = vi.fn();
+    microphone.onLevel = level; microphone.onReading = reading;
+    try {
+      await microphone.start();
+      level.mockClear(); reading.mockClear();
+      let seed = 123456789;
+      const noise = Float32Array.from({ length: 2048 }, () => {
+        seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5;
+        return (seed / 2147483648) * 0.2;
+      });
+      capture.port.onmessage!({ data: { samples: noise, time: 0.1, quietGap: false } });
+      expect(level.mock.lastCall![0]).toBeGreaterThan(0.08);
+      expect(reading).toHaveBeenLastCalledWith(null);
+
+      capture.port.onmessage!({ data: { samples: new Float32Array(2048).fill(0.003), time: 0.2, quietGap: false } });
+      expect(level).toHaveBeenLastCalledWith(expect.closeTo(0.003, 6));
+      expect(reading).toHaveBeenLastCalledWith(null);
+
+      capture.port.onmessage!({ data: { samples: tone(440), time: 0.3, quietGap: false } });
+      expect(reading.mock.lastCall![0]?.midi).toBe(69);
+      expect(level.mock.lastCall![0]).toBe(reading.mock.lastCall![0]?.level);
+
+      capture.port.onmessage!({ data: { samples: tone(440), time: 0.4, quietGap: true } });
+      expect(level.mock.lastCall![0]).toBeGreaterThan(0.1);
+      expect(reading).toHaveBeenLastCalledWith(null);
+
+      capture.port.onmessage!({ data: { samples: new Float32Array(2048), time: 0.5, quietGap: false } });
+      expect(level).toHaveBeenLastCalledWith(0);
+      expect(level).toHaveBeenCalledTimes(5);
+      microphone.stop();
+      expect(level).toHaveBeenLastCalledWith(0);
+      expect(level).toHaveBeenCalledTimes(6);
+      expect(track.readyState).toBe("ended");
+    } finally { microphone.stop(); vi.unstubAllGlobals(); }
+  });
+
   it("does not stop a replacement input when an earlier module load rejects late", async () => {
     let rejectFirst!: (error: Error) => void;
     let contexts = 0;
@@ -43,6 +98,18 @@ describe("clarinet microphone input", () => {
     expect(reading).not.toBeNull();
     expect(Math.abs(1200 * Math.log2(reading!.frequency / frequency))).toBeLessThan(8);
     expect(reading!.confidence).toBeGreaterThan(0.9);
+  });
+  it.each([44100, 48000])("detects low bass through high flute pitches in synthetic harmonic audio at %s Hz", (sampleRate) => {
+    const frequencies = [41.203, 43.654, 65.406, 82.407, 110, 261.626, 440, 1046.502, 1567.982, 2093.005];
+    for (const frequency of frequencies) {
+      for (const harmonics of [[0.2, 0, 0.08], [0.14, 0.12, 0.08]]) {
+        const samples = Float32Array.from({ length: 4096 }, (_, i) => harmonics.reduce((value, amplitude, index) => value + amplitude * Math.sin(2 * Math.PI * frequency * (index + 1) * i / sampleRate), 0));
+        const reading = detectPitch(samples, sampleRate);
+        expect(reading, `${frequency} Hz, harmonics ${harmonics}`).not.toBeNull();
+        expect(Math.abs(1200 * Math.log2(reading!.frequency / frequency)), `${frequency} Hz, harmonics ${harmonics}`).toBeLessThan(8);
+        expect(reading!.confidence).toBeGreaterThan(0.9);
+      }
+    }
   });
   it("does not treat silence as a note", () => { expect(detectPitch(new Float32Array(2048), 48000)).toBeNull(); });
   it("supports orchestra tuning", () => { expect(detectPitch(tone(442), 48000, 442)?.cents).toBeCloseTo(0, 0); });

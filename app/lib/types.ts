@@ -31,6 +31,7 @@ export interface ExpressionDirective {
 }
 
 export interface MeasureAnnotation {
+  memo?: string;
   leader?: string;
   expression?: ExpressionDirective;
   measureNumber: number;
@@ -57,12 +58,18 @@ export interface NoteEvent {
   partIndex: number;
 }
 
+export type GeneratedPartName =
+  | { sourceName: string; kind: "voice"; staff: string; voice: string }
+  | { sourceName: string; kind: "staff"; staff: string }
+  | { sourceName: string; kind: "remaining" };
+
 export interface ScorePart {
   sourcePartId?: string;
   midiProgram?: number;
   transposeSemitones?: number;
   id: string;
   name: string;
+  generatedName?: GeneratedPartName;
   /** true = solo part (user), false = accompaniment */
   isSolo: boolean;
   notes: NoteEvent[];

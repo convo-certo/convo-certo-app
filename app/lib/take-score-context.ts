@@ -6,7 +6,7 @@ export function takeScoreContext(score: ParsedScore): string {
     if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([key, item]) => [key, ordered(item)]));
     return value;
   };
-  const text = JSON.stringify(ordered(score));
+  const text = JSON.stringify(ordered({ ...score, parts: score.parts.map(({ generatedName, ...part }) => part) }));
   let first = 2166136261, second = 5381;
   for (let i = 0; i < text.length; i++) {
     first = Math.imul(first ^ text.charCodeAt(i), 16777619);

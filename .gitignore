@@ -6,6 +6,7 @@
 # React Router
 /.react-router/
 /build/
+/distribution/
 
 # Test results
 /test-results/
@@ -35,5 +36,6 @@ backend/.ruff_cache/
 
 .repertoire-cache/
 public/repertoire/local/
+public/repertoire/library/
 
 /verification-results/

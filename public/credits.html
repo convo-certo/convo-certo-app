@@ -1,23 +1,79 @@
 <!doctype html>
 <html lang="ja">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>出典とクレジット — ConvoCerto</title>
-<style>body{font:16px/1.8 system-ui;margin:32px auto;padding:0 24px;max-width:800px;color:#203a37;background:#f5f3ed}a{color:#214f41;overflow-wrap:anywhere}section{padding:12px 0;border-bottom:1px solid #cbd7cf}h1{font-size:28px}h2{font-size:21px}a:focus-visible{outline:3px solid #b17b2e;outline-offset:4px}</style>
-<nav><a href="/">ホーム</a> · <a href="/perform">共奏を開く</a></nav>
-<h1>出典とクレジット</h1>
-<p>ConvoCertoは、公開された楽譜データ、楽器音源、オープンソースソフトウェアを使用しています。以下はそれぞれの出典です。</p>
-<section><h2>楽器音源</h2>
-<p>FluidR3 General MIDI — Frank Wen。MP3レンダリング: Benjamin Gleitzman / MIDI.js Soundfonts。</p>
-<p><a href="https://github.com/gleitz/midi-js-soundfonts">MIDI.js Soundfonts 配布元</a> · <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0</a></p>
-<p>ConvoCertoでは26楽器のC1〜C7を抽出し、再生時に音高変換、音量・長さの調整、管・弓奏音のクロスフェードによる持続処理、空間配置を行います。生のオーケストラの演奏録音ではありません。制作者による本アプリの推奨・公認を意味しません。</p>
-<p><a href="/audio/fluid/sources.json">楽器別の出典と音源ファイルのハッシュ</a></p></section>
-<section><h2>楽譜と演奏データ</h2>
-<p>原曲と、個々の楽譜の版・演奏データには別々の利用条件があります。下記に収録データの出典と変換内容を記録しています。</p>
-<p><a href="/repertoire/ensemble/sources.json">MusicXML総譜の出典一覧</a> · <a href="/repertoire/SOURCES.md">演奏データの出典・加工内容</a></p>
-<p>再配布条件が確認できないローカル練習用データは配布ビルドから除外しています。持ち込んだ楽譜の公開・共有は、そのファイルの利用条件を確認してください。</p></section>
-<section><h2>フォント</h2><p>Inter 4.1 — Copyright (c) 2016 The Inter Project Authors。公式配布ファイルを変更せず同梱しています。日本語は端末のフォントを使用します。</p><p><a href="/fonts/inter/LICENSE.txt">SIL Open Font License 1.1 本文</a> · <a href="/fonts/inter/source.json">出典とファイルのハッシュ</a></p></section>
-<section><h2>ソフトウェア</h2>
-<p><a href="/notices/dependencies.html">ソフトウェアのライセンス本文と著作権表示</a></p>
-<p>使用ライブラリと関連パッケージから集めた文書です。本文を取得できていない項目も明記しています。</p></section>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ConvoCertoの楽譜・音源・フォント・ソフトウェアの出典。Sources for ConvoCerto scores, sounds, fonts and software.">
+  <title>出典とクレジット / Sources &amp; credits — ConvoCerto</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #203a37; background: #f5f3ed; }
+    body { max-width: 760px; margin: 0 auto; padding: 28px 22px 64px; line-height: 1.85; }
+    nav, footer { display: flex; gap: 10px 20px; flex-wrap: wrap; font-size: .9rem; }
+    a { color: #214f41; text-underline-offset: 4px; overflow-wrap: anywhere; }
+    a:focus-visible, article:focus-visible { outline: 3px solid #916523; outline-offset: 5px; }
+    h1 { font-size: clamp(1.8rem, 5vw, 2.3rem); line-height: 1.4; margin: 32px 0 16px; }
+    h2 { font-size: 1.2rem; line-height: 1.5; margin: 30px 0 8px; }
+    p { margin: 8px 0 16px; }
+    article { scroll-margin-top: 24px; }
+    article + article { margin-top: 48px; padding-top: 24px; border-top: 1px solid #bdcbc2; }
+    footer { border-top: 1px solid #bdcbc2; margin-top: 36px; padding-top: 20px; }
+  </style>
+</head>
+<body>
+  <nav aria-label="言語とページ内の移動 / Language and navigation">
+    <a href="/">ConvoCerto</a>
+    <a href="#ja" lang="ja">日本語</a>
+    <a href="#en" lang="en">English</a>
+  </nav>
+  <main>
+    <article id="ja" lang="ja" aria-labelledby="title-ja" tabindex="-1">
+      <h1 id="title-ja">出典とクレジット</h1>
+      <p>ConvoCertoで使う楽譜、楽器音源、フォント、ソフトウェアの出典です。</p>
+
+      <h2>楽器音源</h2>
+      <p>FluidR3 General MIDI — Frank Wen。MP3レンダリング: Benjamin Gleitzman / MIDI.js Soundfonts。</p>
+      <p><a href="https://github.com/gleitz/midi-js-soundfonts">MIDI.js Soundfonts 配布元</a> · <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0</a></p>
+      <p><span data-instrument-bank-count>34</span>音色のC1〜C7を抽出し、再生時に音高・音量・長さを調整します。管・弓奏音にはクロスフェードによる持続処理を加え、楽器ごとの空間配置を行います。生のオーケストラの演奏録音ではありません。制作者による本アプリの推奨・公認を意味しません。</p>
+      <p><a href="/audio/fluid/sources.json">楽器別の出典と音源ファイルのハッシュ</a></p>
+
+      <h2>楽譜と演奏データ</h2>
+      <p>原曲と、個々の楽譜の版・演奏データには別々の利用条件があります。収録データの出典と変換内容を下記に記録しています。</p>
+      <p><a href="/repertoire/ensemble/sources.json">はじめの楽譜の出典</a> · <a href="/repertoire/library/sources.json">追加の楽譜の出典</a> · <a href="/repertoire/SOURCES.md">演奏データの出典・加工内容</a> · <a href="/repertoire/ensemble/README.md">データセットの出典と謝辞</a></p>
+      <p>再配布条件が確認できないローカル練習用データは配布ビルドから除外しています。持ち込んだ楽譜の公開・共有は、そのファイルの利用条件を確認してください。</p>
+
+      <h2>フォント</h2>
+      <p>Inter 4.1 — Copyright (c) 2016 The Inter Project Authors。公式配布ファイルを変更せず同梱しています。日本語は端末のフォントを使用します。</p>
+      <p><a href="/fonts/inter/LICENSE.txt">SIL Open Font License 1.1 本文</a> · <a href="/fonts/inter/source.json">出典とファイルのハッシュ</a></p>
+
+      <h2>ソフトウェア</h2>
+      <p><a href="/notices/dependencies.html">ライセンス本文と著作権表示</a></p>
+      <p>使用ライブラリと関連パッケージから集めた文書です。本文を取得できていない項目も明記しています。</p>
+    </article>
+
+    <article id="en" lang="en" aria-labelledby="title-en" tabindex="-1">
+      <h1 id="title-en">Sources &amp; credits</h1>
+      <p>Sources for the scores, instrument sounds, fonts and software used in ConvoCerto.</p>
+
+      <h2>Instrument sounds</h2>
+      <p>FluidR3 General MIDI — Frank Wen. MP3 rendering: Benjamin Gleitzman / MIDI.js Soundfonts.</p>
+      <p><a href="https://github.com/gleitz/midi-js-soundfonts">MIDI.js Soundfonts source</a> · <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0</a></p>
+      <p>We extract C1–C7 samples for <span data-instrument-bank-count>34</span> instrument sounds and adjust pitch, volume and duration during playback. Wind and bowed sounds use crossfades to sustain notes, and each instrument can be positioned in space. These are not recordings of a live orchestra performance. Their inclusion does not imply the creators’ endorsement or official support.</p>
+      <p><a href="/audio/fluid/sources.json">Instrument sources and audio file hashes</a></p>
+
+      <h2>Scores and performance data</h2>
+      <p>A composition, its score editions and its performance data can have different terms. The links below record the sources and conversions for the included data.</p>
+      <p><a href="/repertoire/ensemble/sources.json">Starter score sources</a> · <a href="/repertoire/library/sources.json">Additional score sources</a> · <a href="/repertoire/SOURCES.md">Performance data sources and modifications</a> · <a href="/repertoire/ensemble/README.md">Dataset attribution</a></p>
+      <p>Local practice data without confirmed redistribution terms is excluded from distribution builds. Check the terms of an imported score before publishing or sharing it.</p>
+
+      <h2>Fonts</h2>
+      <p>Inter 4.1 — Copyright (c) 2016 The Inter Project Authors. Files from the official release are included unchanged. Japanese text uses fonts on your device.</p>
+      <p><a href="/fonts/inter/LICENSE.txt">SIL Open Font License 1.1</a> · <a href="/fonts/inter/source.json">Font sources and file hashes</a></p>
+
+      <h2>Software</h2>
+      <p><a href="/notices/dependencies.html">License texts and copyright notices</a></p>
+      <p>These documents come from the libraries and related packages used by the app. Entries with missing license text are identified.</p>
+    </article>
+  </main>
+  <footer><a href="/perform">共奏を開く / Open practice</a><a href="/privacy.html">データの扱い / Your data</a></footer>
+</body>
 </html>

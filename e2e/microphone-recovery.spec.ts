@@ -1,3 +1,4 @@
+import { confirmImportedPart } from "./helpers/studio";
 import {test,expect} from '@playwright/test';
 
 test('a failed capture module releases the microphone and allows retry', async ({page}) => {
@@ -19,8 +20,9 @@ test('a failed capture module releases the microphone and allows retry', async (
       return stream;
     };
   });
-  await page.goto('/perform');
+  await page.goto('/perform?view=settings');
   await page.getByLabel('MusicXMLで演奏する', {exact:true}).setInputFiles('public/scores/sample-duet.musicxml');
+  await confirmImportedPart(page);
   await expect(page.getByRole('button', {name:'▶ 演奏開始',exact:true})).toBeEnabled();
   await page.getByRole('button', {name:'マイクで演奏する',exact:true}).click();
   await expect(page.getByRole('alert')).toContainText('マイクを開始できませんでした');
@@ -51,7 +53,7 @@ test('four repeated notes separated by short gaps advance the score through real
       return destination.stream;
     };
   });
-  await page.goto('/perform');
+  await page.goto('/perform?view=settings');
   await page.evaluate(async () => {
     const path = '/app/lib/microphone-input.ts';
     const { MicrophoneInput } = await import(path);
@@ -64,6 +66,7 @@ test('four repeated notes separated by short gaps advance the score through real
   });
   const xml = `<score-partwise version="4.0"><part-list><score-part id="P1"><part-name>Clarinet</part-name></score-part></part-list><part id="P1"><measure number="1"><attributes><divisions>1</divisions><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes>${Array.from({length:4}, () => '<note><pitch><step>A</step><octave>4</octave></pitch><duration>1</duration><type>quarter</type></note>').join('')}</measure></part></score-partwise>`;
   await page.getByLabel('MusicXMLで演奏する', {exact:true}).setInputFiles({name:'repeated-notes.musicxml',mimeType:'application/xml',buffer:Buffer.from(xml)});
+  await confirmImportedPart(page);
   await expect(page.getByRole('button', {name:'▶ 演奏開始',exact:true})).toBeEnabled();
   await page.getByLabel('練習モード', {exact:true}).selectOption('wait');
   await page.getByRole('button', {name:'マイクで演奏する',exact:true}).click();
@@ -96,8 +99,9 @@ for (const interruption of ['ended', 'suspended']) test(`${interruption} microph
       return destination.stream;
     };
   });
-  await page.goto('/perform');
+  await page.goto('/perform?view=settings');
   await page.getByLabel('MusicXMLで演奏する',{exact:true}).setInputFiles('public/scores/sample-duet.musicxml');
+  await confirmImportedPart(page);
   await page.getByRole('button',{name:'マイクで演奏する',exact:true}).click();
   await expect(page.getByRole('button',{name:'マイクを停止',exact:true})).toBeVisible();
   await page.getByRole('button',{name:'▶ 演奏開始',exact:true}).click();

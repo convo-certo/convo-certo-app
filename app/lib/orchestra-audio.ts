@@ -4,6 +4,7 @@ import { playerVariation, chairLevel } from "./player-variation";
 import { defaultChairs, type OrchestraChair } from "./orchestra-space";
 import type { NoteEvent, ScorePart } from "./types";
 import { placementInstruments } from "./instrument-palette";
+import { OrchestraAudioError } from "./orchestra-audio-error";
 
 export function instrumentForPart(part: ScorePart): string {
   const program = part.midiProgram;
@@ -54,19 +55,31 @@ export class OrchestraAudio {
   private tuning = 440;
   private sustainBuffers = new WeakMap<AudioBuffer, NonNullable<ReturnType<typeof sustainLoop>>>();
   private soloAudible = false;
+  private soundObservers = new Set<(sound: { part: number; start: number; end: number; level: number } | null) => void>();
+  observeSound(observer: (sound: { part: number; start: number; end: number; level: number } | null) => void): () => void {
+    this.soundObservers.add(observer);
+    return () => { this.soundObservers.delete(observer); };
+  }
   setSoloAudible(enabled: boolean): void { this.soloAudible = enabled; }
 
   onAvailabilityChanged: (state: string) => void = () => {};
   get availability(): string { return this.context?.state ?? "uninitialized"; }
   async resume(): Promise<void> {
-    if (!this.context || this.context.state === "closed") throw new Error("音声を再開できません。楽譜を読み込み直してください。");
+    const context = this.context;
+    if (!context || context.state === "closed") throw new OrchestraAudioError("closed");
     let timeout: ReturnType<typeof setTimeout> | undefined;
     try {
-      await Promise.race([this.context.resume(), new Promise<never>((_, reject) => {
-        timeout = setTimeout(() => reject(new Error("音声の再開が完了しません。出力先を確認して再試行してください。")), 5000);
+      await Promise.race([context.resume(), new Promise<never>((_, reject) => {
+        timeout = setTimeout(() => reject(new OrchestraAudioError("resume-timeout")), 5000);
       })]);
+    } catch (cause) {
+      if (cause instanceof OrchestraAudioError) throw cause;
+      if (this.availability === "closed") throw new OrchestraAudioError("closed", { cause });
+      const blocked = cause instanceof DOMException && ["NotAllowedError", "SecurityError"].includes(cause.name);
+      throw new OrchestraAudioError(blocked ? "resume-blocked" : "resume-failed", { cause });
     } finally { clearTimeout(timeout); }
-    if (this.context.state !== "running") throw new Error("音声がまだ中断されています。出力先を確認して再試行してください。");
+    if (this.availability === "closed") throw new OrchestraAudioError("closed");
+    if (context.state !== "running") throw new OrchestraAudioError("resume-interrupted");
   }
 
   get currentTime(): number { return this.context?.currentTime ?? 0; }
@@ -77,10 +90,11 @@ export class OrchestraAudio {
 
     if (!this.context || this.context.state === "closed") {
       this.master = null;
-      this.context = new AudioContext({ latencyHint: "interactive" });
+      try { this.context = new AudioContext({ latencyHint: "interactive" }); }
+      catch (cause) { throw new OrchestraAudioError("unavailable", { cause }); }
       this.context.onstatechange = () => this.onAvailabilityChanged(this.availability);
     }
-    await this.context.resume();
+    await this.resume();
     if (!this.master) {
       this.master = this.context.createGain();
       this.master.gain.value = 0.65;
@@ -96,9 +110,18 @@ export class OrchestraAudio {
       const samples = new Map<number, AudioBuffer>();
       await Promise.all(Array.from({ length: 7 }, async (_, i) => {
         const octave = i + 1;
-        const response = await fetch(`/audio/fluid/${instrument}/C${octave}.mp3`);
-        if (!response.ok) throw new Error("楽器の音源を読み込めませんでした。再読み込みしてください。");
-        const buffer = await this.context!.decodeAudioData(await response.arrayBuffer());
+        let bytes: ArrayBuffer;
+        try {
+          const response = await fetch(`/audio/fluid/${instrument}/C${octave}.mp3`);
+          if (!response.ok) throw new OrchestraAudioError("sample-load", { instrument });
+          bytes = await response.arrayBuffer();
+        } catch (cause) {
+          if (cause instanceof OrchestraAudioError) throw cause;
+          throw new OrchestraAudioError("sample-load", { instrument, cause });
+        }
+        let buffer: AudioBuffer;
+        try { buffer = await this.context!.decodeAudioData(bytes); }
+        catch (cause) { throw new OrchestraAudioError("sample-decode", { instrument, cause }); }
         if (!hasSampleSignal(buffer)) return;
         if (sustainedInstruments.has(instrument)) {
           const loop = sustainLoop(this.context!, buffer);
@@ -106,7 +129,7 @@ export class OrchestraAudio {
         }
         samples.set((octave + 1) * 12, buffer);
       }));
-      if (!samples.size) throw new Error(`楽器の音源に有効な音がありません: ${instrument}`);
+      if (!samples.size) throw new OrchestraAudioError("sample-silent", { instrument });
       if (version === this.loadVersion) this.buffers.set(instrument, samples);
     }));
     if (version === this.loadVersion) { this.parts = parts; this.gains.clear(); this.chairs = defaultChairs(parts); }
@@ -208,9 +231,11 @@ export class OrchestraAudio {
     source.onended = () => { this.voices.delete(source); source.disconnect(); gain.disconnect(); };
     source.start(start);
     source.stop(start + release + 0.13);
+    for (const observer of this.soundObservers) observer({ part: note.partIndex, start, end: start + release + 0.12, level: velocity * level });
   }
 
   stop(): void {
+    for (const observer of this.soundObservers) observer(null);
     for (const click of this.clicks) { try { click.stop(); } catch {} }
     this.clicks.clear();
     for (const [source, gain] of this.voices) {
@@ -235,5 +260,6 @@ export class OrchestraAudio {
     this.context = null;
     this.master = null;
     this.buffers.clear();
+    this.soundObservers.clear();
   }
 }

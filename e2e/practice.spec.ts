@@ -4,7 +4,8 @@ test("practice playback supports seeking, count-in, loops and score changes", as
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/step1");
-  await page.locator("select").first().selectOption("/scores/sample-duet.musicxml");
+  const samplePicker = page.getByRole("combobox").filter({ has: page.locator('option[value="/scores/sample-duet.musicxml"]') });
+  await samplePicker.selectOption("/scores/sample-duet.musicxml");
   const progress = page.getByRole("slider", { name: "再生位置" });
   await expect(progress).toBeVisible();
   await progress.focus();
@@ -26,7 +27,7 @@ test("practice playback supports seeking, count-in, loops and score changes", as
   await page.locator('button:has-text("▶")').click();
   await expect(page.getByText("カウントイン中…")).toBeVisible();
   await page.locator('button:has-text("■")').click();
-  await page.locator("select").first().selectOption("/scores/schubert-lindenbaum.musicxml");
+  await samplePicker.selectOption("/repertoire/ensemble/mozart-k622-2.musicxml");
   await expect(page.getByRole("button", { name: "ループを解除" })).toHaveCount(0);
   await expect(progress).toHaveAttribute("aria-valuenow", "0");
   expect(errors).toEqual([]);

@@ -1,0 +1,46 @@
+.score-catalog { margin: 24px 0; color: #263f32; }
+.concert .score-catalog > summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin: 0; padding: 19px 22px; border: 1px solid #cbd8c8; border-radius: 14px; background: #f7f8f1; font-size: 16px; font-weight: 650; }
+.score-catalog > summary::before { content: "+"; font-size: 22px; line-height: 1; font-weight: 400; }
+.score-catalog[open] > summary::before { content: "−"; }
+.score-catalog > summary::-webkit-details-marker { display: none; }
+.score-catalog > summary:focus-visible, .score-catalog-source > summary:focus-visible { outline: 3px solid #e2a84f; outline-offset: 3px; }
+.score-catalog-summary-note { margin-left: auto; font-size: 12px; font-weight: 400; color: #5e6e5b; }
+.score-catalog-content { padding: 26px 0 8px; min-width: 0; }
+.concert .score-catalog-intro h3 { font-size: clamp(19px, 3vw, 25px); margin: 0 0 8px; letter-spacing: -.025em; }
+.score-catalog-intro p { max-width: 72ch; margin: 0; color: #596b5c; font-size: 13px; }
+.score-catalog-filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, .65fr); gap: 14px; margin-top: 22px; }
+.score-catalog-filters label { display: grid; gap: 7px; min-width: 0; font-size: 12px; font-weight: 600; }
+.concert .score-catalog-filters input, .concert .score-catalog-filters select { width: 100%; min-width: 0; min-height: 44px; border: 1px solid #c8d3c3; border-radius: 9px; background: #fffefb; padding: 10px 12px; color: #293d2d; font: inherit; font-size: 14px; }
+.score-catalog-results { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; font-size: 12px; color: #5e6e5b; }
+.score-catalog-results p { margin: 0; }
+.concert .score-catalog-results button { padding: 5px 9px; border-color: transparent; background: transparent; text-decoration: underline; font-size: 12px; }
+.score-catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.score-catalog-card { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 20px; border: 1px solid #d6dfcf; border-radius: 14px; background: #fffefb; overflow-wrap: anywhere; }
+.score-catalog-card-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; font-size: 11px; color: #5d705a; }
+.score-catalog-card-top > span:first-child { border-radius: 5px; padding: 3px 7px; background: #edf1e6; }
+.score-catalog-card-top > span:last-child { padding-top: 3px; white-space: nowrap; }
+.concert .score-catalog-card h4 { margin: 2px 0 0; font-size: 16px; line-height: 1.55; font-weight: 650; }
+.concert .score-catalog-card p { margin: 0; font-size: 12px; line-height: 1.7; }
+.score-catalog-composer { color: #71806c; }
+.score-catalog-measures { font-weight: 600; color: #506446; }
+.score-catalog-instruments { color: #51634d; }
+.score-catalog-large { color: #7e612f; }
+.score-catalog-source { color: #65765d; font-size: 11px; }
+.concert .score-catalog-source > summary { margin: 1px 0; font-size: 12px; }
+.score-catalog-source ul { margin: 9px 0; padding-left: 18px; list-style: disc; }
+.score-catalog-source a, .score-catalog-footer a { text-decoration: underline; text-underline-offset: 2px; }
+.concert .score-catalog-open { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; min-height: 44px; margin-top: auto; padding: 10px 13px; border-color: #b8c9af; background: #edf3e7; color: #304d29; font-weight: 600; }
+.concert .score-catalog-open:hover { background: #e0ead7; }
+.concert .score-catalog-more { display: block; min-height: 44px; margin: 20px auto 0; padding: 10px 22px; }
+.score-catalog-notice { border-radius: 10px; margin: 16px 0; padding: 15px 18px; background: #f0f3e8; color: #465f3d; font-size: 13px; overflow-wrap: anywhere; }
+.score-catalog-error { background: #fff0e7; color: #85452e; }
+.score-catalog-notice p { margin: 0 0 10px; }
+.score-catalog-empty { padding: 32px 18px; border-radius: 12px; background: #f5f5ee; text-align: center; color: #65745f; font-size: 13px; }
+.concert .score-catalog-footer { margin: 22px 0 0; color: #6c7a65; font-size: 11px; }
+@media (max-width: 640px) {
+  .concert .score-catalog > summary { padding: 16px; gap: 7px 12px; }
+  .score-catalog-summary-note { flex-basis: 100%; margin-left: 26px; line-height: 1.5; }
+  .score-catalog-content { padding-top: 22px; }
+  .score-catalog-filters, .score-catalog-grid { grid-template-columns: minmax(0, 1fr); }
+  .score-catalog-card { padding: 18px; }
+}

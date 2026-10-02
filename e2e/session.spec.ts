@@ -1,8 +1,10 @@
+import { confirmImportedPart, openDisclosure, openLibrary, openSettings } from "./helpers/studio";
 import { test, expect } from "@playwright/test";
 
 test("saved clarinet practice restores seat, transposition, loop and orchestra without starting playback", async ({ page }) => {
-  await page.goto("/perform");
+  await page.goto("/perform?view=settings");
   await page.getByLabel("MusicXMLで演奏する", { exact:true }).setInputFiles("public/scores/sample-duet.musicxml");
+  await confirmImportedPart(page);
   await expect(page.getByRole("button", {name:"▶ 演奏開始",exact:true})).toBeEnabled();
   await page.getByLabel("使用する楽器",{exact:true}).selectOption("-2");
   await page.getByLabel("演奏テンポ",{exact:true}).fill("84");
@@ -10,15 +12,20 @@ test("saved clarinet practice restores seat, transposition, loop and orchestra w
   await page.getByLabel("終了小節",{exact:true}).fill("3");
   await page.getByRole("button",{name:"区間をループ",exact:true}).click();
   await page.getByRole("button",{name:"ここから練習",exact:true}).click();
+  await openDisclosure(page, "伴奏の音色・配置");
   await page.getByRole("button",{name:/席 chair-1:/}).click();
   await page.getByRole("button",{name:"ホルンを1本追加",exact:true}).click();
   await page.getByLabel("耳の左右",{exact:true}).fill("3");
   await page.getByRole("button",{name:"この練習を保存",exact:true}).click();
+  await openLibrary(page);
   const library = page.getByRole("region",{name:"マイ楽譜",exact:true});
   await expect(library.getByRole("button").filter({hasText:/削除/})).toHaveCount(1);
   await page.reload();
+  await openLibrary(page);
   await page.getByRole("region",{name:"マイ楽譜",exact:true}).getByRole("button",{name:"ConvoCerto Sample Duet",exact:true}).click();
-  await expect(page.getByRole("button", {name:"▶ 演奏開始",exact:true})).toBeEnabled();
+  await expect(page.getByRole("button", {name:"▶ 演奏する",exact:true})).toBeEnabled();
+  await openSettings(page);
+  await openDisclosure(page, "伴奏の音色・配置");
   await expect(page.getByLabel("使用する楽器",{exact:true})).toHaveValue("-2");
   await expect(page.getByLabel("演奏テンポ",{exact:true})).toHaveValue("84");
   await expect(page.getByLabel("開始小節",{exact:true})).toHaveValue("2");
@@ -34,7 +41,7 @@ test("saved clarinet practice restores seat, transposition, loop and orchestra w
   await expect(page.getByLabel("終了小節",{exact:true})).toHaveValue("5");
   await page.getByRole("button",{name:"■ 停止",exact:true}).click();
   await page.setViewportSize({width:390,height:844});
-  await page.getByRole("button",{name:"楽譜専用ページで演奏する →",exact:true}).click();
+  await page.getByRole("button",{name:"楽譜で練習",exact:true}).click();
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1)).toBe(true);
   await page.screenshot({path:"test-results/clarinet-practice-mobile.png",fullPage:true});
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

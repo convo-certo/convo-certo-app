@@ -1,9 +1,12 @@
+import { MusicXMLError } from "./musicxml-error";
+
 export function musicXMLDocument(text: string): XMLDocument {
-  if (/<!ENTITY\s/i.test(text)) throw new Error("独自のXMLエンティティを含むファイルです。MusicXMLとして書き出し直してください。");
+  if (!text.trim()) throw new MusicXMLError("file-empty", "楽譜ファイルが空です。MusicXMLとして書き出し直してください。");
+  if (/<!ENTITY\s/i.test(text)) throw new MusicXMLError("format-unsupported", "独自のXMLエンティティを含むファイルです。MusicXMLとして書き出し直してください。");
   const parsed = new DOMParser().parseFromString(text, "application/xml");
-  if (parsed.querySelector("parsererror")) throw new Error("XMLが途中で切れているか、書式が壊れています。楽譜ソフトから書き出し直してください。");
+  if (parsed.querySelector("parsererror")) throw new MusicXMLError("xml-invalid", "XMLが途中で切れているか、書式が壊れています。楽譜ソフトから書き出し直してください。");
   const source = parsed.documentElement;
-  if (!["score-partwise", "score-timewise"].includes(source.localName)) throw new Error(source.localName === "opus" ? "複数作品をまとめたopus形式です。演奏する作品を1つのMusicXMLとして書き出してください。" : "このXMLは楽譜のMusicXMLではありません。.musicxml または .mxl形式で書き出してください。");
+  if (!["score-partwise", "score-timewise"].includes(source.localName)) throw new MusicXMLError("format-unsupported", source.localName === "opus" ? "複数作品をまとめたopus形式です。演奏する作品を1つのMusicXMLとして書き出してください。" : "このXMLは楽譜のMusicXMLではありません。.musicxml または .mxl形式で書き出してください。");
   let doc = parsed;
   if (source.namespaceURI || source.prefix) {
     doc = document.implementation.createDocument(null, source.localName);
@@ -25,7 +28,7 @@ export function musicXMLDocument(text: string): XMLDocument {
       const part = doc.createElement("part"); part.setAttribute("id", id);
       for (const original of Array.from(old.children).filter((child) => child.localName === "measure")) {
         const content = Array.from(original.children).find((child) => child.localName === "part" && child.getAttribute("id") === id);
-        if (!content) throw new Error(`小節 ${original.getAttribute("number")} にパート ${id} がありません。完全な総譜を書き出してください。`);
+        if (!content) throw new MusicXMLError("score-invalid", `小節 ${original.getAttribute("number")} にパート ${id} がありません。完全な総譜を書き出してください。`);
         const measure = doc.createElement("measure");
         for (const attribute of original.attributes) measure.setAttribute(attribute.name, attribute.value);
         for (const child of content.childNodes) measure.appendChild(child.cloneNode(true));
@@ -36,9 +39,9 @@ export function musicXMLDocument(text: string): XMLDocument {
     doc.replaceChild(root, old);
   }
   const ids = Array.from(doc.querySelectorAll("part-list > score-part")).map((part) => part.getAttribute("id"));
-  if (!ids.length || ids.some((id) => !id) || new Set(ids).size !== ids.length) throw new Error("楽譜のパート一覧がないか、パートIDが重複しています。");
-  for (const id of ids) if (!Array.from(doc.documentElement.children).some((part) => part.localName === "part" && part.getAttribute("id") === id)) throw new Error(`パート ${id} の音符データがありません。総譜を書き出し直してください。`);
-  for (const divisions of doc.querySelectorAll("divisions")) if (!(Number(divisions.textContent) > 0) || !Number.isFinite(Number(divisions.textContent))) throw new Error("音符の長さの基準（divisions）が不正です。");
+  if (!ids.length || ids.some((id) => !id) || new Set(ids).size !== ids.length) throw new MusicXMLError(!ids.length ? "parts-missing" : "score-invalid", "楽譜のパート一覧がないか、パートIDが重複しています。");
+  for (const id of ids) if (!Array.from(doc.documentElement.children).some((part) => part.localName === "part" && part.getAttribute("id") === id)) throw new MusicXMLError("score-invalid", `パート ${id} の音符データがありません。総譜を書き出し直してください。`);
+  for (const divisions of doc.querySelectorAll("divisions")) if (!(Number(divisions.textContent) > 0) || !Number.isFinite(Number(divisions.textContent))) throw new MusicXMLError("score-invalid", "音符の長さの基準（divisions）が不正です。");
   return doc;
 }
 
@@ -50,5 +53,5 @@ export function decodeXML(bytes: Uint8Array): string {
   else if (bytes[0] === 0xfe && bytes[1] === 0xff || bytes[0] === 0 && bytes[1] === 0x3c) encoding = "utf-16be";
   else encoding = new TextDecoder("ascii").decode(bytes.subarray(0, 180)).match(/<\?xml[^>]*encoding=["']([^"']+)["']/i)?.[1] ?? encoding;
   try { return new TextDecoder(encoding, { fatal: true }).decode(bytes); }
-  catch { throw new Error("文字コードを読み取れませんでした。UTF-8のMusicXMLで保存してください。"); }
+  catch (cause) { throw new MusicXMLError("encoding-unsupported", "文字コードを読み取れませんでした。UTF-8のMusicXMLで保存してください。", { cause }); }
 }

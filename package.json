@@ -3,13 +3,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/prepare-notices.mjs && node scripts/verify-ensemble-rights.mjs && node scripts/verify-audio-assets.mjs && react-router build && node scripts/exclude-local-editions.mjs",
+    "build": "node scripts/prepare-notices.mjs && node scripts/verify-ensemble-rights.mjs && node scripts/prepare-score-library.mjs && node scripts/verify-audio-assets.mjs && react-router build && node scripts/exclude-local-editions.mjs && node scripts/prepare-starter-bundle.mjs",
+    "predev": "node scripts/prepare-score-library.mjs",
     "dev": "react-router dev",
-    "start": "npx serve build/client",
+    "start": "node scripts/serve-web.mjs",
     "typecheck": "react-router typegen && tsc",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:web-serving": "node --test scripts/serve-web.test.mjs",
     "e2e": "playwright test",
     "e2e:headed": "playwright test --headed",
     "repertoire:prepare": "uv run --with mido scripts/prepare_repertoire.py",
@@ -27,7 +29,8 @@
     "research:compare": "node scripts/benchmark-followers.mjs --matchmaker",
     "notices:prepare": "node scripts/prepare-notices.mjs",
     "native:package": "node scripts/package-native.mjs",
-    "native:recovery": "node scripts/test-native-recovery.mjs"
+    "native:recovery": "node scripts/test-native-recovery.mjs",
+    "native:persistence": "node scripts/test-native-persistence.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

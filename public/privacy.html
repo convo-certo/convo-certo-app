@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ConvoCertoの楽譜、演奏入力、練習保存の扱い。How ConvoCerto handles scores, performance input and saved practice.">
+  <title>データの扱い / Your data — ConvoCerto</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #203a37; background: #f5f3ed; }
+    body { max-width: 760px; margin: 0 auto; padding: 28px 22px 64px; line-height: 1.85; }
+    nav, footer { display: flex; gap: 10px 20px; flex-wrap: wrap; font-size: .9rem; }
+    a { color: #214f41; text-underline-offset: 4px; overflow-wrap: anywhere; }
+    a:focus-visible { outline: 3px solid #916523; outline-offset: 5px; }
+    h1 { font-size: clamp(1.8rem, 5vw, 2.3rem); line-height: 1.4; margin: 32px 0 16px; }
+    h2 { font-size: 1.2rem; line-height: 1.5; margin: 30px 0 8px; }
+    p { margin: 8px 0 16px; }
+    article { scroll-margin-top: 24px; }
+    article + article { margin-top: 48px; padding-top: 24px; border-top: 1px solid #bdcbc2; }
+    .lead { font-size: 1.1rem; }
+    .date { font-size: .85rem; color: #53645b; }
+    footer { border-top: 1px solid #bdcbc2; margin-top: 36px; padding-top: 20px; }
+  </style>
+</head>
+<body>
+  <nav aria-label="ページ内の移動 / Page navigation">
+    <a href="/">ConvoCerto</a>
+    <a href="#ja" lang="ja">日本語</a>
+    <a href="#en" lang="en">English</a>
+  </nav>
+  <main>
+    <article id="ja" lang="ja" aria-labelledby="title-ja">
+      <h1 id="title-ja">データの扱い</h1>
+      <p class="lead">持ち込んだ楽譜と、楽器に合わせるためのマイク解析は端末内で処理します。声での指示には、ブラウザの外部音声認識サービスが使われる場合があります。</p>
+      <p class="date">開発プレビューの処理説明 · 更新日: 2026年9月30日</p>
+
+      <h2>楽譜と演奏</h2>
+      <p>選んだMusicXML・MXL・練習ファイルはアプリ内で読み込みます。ConvoCertoはこれらのファイルをサーバーにアップロードしません。マイクは許可して接続したときに使い、音高・音量・発音のタイミングを端末内で解析します。楽器の音声を録音ファイルとして保存したり、解析のために送信したりしません。MIDI入力も端末内で処理します。</p>
+      <p>テイクを記録すると、検出した音符・タイミング・強さ、伴奏の応答、合図、入力した感想を保持します。これは音声録音ではありません。テイクや表現プロファイルは、書き出したときに選んだ保存先へファイルとして保存します。</p>
+
+      <h2>練習の保存先</h2>
+      <p>マイ楽譜と最近の練習は、使っているブラウザまたはMacアプリの端末内の保存領域（IndexedDB）に保存します。楽譜のコピー、書き込み、担当・テンポ・配置などの設定、練習日時や時間を含みます。言語や一部の設定はlocalStorageに保存します。最近の練習は最大12件・合計約40MBまでで、容量に応じて古い項目が除かれます。</p>
+      <p>アカウントやクラウド同期はありません。別のブラウザ・端末・Web版とMac版では保存先が異なります。移すときは「練習ファイルを書き出す」を使ってください。練習ファイルには楽譜と保存した設定を含みますが、累積の練習履歴や機器の許可は含みません。テイクは別に書き出します。ブラウザのデータ消去や保存容量の不足に備え、大切な練習はファイルにも残してください。</p>
+
+      <h2>任意の音声指示とカメラ</h2>
+      <p>「声で指示する」はブラウザの音声認識機能を使います。ブラウザによっては音声がその提供元のサーバーへ送られます。ConvoCertoは端末内だけの音声認識を指定していません。外部処理を使いたくないときは、文字や画面の操作で指示できます。詳しくは<a href="https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition" rel="noreferrer">ブラウザの音声認識の説明</a>をご覧ください。</p>
+      <p>カメラの合図を有効にすると、解析プログラムをjsDelivr、姿勢モデルをGoogleの配信サーバーから読み込みます。その際に接続先へIPアドレスなどの通常の通信情報が渡ります。映像の姿勢解析は端末内で行い、ConvoCertoは映像をアップロード・保存しません。マイク・カメラは機能の停止で接続を終了し、許可はブラウザやmacOSの設定でも取り消せます。</p>
+
+      <h2>書き出しと削除</h2>
+      <p>書き出したファイルには楽譜、書き込み、設定や感想が含まれる場合があります。共有先と楽譜の利用条件を確認してください。ファイルは選んだ保存先で管理・削除できます。</p>
+      <p>マイ楽譜の「削除」はその項目を削除します。最近の練習に保存された別のコピーや、書き出したファイルは削除しません。最近の練習の「履歴から削除」では、その曲・担当の履歴と再開用の楽譜・設定を削除できます。マイ楽譜の明示保存や別の担当の履歴は残ります。Web版の保存データをすべて消すには、ブラウザの設定からこのサイトのデータを削除します。Mac版には、現在すべての保存データを消す画面はありません。アプリをゴミ箱へ移すだけでは保存データは消えません。</p>
+
+      <h2>アクセスと計測</h2>
+      <p>現在のアプリには、利用状況の解析・広告・自動のクラッシュ報告を送信する機能はありません。Web版のページ・音源の読み込みや、外部リンクを開く操作には通信が発生します。接続先のホスティングや配信サービスが通常のアクセスログを保持する場合があります。この説明はアプリの処理を対象とし、接続先サービスの記録を管理するものではありません。</p>
+    </article>
+
+    <article id="en" lang="en" aria-labelledby="title-en">
+      <h1 id="title-en">Your data</h1>
+      <p class="lead">Your imported scores and instrument microphone analysis stay on your device. Optional spoken commands may use your browser provider’s online speech service.</p>
+      <p class="date">Data handling in the development preview · Updated September 30, 2026</p>
+
+      <h2>Scores and performance input</h2>
+      <p>MusicXML, MXL and practice files you select are read inside the app. ConvoCerto does not upload these files. After you allow and connect the microphone, pitch, level and note timing are analysed on your device. Instrument audio is not saved as a recording or sent away for analysis. MIDI input is also processed locally.</p>
+      <p>Recording a take keeps detected notes, timing and velocity, accompaniment responses, cues and feedback you enter. It is not an audio recording. Takes and expression profiles are written to a file in your chosen location when you export them.</p>
+
+      <h2>Saved practice</h2>
+      <p>My scores and recent practice use local storage in your browser or Mac app (IndexedDB). This includes a copy of the score, annotations, settings such as part, tempo and seating, and practice dates and duration. Language and some settings use localStorage. Recent practice is limited to 12 entries and approximately 40MB in total; older entries are removed as needed.</p>
+      <p>There is no account or cloud sync. Different browsers, devices, the website and the Mac app have separate storage. Use “Export practice file” to move a score and its saved settings. This file does not include cumulative practice history or device permissions. Export takes separately. Keep file backups of important practice, since browser data can be cleared or storage can run out.</p>
+
+      <h2>Optional spoken commands and camera</h2>
+      <p>Spoken commands use the browser’s speech recognition feature. Depending on the browser, audio may be sent to its provider’s servers. ConvoCerto does not request on-device-only speech recognition. You can use typed commands and the controls without this feature. See <a href="https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition" rel="noreferrer">how browser speech recognition works</a>.</p>
+      <p>Enabling camera cues downloads analysis software from jsDelivr and a pose model from Google’s distribution servers. These requests disclose ordinary connection information, such as your IP address, to those services. Pose analysis runs on your device; ConvoCerto does not upload or save video. Stopping the microphone or camera feature ends its connection. You can also revoke permissions in your browser or macOS settings.</p>
+
+      <h2>Export and deletion</h2>
+      <p>Exported files may contain scores, annotations, settings or feedback. Check the recipient and the score’s sharing terms before sharing them. Manage or delete exported files in the location where you saved them.</p>
+      <p>“Remove” in My scores deletes that entry. It does not delete a separate copy in recent practice or an exported file. “Remove from history” deletes the selected score and part’s practice history and resume data. Explicitly saved library scores and other parts’ history remain. To clear all website storage, delete this site’s data in your browser settings. The Mac app does not currently offer a screen to erase all stored data. Moving the app to the Trash does not erase its saved practice.</p>
+
+      <h2>Connections and measurement</h2>
+      <p>The current app has no usage analytics, advertising or automatic crash-reporting transmission. Loading the website and its sounds, or opening external links, makes network requests. Hosting and delivery providers may retain ordinary access logs. This page describes the app’s processing; it does not control records held by those services.</p>
+    </article>
+  </main>
+  <footer><a href="/perform">共奏を開く / Open practice</a><a href="/credits.html">出典とクレジット / Sources &amp; credits</a></footer>
+</body>
+</html>

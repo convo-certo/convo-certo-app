@@ -1,69 +1,116 @@
-import { useEffect, useState } from "react";
-interface CatalogScore { id: string; title: string; composer: string; parts: string[]; measures: number; category: string; featured: boolean; scoreLicense: string; scoreSource: string; editionStatus: string }
-interface CandidateReport { candidates?: unknown[] }
-const isClarinetPart = (name: string) => /clarinet|clari[nm]ette|クラリネット/i.test(name) || /(?:^|[^a-z])(?:solo|[1-4](?:st|nd|rd|th)?)?cl(?:[^a-z]|$)/i.test(name) || /\bcla\b/i.test(name);
-const licenseLabel = (license: string) => license === "CC0-1.0" ? "公開利用可・CC0" : license === "PDM-1.0" ? "公開利用可・PDM" : license;
-const licenseUrl = (license: string) => license === "CC0-1.0" ? "https://creativecommons.org/publicdomain/zero/1.0/" : license === "PDM-1.0" ? "https://creativecommons.org/publicdomain/mark/1.0/" : "https://creativecommons.org/share-your-work/cclicenses/";
-export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: File) => Promise<void> }) {
-  const [scores, setScores] = useState<CatalogScore[]>([]);
-  const [candidateCount, setCandidateCount] = useState<number | null>(null);
+import { useEffect, useRef, useState } from "react";
+import { useLocale } from "~/lib/locale-context";
+import { catalogFileSize, catalogGroups, catalogInstruments, catalogPartInstrument, catalogScoreInstruments, fetchCatalogScore, filterCatalog, orderCatalog, parseScoreCatalog, type CatalogInstrumentId, type CatalogScore } from "~/lib/score-catalog";
+import "./score-catalog.css";
+
+export function ScoreCatalog({ busy, onLoad }: { busy: boolean; onLoad: (file: File, preferredInstrument?: CatalogInstrumentId) => Promise<void> }) {
+  const { text } = useLocale();
+  const [requested, setRequested] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const [scores, setScores] = useState<CatalogScore[] | null>(null);
+  const [catalogError, setCatalogError] = useState(false);
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("");
-  const [licenseFilter, setLicenseFilter] = useState("");
-  const [clarinetOnly, setClarinetOnly] = useState(false);
-  const [limit, setLimit] = useState(10);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  useEffect(() => { let cancelled = false; void fetch("/repertoire/ensemble/catalog.json").then((response) => { if (!response.ok) throw new Error(); return response.json(); }).then((data: CatalogScore[]) => { if (!cancelled) setScores(data); }).catch(() => { if (!cancelled) setError("楽譜一覧を読み込めませんでした。"); }); return () => { cancelled = true; }; }, []);
-  useEffect(() => { let cancelled = false; void fetch("/repertoire/ensemble/pdmx-wind-candidates.json").then((response) => response.ok ? response.json() as Promise<CandidateReport> : null).then((data) => { if (!cancelled && data) setCandidateCount(Array.isArray(data.candidates) ? data.candidates.length : 0); }).catch(() => { if (!cancelled) setCandidateCount(null); }); return () => { cancelled = true; }; }, []);
-  const filtered = scores.filter((score) => (!category || score.category === category) && (!licenseFilter || score.scoreLicense === licenseFilter) && (!clarinetOnly || score.parts.some(isClarinetPart)) && `${score.title} ${score.composer} ${score.parts.join(" ")}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => Number(b.featured) - Number(a.featured));
-  const clarinetCount = scores.filter((score) => score.parts.some(isClarinetPart)).length;
-  const priorityRoadmap = [
-    ["ベートーヴェン交響曲第5番 第1楽章", "収録済み"],
-    ["ベートーヴェン交響曲第6番《田園》第1楽章", "第1楽章を収録済み・全曲を検証中"],
-    ["ベートーヴェン交響曲第7番", "全曲MusicXMLを検証中"],
-    ["モーツァルト クラリネット五重奏曲 K.581", "5パートを浄書・校正中"],
-    ["ブラームス クラリネットソナタ Op.120-2", "ローカルMIDI変換版あり・公開用浄書中"],
-  ];
-  const verifiedWindScores = scores.filter((score) => score.category === "wind" && ["CC0-1.0", "PDM-1.0"].includes(score.scoreLicense)).map((score) => [score.title, "収録済み・公開メタデータ確認済み"] as const);
-  const windCandidates = [
-    ["ホルスト：吹奏楽のための第1組曲", "公開版の編曲者・全パート校合待ち"],
-    ["ホルスト：吹奏楽のための第2組曲", "MusicXML全曲版の取得待ち"],
-    ["スーザ：ワシントン・ポスト", "吹奏楽版の利用条件を確認中"],
-    ["フチーク：軍隊の子供たち", "公開初版の全パート確認待ち"],
-    ["フチーク：ファンファーレ・クレンゲ", "公開初版の全パート確認待ち"],
-    ["アルフォード：ホーリー・ルード", "公開版の編成確認待ち"],
-    ["アルフォード：消えた軍隊", "公開版の編成確認待ち"],
-    ["ホルスト：第1組曲《シャコンヌ》", "PDMX公開版の編曲者・権利確認待ち"],
-    ["クラーク：ウィリアム王の行進曲", "PDMX公開版の編成確認待ち"],
-  ] as const;
-  const permissionQueue = [
-    ["Alfred Reed：アルメニアン・ダンス Part I", "出版社・権利者のMusicXML利用許諾待ち"],
-    ["Alfred Reed：エル・カミーノ・レアル", "出版社・権利者のMusicXML利用許諾待ち"],
-    ["Alfred Reed：春の猟犬", "出版社・権利者のMusicXML利用許諾待ち"],
-    ["Alfred Reed：A Festival Prelude", "出版社・権利者のMusicXML利用許諾待ち"],
-    ["吹奏楽コンクール課題曲（各年度）", "作曲者・編曲者・指定版ごとの許諾確認待ち"],
-  ] as const;
-  return <section className="concert-panel" aria-label="MusicXMLライブラリ">
-    <h3>好きな楽器で、オーケストラの中へ</h3>
-    <p><a href="/repertoire/ensemble/ConvoCerto-MusicXML.zip" download>MusicXML一式をZIPでダウンロード</a></p>
-    <p>MusicXML {scores.length}譜・クラリネット席 {clarinetCount}譜・公開ライセンス表示の管楽／金管 {verifiedWindScores.length}譜。総譜のパートを選んで共奏できます。★は優先収録曲です。</p>
-    <div className="concert-controls"><input aria-label="収録楽譜を検索" placeholder="曲名・作曲家・楽器名" value={query} onChange={(event) => { setQuery(event.target.value); setLimit(10); }} /><select aria-label="楽譜の編成" value={category} onChange={(event) => { setCategory(event.target.value); setLimit(10); }}><option value="orchestra">管弦楽編成</option><option value="wind">管楽・金管合奏</option><option value="chamber">室内楽・伴奏付き</option><option value="solo">独奏</option><option value="">すべて</option></select><select aria-label="楽譜の利用条件" value={licenseFilter} onChange={(event) => { setLicenseFilter(event.target.value); setLimit(10); }}><option value="">利用条件すべて</option><option value="CC0-1.0">CC0</option><option value="PDM-1.0">PDM</option></select><label><input aria-label="クラリネット席ありのみ" type="checkbox" checked={clarinetOnly} onChange={(event) => { setClarinetOnly(event.target.checked); setLimit(10); }} /> クラリネット席あり</label><span>{filtered.length}譜</span></div>
-    <details className="concert-roadmap"><summary>優先曲の収録状況</summary><ul>{priorityRoadmap.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul></details>
-    <details className="concert-roadmap"><summary>公開ライセンス表示の管楽・金管合奏 {verifiedWindScores.length}曲</summary><ul>{verifiedWindScores.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul></details>
-    <details className="concert-roadmap"><summary>吹奏楽の追加候補 {windCandidates.length}曲</summary><ul>{windCandidates.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul><p className="concert-muted">候補は権利と版の確認が終わるまで配布カタログに追加しません。許諾済みのMusicXMLは持ち込みから演奏できます。</p></details>
-    <details className="concert-roadmap"><summary>許諾待ちの人気吹奏楽作品 {permissionQueue.length}件</summary><ul>{permissionQueue.map(([title, status]) => <li key={title}><strong>{title}</strong><span>{status}</span></li>)}</ul><p className="concert-muted">許諾範囲はアプリ内表示、伴奏生成、移調・編集、商用配布を分けて確認します。</p></details>
-    {error && <p role="alert">{error}</p>}
-    <div className="catalog-grid">{filtered.slice(0, limit).map((score) => <article className="catalog-score" key={score.id}>
-      <h4>{score.featured ? "★ " : ""}{score.title}</h4>
-      <p>{score.parts.length}パート · {score.measures}小節 · <a aria-label="利用条件" href={licenseUrl(score.scoreLicense)} target="_blank" rel="noreferrer">{licenseLabel(score.scoreLicense)}</a></p>
-      <p aria-label="クラリネット席の有無">{score.parts.some(isClarinetPart) ? "クラリネット席あり" : "クラリネット席なし"}</p>
-      <details><summary>編成と出典</summary><p>{score.parts.join(" / ")}</p><p>{score.editionStatus}</p><a href={score.scoreSource} target="_blank" rel="noreferrer">出典を見る</a></details>
-      <button disabled={busy || loading} onClick={async () => { setLoading(true); setError(""); try { const response = await fetch(`/repertoire/ensemble/${score.id}.musicxml`); if (!response.ok) throw new Error("楽譜を取得できませんでした。"); await onLoad(new File([await response.text()], `${score.id}.musicxml`)); } catch (error) { setError(String(error)); } finally { setLoading(false); } }}>この総譜で演奏 · {score.title}</button>
-      <a href={`/repertoire/ensemble/${score.id}.musicxml`} download>MusicXMLをダウンロード</a>
-    </article>)}</div>
-    {filtered.length > limit && <button onClick={() => setLimit(limit + 10)}>さらに10譜表示</button>}
-    <p className="concert-muted"><a href="/repertoire/ensemble/sources.json">各ファイルのライセンス表示・出典・照合記録</a>。CC0表示と内部の権利表示の矛盾がない版を選定しています。<a href="/repertoire/ensemble/pdmx-wind-candidates.json" target="_blank" rel="noreferrer">追加候補の調査レポート（権利未確定）</a>{candidateCount != null && ` · 未確定候補${candidateCount}件`}</p>
-    <p className="concert-muted">優先収集：ベートーヴェン交響曲第5・6・7番。5番第1楽章と6番《田園》第1楽章は収録済み、全曲総譜の検証を進めています。<a href="https://imslp.org/wiki/Symphony_No.5%2C_Op.67_(Beethoven%2C_Ludwig_van)" target="_blank" rel="noreferrer">原曲の楽譜情報</a></p>
-  </section>;
+  const [instrument, setInstrument] = useState("");
+  const [limit, setLimit] = useState(8);
+  const [opening, setOpening] = useState<CatalogScore | null>(null);
+  const [failedScore, setFailedScore] = useState<CatalogScore | null>(null);
+  const scoreRequest = useRef<AbortController | null>(null);
+  const handedOff = useRef(false);
+  const openingNotice = useRef<HTMLParagraphElement | null>(null);
+  const failureNotice = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!requested) return;
+    const controller = new AbortController();
+    setCatalogError(false);
+    void fetch("/repertoire/library/catalog.json", { signal: controller.signal })
+      .then(response => { if (!response.ok) throw new Error("Catalogue unavailable"); return response.json(); })
+      .then(data => { if (!controller.signal.aborted) setScores(orderCatalog(parseScoreCatalog(data))); })
+      .catch(() => { if (!controller.signal.aborted) setCatalogError(true); });
+    return () => controller.abort();
+  }, [requested, attempt]);
+
+  useEffect(() => () => scoreRequest.current?.abort(), []);
+  useEffect(() => {
+    if (!busy || handedOff.current || !scoreRequest.current) return;
+    scoreRequest.current.abort();
+    scoreRequest.current = null;
+    setOpening(null);
+  }, [busy]);
+  useEffect(() => {
+    if (failedScore) { failureNotice.current?.focus({ preventScroll: true }); failureNotice.current?.scrollIntoView({ block: "nearest" }); }
+    else if (opening) openingNotice.current?.scrollIntoView({ block: "nearest" });
+  }, [opening, failedScore]);
+
+  const openScore = async (score: CatalogScore) => {
+    if (busy || scoreRequest.current) return;
+    const preferredInstrument = catalogScoreInstruments(score).find(item => item.id === instrument)?.id;
+    const controller = new AbortController();
+    scoreRequest.current = controller;
+    handedOff.current = false;
+    setOpening(score); setFailedScore(null);
+    try {
+      const file = await fetchCatalogScore(score, controller.signal);
+      if (!controller.signal.aborted) { handedOff.current = true; await onLoad(file, preferredInstrument); }
+    } catch {
+      if (!controller.signal.aborted) setFailedScore(score);
+    } finally {
+      if (!controller.signal.aborted) setOpening(null);
+      if (scoreRequest.current === controller) scoreRequest.current = null;
+    }
+  };
+
+  const filtered = filterCatalog(scores ?? [], query, instrument);
+  const available = new Set((scores ?? []).flatMap(score => catalogScoreInstruments(score).map(item => item.id)));
+  const disabled = busy || opening !== null;
+  const loading = requested && scores === null && !catalogError;
+
+  return <details className="repertoire-drawer score-catalog" onToggle={event => {
+    if (event.target === event.currentTarget && event.currentTarget.open) setRequested(true);
+  }}>
+    <summary><span>{text("曲を探す", "Browse scores")}</span><span className="score-catalog-summary-note">{text("自分の楽器・好きな編成から", "Find your instrument in the ensemble")}</span></summary>
+    {requested && <section className="score-catalog-content" aria-label={text("収録楽譜", "Score library")} aria-busy={loading}>
+      <div className="score-catalog-intro"><h3>{text("次は、どの曲を合わせますか。", "What would you like to rehearse?")}</h3><p>{text("自分の楽器を含む楽譜を探し、開いて担当パートを選べます。抜粋・編曲も含みます。", "Find a score with your instrument, then open it and choose your part. Includes excerpts and arrangements.")}</p></div>
+      {loading && <p role="status" className="score-catalog-notice">{text("楽譜の一覧を読み込んでいます…", "Loading the score library…")}</p>}
+      {catalogError && <div role="alert" className="score-catalog-notice score-catalog-error"><p>{text("楽譜の一覧を読み込めませんでした。", "Couldn't load the score library.")}</p><button disabled={disabled} onClick={() => setAttempt(value => value + 1)}>{text("一覧を再読み込み", "Retry loading scores")}</button></div>}
+      {scores && <>
+        <div className="score-catalog-filters">
+          <label><span>{text("曲を検索", "Search scores")}</span><input type="search" aria-label={text("曲を検索", "Search scores")} placeholder={text("曲名・作曲家・楽器名", "Title, composer or instrument")} value={query} onChange={event => { setQuery(event.target.value); setLimit(8); }} /></label>
+          <label><span>{text("楽器", "Instrument")}</span><select aria-label={text("楽器", "Instrument")} value={instrument} onChange={event => { setInstrument(event.target.value); setLimit(8); }}>
+            <option value="">{text("すべての楽器", "All instruments")}</option>
+            {catalogGroups.filter(group => catalogInstruments.some(item => item.group === group.id && available.has(item.id))).map(group => <optgroup key={group.id} label={text(group.ja, group.en)}>
+              {group.id !== "voice" && group.id !== "percussion" && <option value={`group:${group.id}`}>{text(`${group.ja}すべて`, `All ${group.en.toLowerCase()}`)}</option>}
+              {catalogInstruments.filter(item => item.group === group.id && available.has(item.id)).map(item => <option key={item.id} value={item.id}>{text(item.ja, item.en)}</option>)}
+            </optgroup>)}
+          </select></label>
+        </div>
+        <div className="score-catalog-results"><p role="status">{text(`${filtered.length}譜`, `${filtered.length} scores`)}</p>{(query || instrument) && <button onClick={() => { setQuery(""); setInstrument(""); setLimit(8); }}>{text("条件をクリア", "Clear filters")}</button>}</div>
+        {opening && <p ref={openingNotice} role="status" className="score-catalog-notice">{text(`「${opening.title}」を開いています。大きな楽譜は少し時間がかかります…`, `Opening “${opening.title}”. Larger scores may take a moment…`)}</p>}
+        {failedScore && <div ref={failureNotice} tabIndex={-1} role="alert" className="score-catalog-notice score-catalog-error"><p>{text(`「${failedScore.title}」を開けませんでした。もう一度お試しください。`, `Couldn't open “${failedScore.title}”. Please try again.`)}</p><button disabled={disabled} onClick={() => void openScore(failedScore)}>{text("この曲を再試行", "Retry this score")}</button></div>}
+        {filtered.length === 0 && <div className="score-catalog-empty"><p>{text("条件に合う楽譜が見つかりませんでした。", "No scores match these filters.")}</p><p>{text("楽器や検索語を変えるか、自分のMusicXMLを開いてみてください。", "Try another instrument or search term, or open your own MusicXML.")}</p></div>}
+        <div className="score-catalog-grid">{filtered.slice(0, limit).map(score => {
+          const instruments = catalogScoreInstruments(score);
+          const instrumentNames = instruments.map(item => text(item.ja, item.en));
+          const large = score.measures >= 250 || score.parts.length >= 20;
+          return <article className="score-catalog-card" key={score.id} data-score-id={score.id}>
+            <div className="score-catalog-card-top"><span>{score.scope === "solo" ? text("独奏譜・独立伴奏なし", "Solo score · No separate accompaniment") : score.scope === "excerpt" ? text("抜粋", "Excerpt") : text("アンサンブル", "Ensemble")}</span><span>{catalogFileSize(score.bytes)}</span></div>
+            <h4>{score.title}</h4>
+            <p className="score-catalog-composer">{score.composer}</p>
+            <p className="score-catalog-measures">{text(`${score.measures}小節 · ${score.parts.length}パート`, `${score.measures} bars · ${score.parts.length} ${score.parts.length === 1 ? "part" : "parts"}`)}</p>
+            {score.scope === "solo" && <p className="score-catalog-solo">{text("お手本の試聴に。声部が分かれた楽譜は、一部を選んで練習できます。", "Listen to the whole score, or choose a voice to play where the notation separates them.")}</p>}
+            <p className="score-catalog-instruments">{instrumentNames.length ? instrumentNames.join(" / ") : text("楽器名は楽譜を開いて確認できます", "Open the score to check the instruments")}</p>
+            {large && <p className="score-catalog-large">{text("長い曲・大編成のため、準備に時間がかかることがあります。", "A longer or larger score; opening may take a moment.")}</p>}
+            <details className="score-catalog-source"><summary>{text("パートと出典", "Parts & source")}</summary><ul>{score.parts.map((part, index) => {
+              const kind = catalogPartInstrument(part);
+              const label = catalogInstruments.find(item => item.id === kind);
+              return <li key={index}>{part.name.trim() || (label ? text(label.ja, label.en) : text(`パート${index + 1}`, `Part ${index + 1}`))}</li>;
+            })}</ul><a href={score.scoreSource} target="_blank" rel="noreferrer">{text("楽譜の出典", "Score source")} ↗</a><span> · {score.scoreLicense === "CC0-1.0" ? "CC0" : "Public Domain Mark"}</span></details>
+            <button className="score-catalog-open" disabled={disabled} aria-label={text(`「${score.title}」を開く`, `Open ${score.title}`)} onClick={() => void openScore(score)}>{opening?.id === score.id ? text("準備しています…", "Opening…") : text("この楽譜を開く", "Open score")}<span aria-hidden="true">↗</span></button>
+          </article>;
+        })}</div>
+        {filtered.length > limit && <button className="score-catalog-more" onClick={() => setLimit(value => value + 8)}>{text(`さらに${Math.min(8, filtered.length - limit)}譜を表示`, `Show ${Math.min(8, filtered.length - limit)} more scores`)}</button>}
+        <p className="score-catalog-footer">{text("楽譜の版ごとに編成や収録範囲が異なります。", "Instrumentation and included movements vary by edition.")} <a href="/credits.html">{text("楽譜・音源の出典", "Score & sound credits")}</a></p>
+      </>}
+    </section>}
+  </details>;
 }

@@ -1,11 +1,18 @@
+import { confirmImportedPart, openDisclosure, openEnsembleLab, openLibrary, openRestoredSettings, openSettings } from "./helpers/studio";
 import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 
 test('portable practice restores ensemble settings over conflicting settings in another browser', async ({page,browser}) => {
-  await page.goto('/perform');
+  await page.goto('/perform?view=settings');
   await page.getByLabel('MusicXMLで演奏する',{exact:true}).setInputFiles('public/scores/sample-duet.musicxml');
+  await confirmImportedPart(page);
   await expect(page.getByRole('button',{name:'この練習を保存',exact:true})).toBeEnabled();
   await page.getByLabel('演奏テンポ',{exact:true}).fill('88');
+  await openEnsembleLab(page);
+  await openDisclosure(page, "追従・表現の詳細");
+  await openDisclosure(page, "伴奏の音色・配置");
+  await page.getByRole('button',{name:'席 chair-1: Piano',exact:true}).click();
+  await page.getByLabel('席の楽器',{exact:true}).selectOption('oboe');
   await page.getByLabel('楽譜への追従方式').selectOption('sequence');
   await page.getByLabel('合奏の主導者',{exact:true}).selectOption('conductor');
   await page.getByLabel('共奏 反応をなじませる秒数',{exact:true}).fill('0.7');
@@ -24,16 +31,21 @@ test('portable practice restores ensemble settings over conflicting settings in 
   await page.locator('.part-row button').first().click();
   await expect(page.locator('.part-row button').first()).toHaveAttribute('aria-pressed','true');
   await page.getByRole('button',{name:'この練習を保存',exact:true}).click();
+  await openLibrary(page);
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button',{name:/の練習ファイルを書き出す$/}).click();
   const download=await downloadPromise;
   const bytes=await readFile((await download.path())!);
   expect(JSON.parse(bytes.toString()).score.session.mutedPartIds).toEqual(['P2']);
+  expect(JSON.parse(bytes.toString()).score.session.space.chairs.find((chair: {id: string}) => chair.id === 'chair-1').instrument).toBe('oboe');
   const context=await browser.newContext();
   const second=await context.newPage();
   try {
-    await second.goto('http://localhost:5187/perform');
+    await second.goto('http://localhost:5187/perform?view=settings');
     await second.getByLabel('MusicXMLで演奏する',{exact:true}).setInputFiles('public/scores/sample-duet.musicxml');
+    await confirmImportedPart(second);
+    await openEnsembleLab(second);
+    await openDisclosure(second, "追従・表現の詳細");
     await second.getByLabel('楽譜への追従方式').selectOption('nearest');
     await second.getByLabel('合奏の主導者',{exact:true}).selectOption('player');
     await second.evaluate(async () => {
@@ -43,9 +55,16 @@ test('portable practice restores ensemble settings over conflicting settings in 
       (window as any).restoredVolumes = [];
       OrchestraAudio.prototype.setPartVolume = function (index: number, level: number) { (window as any).restoredVolumes.push([index,level]); return original.call(this,index,level); };
     });
+    await openLibrary(second);
     await second.getByLabel('練習ファイルを読み込む',{exact:true}).setInputFiles({name:'practice.convo.json',mimeType:'application/json',buffer:bytes});
     const library=second.getByRole('region',{name:'マイ楽譜',exact:true});
     await library.getByRole('button',{name:'ConvoCerto Sample Duet',exact:true}).click();
+    await openRestoredSettings(second);
+    await openEnsembleLab(second);
+    await openDisclosure(second, "追従・表現の詳細");
+    await openDisclosure(second, "伴奏の音色・配置");
+    await second.getByRole('button',{name:'席 chair-1: Piano',exact:true}).click();
+    await expect(second.getByLabel('席の楽器',{exact:true})).toHaveValue('oboe');
     await expect(second.locator('.part-row button').first()).toHaveAttribute('aria-pressed','true');
     expect(await second.evaluate(() => (window as any).restoredVolumes)).toContainEqual([1,0]);
     await expect(second.getByLabel('演奏テンポ',{exact:true})).toHaveValue('88');
@@ -65,9 +84,11 @@ test('portable practice restores ensemble settings over conflicting settings in 
     const take=JSON.parse(await readFile((await takeDownload.path())!, 'utf8'));
     expect(take.reference).toEqual(reference);
     const invalid=JSON.parse(bytes.toString());invalid.score.session.space.chairs[0].partIndex=999;
+    await openLibrary(second);
     await second.getByLabel('練習ファイルを読み込む',{exact:true}).setInputFiles({name:'bad.convo.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(invalid))});
     await expect(second.getByRole('alert')).toContainText('不正');
     await expect(library.getByRole('button',{name:/をマイ楽譜から削除$/})).toHaveCount(1);
+    await openSettings(second);
     await expect(second.getByLabel('演奏テンポ',{exact:true})).toHaveValue('88');
   } finally {await context.close();}
 });

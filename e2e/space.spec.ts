@@ -1,3 +1,4 @@
+import { confirmImportedPart, openDisclosure, openLibrary, openSettings } from "./helpers/studio";
 import { test, expect } from "@playwright/test";
 const xml = `<score-timewise version="4.0"><work><work-title>Spatial rehearsal</work-title></work><part-list><score-part id="P1"><part-name>Clarinet</part-name></score-part><score-part id="P2"><part-name>Cello</part-name></score-part></part-list>${Array.from({length:8}, (_, i) => `<measure number="${i+1}">${["P1", "P2"].map((id) => `<part id="${id}"><attributes><divisions>1</divisions><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes><note><pitch><step>C</step><octave>${id === "P1" ? 5 : 3}</octave></pitch><duration>4</duration><type>whole</type></note></part>`).join("")}</measure>`).join("")}</score-timewise>`;
 test("custom timewise score, spatial assignment and score page preserve playback", async ({page}) => {
@@ -7,9 +8,11 @@ test("custom timewise score, spatial assignment and score page preserve playback
     (window as any).spatialPanners = [];
     AudioContext.prototype.createPanner = function() { const node = create.call(this); (window as any).spatialPanners.push(node); return node; };
   });
-  await page.goto("/perform");
+  await page.goto("/perform?view=settings");
   await page.getByLabel("MusicXMLで演奏する", {exact:true}).setInputFiles({name:"timewise.xml", mimeType:"application/xml", buffer:Buffer.from(xml)});
+  await confirmImportedPart(page);
   await expect(page.getByRole("button", {name:"▶ 演奏開始",exact:true})).toBeEnabled();
+  await openDisclosure(page, "伴奏の音色・配置");
   await page.getByRole("button", {name:"席 chair-1: Cello",exact:true}).click();
   await page.getByLabel("席の楽器", {exact:true}).selectOption("clarinet");
   await expect(page.getByLabel("席の楽器", {exact:true})).toHaveValue("clarinet");
@@ -33,14 +36,14 @@ test("custom timewise score, spatial assignment and score page preserve playback
   await expect(page.getByLabel("耳の左右",{exact:true})).toHaveValue("5");
   await page.getByRole("button", {name:"▶ 演奏開始",exact:true}).click();
   await expect.poll(() => page.evaluate(() => (window as any).spatialPanners.filter((p:PannerNode)=>p.panningModel === "HRTF").length)).toBeGreaterThanOrEqual(2);
-  await page.getByRole("button", {name:"楽譜専用ページで演奏する →"}).click();
+  await page.getByRole("button", {name:"楽譜で練習"}).click();
   await expect(page).toHaveURL(/view=score/);
   await expect(page.getByRole("region", {name:"オーケストラの空間"})).toBeHidden();
   await expect(page.locator(".printable-score svg").first()).toBeVisible();
   await expect(page.getByRole("button", {name:"■ 停止",exact:true})).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1)).toBe(true);
   await page.screenshot({path:"test-results/dedicated-score.png",fullPage:true});
-  await page.getByRole("button", {name:"準備・オーケストラ",exact:true}).click();
+  await page.getByRole("button", {name:"設定",exact:true}).click();
   await expect(page.locator(".orchestra-chair")).toHaveCount(3);
   await expect(page.getByLabel("耳の左右",{exact:true})).toHaveValue("5");
   const celloLight = page.getByRole("button", {name:"席 chair-1: Cello",exact:true}).locator("circle");
@@ -51,8 +54,10 @@ test("custom timewise score, spatial assignment and score page preserve playback
   await expect(celloLight).toHaveAttribute("fill", "#f8c66b");
   await page.getByRole("button", {name:"■ 停止",exact:true}).click();
   await page.getByRole("region", {name:"オーケストラの空間"}).screenshot({path:"test-results/orchestra-space.png"});
+  await openLibrary(page);
   await page.getByLabel("MusicXMLで演奏する", {exact:true}).setInputFiles({name:"bad.xml", mimeType:"application/xml", buffer:Buffer.from("<document/>")});
   await expect(page.getByRole("alert")).toContainText("MusicXMLではありません");
+  await openSettings(page);
   await expect(page.locator(".orchestra-chair")).toHaveCount(3);
   await page.setViewportSize({width:390,height:844});
   await page.getByRole("region", {name:"オーケストラの空間"}).screenshot({path:"test-results/orchestra-space-mobile.png"});
@@ -69,9 +74,11 @@ test('duplicate players apply distinct tuning to actual audio sources', async ({
       return start.apply(this,args);
     };
   });
-  await page.goto('/perform');
+  await page.goto('/perform?view=settings');
   await page.getByLabel('MusicXMLで演奏する',{exact:true}).setInputFiles({name:'duet.xml',mimeType:'application/xml',buffer:Buffer.from(xml)});
+  await confirmImportedPart(page);
   await expect(page.getByRole('button',{name:'▶ 演奏開始',exact:true})).toBeEnabled();
+  await openDisclosure(page, "伴奏の音色・配置");
   await page.getByRole('button',{name:'席 chair-1: Cello',exact:true}).click();
   await page.getByLabel('席の楽器',{exact:true}).selectOption('clarinet');
   await page.getByLabel('奏者の微細なずれ',{exact:true}).fill('1');
@@ -84,4 +91,28 @@ test('duplicate players apply distinct tuning to actual audio sources', async ({
   expect(sources[0].rate).not.toBe(sources[1].rate);
   expect(Math.abs(sources[0].time-sources[1].time)).toBeLessThan(0.03);
   await page.getByRole('button',{name:'■ 停止',exact:true}).click();
+});
+
+test("opens instrument placement directly from the score and preserves edits after save and reload", async ({ page }) => {
+  await page.goto("/perform");
+  await page.getByLabel("MusicXMLで演奏する", { exact: true }).setInputFiles({ name: "spatial.xml", mimeType: "application/xml", buffer: Buffer.from(xml) });
+  await page.getByRole("button", { name: "このパートで練習", exact: true }).click();
+  await page.getByRole("button", { name: "楽器の配置", exact: true }).click();
+  const space = page.getByRole("region", { name: "オーケストラの空間" });
+  await expect(space).toBeVisible();
+  await space.getByRole("button", { name: "席 chair-1: Cello", exact: true }).click();
+  await space.getByLabel("席の左右", { exact: true }).fill("4");
+  await page.getByRole("button", { name: "楽譜で練習", exact: true }).click();
+  await page.getByRole("button", { name: "楽器の配置", exact: true }).click();
+  await expect(space.getByLabel("席の左右", { exact: true })).toHaveValue("4");
+  await page.getByRole("button", { name: "楽譜で練習", exact: true }).click();
+  await page.getByRole("button", { name: "保存と設定", exact: true }).click();
+  await page.getByRole("button", { name: "この練習を保存", exact: true }).click();
+  await expect(page.getByText("保存しました", { exact: true })).toBeVisible();
+  await page.reload();
+  await openLibrary(page);
+  await page.locator(".score-library").getByRole("button", { name: "Spatial rehearsal", exact: true }).click();
+  await page.getByRole("button", { name: "楽器の配置", exact: true }).click();
+  await space.getByRole("button", { name: "席 chair-1: Cello", exact: true }).click();
+  await expect(space.getByLabel("席の左右", { exact: true })).toHaveValue("4");
 });

@@ -1,5 +1,7 @@
 import { Link, useLocation } from "react-router";
 import type { Locale } from "~/lib/i18n";
+import { useLocale } from "~/lib/locale-context";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 interface StageLayoutProps {
   children: React.ReactNode;
@@ -7,7 +9,8 @@ interface StageLayoutProps {
   immersive?: boolean;
 }
 
-export function StageLayout({ children, locale = "ja", immersive = false }: StageLayoutProps) {
+export function StageLayout({ children, immersive = false }: StageLayoutProps) {
+  const { text } = useLocale();
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -23,14 +26,15 @@ export function StageLayout({ children, locale = "ja", immersive = false }: Stag
       }}
     >
       <header className="stage-header" style={immersive ? {display:"none"} : undefined}>
-        <Link to="/" className="stage-brand" aria-label={locale === "ja" ? "ConvoCerto ホーム" : "ConvoCerto home"}>
-          <h1>ConvoCerto</h1>
+        <Link to="/" className="stage-brand" aria-label={text("ConvoCerto ホーム", "ConvoCerto home")}>
+          <img src="/brand/icon.svg" alt="" width="34" height="34"/><h1>ConvoCerto</h1>
         </Link>
-        <nav aria-label={locale === "ja" ? "主な画面" : "Main navigation"}>
+        <nav aria-label={text("主な画面", "Main navigation")}>
           {currentPath === "/perform"
-            ? <span aria-current="page">{locale === "ja" ? "共奏" : "Play together"}</span>
-            : <Link to="/perform">{locale === "ja" ? "共奏へ" : "Play together"}</Link>}
-          <a href="/credits.html" target="_blank" rel="noreferrer">{locale === "ja" ? "出典・クレジット" : "Credits"}</a>
+            ? <span aria-current="page">{text("共奏", "Play together")}</span>
+            : <Link to="/perform">{text("共奏へ", "Play together")}</Link>}
+          <a href="/credits.html" target="_blank" rel="noreferrer">{text("出典・クレジット", "Credits")}</a>
+          <LanguageSwitcher />
         </nav>
       </header>
 

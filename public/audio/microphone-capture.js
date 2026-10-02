@@ -1,7 +1,7 @@
 class MicrophoneCapture extends AudioWorkletProcessor {
   constructor() {
     super();
-    this.ring = new Float32Array(2048);
+    this.ring = new Float32Array(4096);
     this.writeIndex = 0;
     this.filled = 0;
     this.sinceFrame = 0;

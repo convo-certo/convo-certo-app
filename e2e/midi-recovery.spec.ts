@@ -1,3 +1,4 @@
+import { confirmImportedPart } from "./helpers/studio";
 import {test,expect} from '@playwright/test';
 
 test('losing the selected MIDI device pauses accompaniment while unrelated devices do not',async({page})=>{
@@ -8,8 +9,9 @@ test('losing the selected MIDI device pauses accompaniment while unrelated devic
     (window as any).midiFixture={input,other,access};
     Object.defineProperty(navigator,'requestMIDIAccess',{value:async()=>access});
   });
-  await page.goto('/perform');
+  await page.goto('/perform?view=settings');
   await page.getByLabel('MusicXMLで演奏する',{exact:true}).setInputFiles('public/scores/sample-duet.musicxml');
+  await confirmImportedPart(page);
   await page.getByRole('button',{name:'ClariMate / MIDIを接続',exact:true}).click();
   await expect(page.getByLabel('MIDI機器',{exact:true})).toHaveValue('clarimate');
   await page.getByRole('button',{name:'▶ 演奏開始',exact:true}).click();
@@ -38,14 +40,16 @@ test('leaving during MIDI permission does not attach the late connection',async(
   (window as any).pendingMIDI={access,requested:false,resolve:null};
   Object.defineProperty(navigator,'requestMIDIAccess',{value:()=>new Promise(resolve=>{(window as any).pendingMIDI.requested=true;(window as any).pendingMIDI.resolve=resolve;})});
  });
- await page.goto('/perform');
+ await page.goto('/perform?view=settings');
  await page.getByLabel('MusicXMLで演奏する',{exact:true}).setInputFiles('public/scores/sample-duet.musicxml');
+ await confirmImportedPart(page);
  await page.getByRole('button',{name:'ClariMate / MIDIを接続',exact:true}).click();
  await expect.poll(()=>page.evaluate(()=>(window as any).pendingMIDI.requested)).toBe(true);
  await page.getByRole('link',{name:'ConvoCerto ホーム',exact:true}).click();
  await expect(page).toHaveURL('/');
+ await expect(page.getByRole('link',{name:'自分の楽譜で始める',exact:true})).toBeVisible();
  await page.evaluate(async()=>{const f=(window as any).pendingMIDI;f.resolve(f.access);await new Promise(resolve=>setTimeout(resolve,0));});
  expect(await page.evaluate(()=>(window as any).pendingMIDI.access.onstatechange===null)).toBe(true);
- await page.getByRole('link',{name:'共奏を始める',exact:true}).click();
+ await page.getByRole('link',{name:'自分の楽譜で始める',exact:true}).click();
  await expect(page).toHaveURL('/perform');
 });

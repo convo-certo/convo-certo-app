@@ -1,3 +1,4 @@
+import { confirmImportedPart } from "./helpers/studio";
 import {test,expect} from '@playwright/test';
 test('seeking inside a held note restarts its remaining sound without waiting for another onset',async({page})=>{
  await page.addInitScript(()=>{
@@ -5,9 +6,10 @@ test('seeking inside a held note restarts its remaining sound without waiting fo
   const start=AudioBufferSourceNode.prototype.start;
   AudioBufferSourceNode.prototype.start=function(...args:Parameters<AudioBufferSourceNode['start']>){(window as any).heldStarts++;return start.apply(this,args);};
  });
- await page.goto('/perform');
+ await page.goto('/perform?view=settings');
  const xml='<score-partwise><part-list><score-part id="C"><part-name>Clarinet</part-name></score-part></part-list><part id="C"><measure number="1"><attributes><divisions>1</divisions><time><beats>4</beats><beat-type>4</beat-type></time></attributes><note><pitch><step>C</step><octave>4</octave></pitch><duration>8</duration><type>breve</type></note></measure></part></score-partwise>';
  await page.getByLabel('MusicXMLで演奏する',{exact:true}).setInputFiles({name:'held.musicxml',mimeType:'application/xml',buffer:Buffer.from(xml)});
+ await confirmImportedPart(page);
  await expect(page.getByRole('button',{name:'▶ 演奏開始',exact:true})).toBeEnabled();
  await page.getByLabel('練習モード').selectOption('listen');
  await page.getByLabel('カウントイン',{exact:true}).selectOption('0');

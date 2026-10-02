@@ -1,10 +1,14 @@
+import { confirmImportedPart, openDisclosure, openEnsembleLab } from "./helpers/studio";
 import { test, expect } from "@playwright/test";
 
 test("experimental follower selection survives reload and is locked during a take", async ({ page }) => {
-  await page.goto("/perform");
+  await page.goto("/perform?view=settings");
   const load = async () => {
-    await page.locator("article").filter({ hasText: "JOHANNES BRAHMS" }).getByRole("button").first().click();
+    await page.getByLabel("MusicXMLで演奏する", { exact: true }).setInputFiles("public/scores/sample-duet.musicxml");
+    await confirmImportedPart(page);
     await expect(page.getByRole("button", { name: "▶ 演奏開始", exact: true })).toBeEnabled();
+    await openEnsembleLab(page);
+    await openDisclosure(page, "追従・表現の詳細");
   };
   await load();
   await page.getByLabel("楽譜への追従方式").selectOption("sequence");
@@ -21,7 +25,7 @@ test("experimental follower selection survives reload and is locked during a tak
 
 test("real audio routes and voices stay bounded through 30 seconds of seat replacement", async ({ page }) => {
   test.setTimeout(60000);
-  await page.goto("/perform");
+  await page.goto("/perform?view=settings");
   const result = await page.evaluate(async () => {
     const modulePath = "/app/lib/orchestra-audio.ts";
     const { OrchestraAudio } = await import(modulePath);
@@ -82,7 +86,7 @@ test("real audio routes and voices stay bounded through 30 seconds of seat repla
 });
 
 test('dense orchestra is bounded and stop immediately disconnects every source', async ({page}) => {
-  await page.goto('/perform');
+  await page.goto('/perform?view=settings');
   const result=await page.evaluate(async () => {
     const modulePath='/app/lib/orchestra-audio.ts';
     const {OrchestraAudio}=await import(modulePath);

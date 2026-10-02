@@ -1,6 +1,8 @@
 import { defaultEnsembleTuning } from "./ensemble-tuning";
 import { expect, it } from "vitest";
 import { readPracticeFile } from "./practice-file";
+import { createPracticeJournalEntry } from "./practice-journal";
+import { placementInstruments } from "./instrument-palette";
 import { readFileSync } from "node:fs";
 const xml = readFileSync('public/scores/sample-duet.musicxml','utf8');
 const session = {version:1,seatId:'P1',instrumentKey:-2,shift:-2,tuning:442,tempo:84,beat:4,startMeasure:2,loopEnd:4,loopEnabled:true,mode:'accompany',countInBars:1,click:false,volume:65,midiWritten:true,space:{enabled:true,listener:{x:1,z:0},chairs:[{id:'chair-1',partIndex:1,instrument:'french_horn',x:2,z:-5,level:0.8}]}};
@@ -52,4 +54,27 @@ it('restores muted accompaniment identities while rejecting unknown, solo or dup
   expect(readPracticeFile(file({...session, mutedPartIds:['P2']})).session?.mutedPartIds).toEqual(['P2']);
   expect(readPracticeFile(file()).session?.mutedPartIds).toBeUndefined();
   for (const mutedPartIds of [null, 'P2', ['missing'], ['P1'], ['P2','P2'], [2]]) expect(() => readPracticeFile(file({...session, mutedPartIds}))).toThrow('不正');
+});
+
+it.each(placementInstruments)('roundtrips the supported %s sound on an accompaniment chair', instrument => {
+  const settings = { ...session, space: { ...session.space, chairs: [{ ...session.space.chairs[0], instrument }] } };
+  const restored = readPracticeFile(file(settings));
+  expect(restored.session).toEqual(settings);
+  const exported = JSON.stringify({ format: 'convocerto-practice', version: 1, score: restored });
+  expect(readPracticeFile(exported)).toEqual(restored);
+});
+
+it('records a recent practice after its accompaniment sound changes', () => {
+  const restored = readPracticeFile(file());
+  restored.session!.space!.chairs[0].instrument = 'church_organ';
+  const practice = { ...restored, id: 'changed-sound', savedAt: '2026-09-30T00:00:00.000Z' };
+  const recorded = createPracticeJournalEntry(undefined, practice, 10, new Date(practice.savedAt));
+  expect(recorded?.practice.session?.space?.chairs[0]).toEqual(restored.session!.space!.chairs[0]);
+  expect(recorded?.totalPlayedSeconds).toBe(10);
+});
+
+it('rejects arbitrary instruments outside the supported sound palette', () => {
+  for (const instrument of ['custom_synth', '../audio/unknown', '']) {
+    expect(() => readPracticeFile(file({ ...session, space: { ...session.space, chairs: [{ ...session.space.chairs[0], instrument }] } }))).toThrow('不正');
+  }
 });

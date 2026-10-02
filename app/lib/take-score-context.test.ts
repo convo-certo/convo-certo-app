@@ -6,6 +6,7 @@ import { replayTake, scoreKey, TakeRecorder } from "./rehearsal-takes";
 import { readRehearsalTake } from "./rehearsal-take-file";
 import { profileFromTake } from "./reference-profile";
 import { takeScoreContext } from "./take-score-context";
+import { assignPerformanceSeat, listPerformanceSeats, performanceName } from "./performance-seats";
 import type { ParsedScore } from "./types";
 
 const score = parseMusicXML(readFileSync("public/scores/sample-duet.musicxml", "utf8"));
@@ -35,6 +36,26 @@ describe("take score conditions", () => {
     const reordered = Object.fromEntries(Object.entries(score).reverse()) as unknown as ParsedScore;
     expect(takeScoreContext(reordered)).toBe(take.scoreContext);
     expect(takeScoreContext(JSON.parse(JSON.stringify(score)))).toBe(take.scoreContext);
+  });
+  it("opens existing voice-seat takes when only generated display metadata is added", () => {
+    const source = structuredClone(score);
+    source.parts[0].notes.forEach((note, index) => { note.voice = String(index % 2 + 1); });
+    const seat = listPerformanceSeats(source).find(seat => seat.voice === "2")!;
+    const selected = assignPerformanceSeat(source, seat.id);
+    const legacyScore = structuredClone(selected);
+    legacyScore.parts.forEach(part => { delete part.generatedName; });
+    const engine = new ConcertEngine(() => 0, false);
+    engine.load(legacyScore);
+    const savedTake = new TakeRecorder(legacyScore, seat.id, engine, []).finish();
+    engine.dispose();
+    expect(takeScoreContext(selected)).toBe(savedTake.scoreContext);
+    expect(readRehearsalTake(JSON.stringify(savedTake), selected, seat.id).scoreContext).toBe(savedTake.scoreContext);
+    expect(() => replayTake(selected, savedTake, savedTake.tuning)).not.toThrow();
+    for (const part of selected.parts) { performanceName(part, "en"); performanceName(part, "ja"); }
+    expect(takeScoreContext(selected)).toBe(savedTake.scoreContext);
+    const changed = structuredClone(selected);
+    changed.parts[0].notes[0].velocity = 1;
+    expect(() => readRehearsalTake(JSON.stringify(savedTake), changed, seat.id)).toThrow("演奏条件");
   });
   it("retains legacy notes and feedback without treating missing conditions as verified", () => {
     const legacy = { ...take, experience: { reuse: "unsure" as const, notes: "入りを調整" } };

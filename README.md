@@ -1,62 +1,42 @@
 # ConvoCerto
 
-Interactive Music Performance Agent — AI accompaniment with dynamic Lead/Follow switching.
+Bring your own MusicXML, choose your part, and practise with the ensemble.
 
-Built as a browser-based web application (SPA) using React Router v7, Tone.js, and OpenSheetMusicDisplay.
+ConvoCerto runs in a browser or a native Mac app. The main practice workflow supports English and Japanese; rehearsal directions stay on the score and can be carried into the next practice.
 
-## Play Mozart and Brahms
+## Practice with your own MusicXML
 
-Open `/perform` (also available at `/step4`) for the concert rehearsal screen:
+Open `/perform` (also available at `/step4`). Bring a full score as `.musicxml`, `.xml`, or compressed `.mxl`, choose your part, and play with the remaining parts as accompaniment. PDFs and photos are not supported; a melody-only score does not generate a newly composed accompaniment.
 
-- Mozart's Clarinet Concerto K.622: all three movements, orchestral accompaniment.
-- Brahms's Clarinet Sonata No.2 Op.120-2: all three movements, piano accompaniment.
-- The solo clarinet is always excluded from the accompaniment audio.
-- Microphone pitch/onset detection and MIDI/ClariMate input feed the score follower.
-- Choose A or B-flat clarinet; transpose the whole accompaniment to retain the same written fingering, or choose the original key for an already-transposed part.
-- Adjust tempo, tuning (A=430–450 Hz), volume and individual accompaniment parts.
-- Seek to a playback measure, loop a passage, and set lead/follow or cue/timed waits at any playback measure.
-- Release waits with a matching played note, a camera cue, or the resume button.
-- Rehearsal instructions apply to the engine, including absolute and relative tempo changes. Plans persist per movement locally and can be exported/imported.
+The standard app starts with two examples: an eight-bar clarinet/piano duet and Mozart's Clarinet Concerto K.622, II. Adagio. The score page has six main controls: play, listen, tempo, passage, expression, and a menu. Instrument/input settings and experimental performance models live behind their own controls.
+
+- The library includes a two-bar piano phrase for hearing expression changes before importing a score; it reuses the bundled duet.
+- Resting measures remain readable without added count numbers. Playback highlights the current resting measure.
+- Choose a written key such as C dur → D dur above the score to rewrite pitches, key signatures and chord roots across all parts. The MusicXML export retains the change and score notes. Major/minor mode is preserved; missing mode defaults to major. Unusual notation and key signatures beyond seven accidentals are rejected with an explanation.
+- Hear an expression change as A/B audio before leaving its instruction on the score. Personal text notes remain notes; they are not interpreted as unspecified audio transformations.
+- Practise a passage, adjust the tempo and count-in, and click the notation to restart at a musical position.
+- Confirm your part before starting. You can practise at a fixed tempo without connecting an input, or use a microphone or MIDI instrument for following. A score needs sounding accompaniment parts for ensemble playback; a solo-only score can still be heard with Listen.
+- Recent playing time, practice days, the latest score annotations and settings are saved on this device. Resume from the recent-practice cards. Audition playback and count-in are excluded from practice duration.
+- Repeatedly saving a practice updates the same library item. Recent practice also keeps score notes and settings changed after stopping; deleting a history entry leaves explicitly saved library scores intact.
+- The menu saves a portable practice file or an annotated MusicXML file. The local library and recent history are independent of any online account.
+- The main practice workflow supports Japanese and English. Language selection preserves the current score and audio session. Use one Tab entry and arrow keys to move between bars, then Enter to seek or edit. Spoken rehearsal commands remain Japanese.
+
+The distribution keeps 34 instrument sample banks, two starter scores, and 49 additional compressed score editions in Browse scores. The additional catalogue and individual scores are fetched only when opened. The uncompressed research scores, full score ZIP, MIDI fallbacks and local editions are excluded. Source assets remain in the repository for research and tests. See [starter packaging and measured size](docs/starter-bundle.md), [practice UX](docs/musicxml-practice.md), and [ensemble model and limits](docs/ensemble-vision.md).
 
 ```bash
 npm install
-npm run repertoire:prepare
 npm run dev
 ```
 
-Preparation uses `uv` and downloads the performance MIDI editions and seven
-FluidR3 instrument sample banks. The public-domain Mutopia orchestral-only
-Mozart fallback and sampled instruments are included in the repository.
-Local performance editions with solo parts are not committed because the hosting
-sites do not state clear redistribution licenses. See
-[repertoire sources](public/repertoire/SOURCES.md) for provenance and distribution scope.
-A fresh checkout needs the preparation command for all six solo-following editions.
+No repertoire download is needed for the starter scores. Use headphones for microphone following. Microphone analysis runs locally; optional voice commands use the browser's separate speech-recognition service.
 
-Use headphones so the microphone hears your clarinet rather than the accompaniment.
-Microphone analysis runs locally in the browser. Voice commands use the browser's
-separate speech recognition service and start only when requested.
+The concert engine uses bounded pitch/onset matching and a short audio scheduling horizon. It is a rule-based rehearsal companion, not a trained orchestral expression model. Microphone following supports one monophonic solo line; MIDI supports note input from electronic instruments. The audio is sample-based synthesis. Live instrument, room-acoustics and ensemble listening tests are still necessary.
 
-The new concert engine (`concert-engine.ts`) uses a bounded pitch/onset matcher
-(`performance-follower.ts`) and a short audio scheduling horizon. It is a
-rule-based rehearsal companion, not a trained orchestral expression model.
-Pitch-following supports one monophonic solo line; microphone performance with
-real clarinets, room acoustics, vibrato and ornaments still needs musician testing.
-The instrument audio is sample-based synthesis, not a live-orchestra recording.
-
-Playback measure numbers come from the source MIDI timeline and can differ from
-printed editions at fermatas and repeats. Uploaded uncompressed MusicXML (.musicxml/.xml) now replaces the performance data:
-its notes, parts, transposition, meter, tempo changes and rehearsal directives drive
-accompaniment and microphone/MIDI following. Choose the performer part to exclude
-it from audio; the displayed solo score follows playback, including basic repeats.
-Lead/Follow and wait edits apply immediately and export back into the full MusicXML.
-Piano backup/forward voices, chords, ties, pickups and basic articulation are parsed.
-Compressed MXL, alternate endings, D.C./D.S., ornaments and continuous hairpins are
-not yet fully supported. The six built-in movement buttons still use MIDI-derived
-data; import your full MusicXML score to use the XML performance path.
+Imported MusicXML supplies pitches, parts, transposition, meter, tempo changes, repeats and supported rehearsal directives. The selected performer part is excluded from accompaniment. The notation follows playback, and unsupported or ambiguous notation is reported when the score opens. Repeated passages use expanded playback order; the printed score retains its original measure numbers.
 
 ## Expressive rehearsal
 
-In the concert rehearsal panel, write or say one intention at a time:
+The normal score workflow selects expression by listening to A/B audio. Optional Japanese rehearsal commands remain in Settings; write or say one intention at a time:
 
 - “9〜12小節は歌うように”: phrase swell, connected notes and a little space at the end.
 - “16小節は語尾を収めて”: gradual softening and slowing within that measure.
@@ -84,178 +64,99 @@ from silence; sustained-note dynamics and already scheduled note tails are not
 continuously resynthesized. Real-instrument ensemble listening remains necessary
 to evaluate musical naturalness.
 
-## Verification
+## Starter scores and personal repertoire
 
-`npm test`, `npm run typecheck`, `npm run build`, and `npm run e2e` cover the core
-engines and browser flows. Concert tests load all six movements, verify that
-sample voices start, exercise live browser audio input using a synthetic stream,
-and check rehearsal instructions, persistence and the phone layout. Run repertoire
-preparation before the concert browser tests.
+| Score | Licence | Production distribution |
+| --- | --- | --- |
+| Sample Duet (Clarinet + Piano, eight bars) | CC0 1.0 | Included |
+| Mozart K.622, II. Adagio (full score) | CC0 1.0; dataset attribution retained | Included |
 
-## Background
+The Mozart source and byte hash are in `public/repertoire/ensemble/sources.json`; the production build retains only the selected movement's record. The bundled sample banks, font and dependency notices have their own attribution. See [packaging details](docs/starter-bundle.md).
 
-ConvoCerto extends the ideas of [ACCompanion](https://github.com/CPJKU/accompanion) (Cancino-Chacón et al., JKU Linz) — an automatic accompaniment system that tracks a performer's MIDI input and adapts tempo/dynamics in real time.
+The source collection stays in the repository for development. `npm run ensemble:prepare` prepares it after checking source metadata. `npm run dev` and `npm run build` generate the additional library as standard MXL archives, verify source and archive hashes, and retain its attribution in `repertoire/library/sources.json`. The starter duplicate and two editions requiring review are excluded from this library. The production build removes the uncompressed extra scores, full ZIP, fallback JSONs and `repertoire/local`. Personal scores are not uploaded or added to the app's download.
 
-ACCompanion's core contribution is an HMM-based score follower that matches incoming MIDI notes against expected positions in the score. However, feedback from musicians indicated that it felt like "sight-reading with a beginner accompanist" — the system only _follows_ and never takes the initiative.
+[MusicXML source guide / 楽譜の入手先](docs/repertoire-download-guide.md) lists additional orchestral repertoire, download conditions and edition-specific rights. A source link is not a downloaded or verified score. PDF, MIDI-only and solo arrangements are not substitutes for full orchestral MusicXML.
 
-ConvoCerto addresses this by adding:
+## Run locally
 
-1. **Dynamic Lead/Follow switching** — the system can _lead_ (drive tempo) or _follow_ (adapt to the performer), controlled per measure via MusicXML annotations.
-2. **Wait/Listen mechanism** — at phrase beginnings or after rests, the system pauses and waits for a visual or audio cue before resuming.
-3. **Pose-based cue detection** — MediaPipe Pose Landmarker detects breathing, nods, and preparatory gestures from a webcam to trigger timing cues.
-
-[Metronaut](https://metronautapp.com/) (Antescofo) is also referenced as a commercial counterpart, but its fixed-tempo playback limits the performer's expressive freedom.
-
-## Architecture
-
-```
-Performer plays MIDI
-    │
-    ├─ MidiManager (Web MIDI API)
-    │       │
-    │       ▼
-    ├─ ScoreFollower (HMM-based position tracking)
-    │       │
-    │       ▼
-    ├─ AccompanimentEngine (Lead/Follow blending, scheduling)
-    │       │
-    │       ▼
-    └─ Tone.js PolySynth (audio output)
-
-Webcam ──► PoseAnalyzer (MediaPipe) ──► MotionCue events
-Voice  ──► RehearsalNLP (pattern matching) ──► annotation updates
-Score  ──► MusicXMLParser ──► OpenSheetMusicDisplay (rendering)
-```
-
-### Score Follower — current implementation
-
-The score follower (`app/lib/score-follower.ts`) uses a **rule-based Bayesian filter**, not a trained machine learning model. It is inspired by the HMM approach in ACCompanion but simplified for browser execution:
-
-- **5 parallel tempo hypotheses** spanning ±30% of the base tempo
-- Each incoming MIDI `noteon` triggers:
-  1. **Observation** — pitch matching against nearby score positions (exact match: 0.8, ±2 semitones: 0.15, miss: 0.05)
-  2. **Transition** — position advancement based on elapsed time and each hypothesis's tempo
-  3. **Bayesian update** — multiply state probabilities by observation likelihood
-  4. **Normalisation** — scale to sum to 1
-  5. **MAP estimation** — pick the highest-probability state as current position and tempo
-- **Lead/Follow differentiation**: in Follow mode, `tempoAdaptRate = 0.3` (tracks performer closely); in Lead mode, `tempoAdaptRate = 0.1` (stays near base tempo)
-
-All probability values are hard-coded constants — **no parameters are learned from data**. This keeps the system lightweight and predictable, but limits its ability to handle complex expression.
-
-### What is NOT yet implemented
-
-The following features from the ACCompanion paper and the project proposal are not yet present:
-
-| Feature | ACCompanion | ConvoCerto status |
-|---------|-------------|-------------------|
-| Learned expression model (Basis Mixer) | Yes | Not implemented |
-| Dynamics curve from trained data | Yes | Not implemented — velocity is passed through as-is |
-| Articulation analysis (legato, staccato) | Yes | Not implemented |
-| Continuous-time online DTW | Yes | Simplified to discrete note-step HMM |
-| Multi-voice score alignment | Yes | Single solo part only |
-| Audio input (microphone) | Partial | Implemented in the concert screen; monophonic pitch/onset detection |
-
-## Roadmap
-
-### Phase 1 — Learned expression models
-
-Replace hard-coded probability constants with parameters learned from performance data:
-
-- Train observation/transition models from aligned MIDI performance recordings
-- Support dynamics curves (velocity shaping over time) from reference recordings
-- Import articulation markings from MusicXML (`<articulations>`, `<slur>`, `<staccato>`) and reflect them in accompaniment output
-
-### Phase 2 — MusicXML annotation editing
-
-The concert panel edits roles, waits and phrase intentions and exports them to
-MusicXML. Direct click-to-edit overlays on rendered score measures remain.
-
-### Phase 3 — Audio input support
-
-Monophonic microphone input and onset detection are connected to the concert
-follower. Remaining work includes measured latency calibration, robustness tests
-with real clarinets and richer expression models.
-
-## 4-Step Learning Progression
-
-| Step | Route | Description |
-|------|-------|-------------|
-| 1 | `/step1` | Score display + fixed-tempo playback |
-| 2 | `/step2` | Karaoke mode — add MIDI input, accompaniment at fixed tempo |
-| 3 | `/step3` | Adaptive accompaniment — HMM score following, tempo adapts to performer |
-| 4 | `/step4` | The integrated concert rehearsal screen |
-| Full | `/perform` | Mozart/Brahms concert rehearsal with microphone/MIDI following and sampled accompaniment |
-
-## Step 1 practice controls
-
-- Seek by clicking the progress bar, or focus it and use arrow keys, Home, and End. Playback starts from the selected position.
-- Use Space to start/stop, Escape to stop, and left/right arrows to move between measures when no control is focused.
-- Select zero, one, or two bars of count-in and toggle the metronome independently.
-- Set A at the current measure's start and B at its end to repeat a passage. Both endpoints are required; × clears the loop.
-- Loading another score resets the playback position, muted parts, and loop.
-
-The Playwright server uses port 5187 with strict port binding to avoid connecting to an unrelated development server. Run `npx playwright test e2e/practice.spec.ts` for the practice-control regression scenario.
-
-## Sample Scores
-
-| Score | Licence | Included in repo |
-|-------|---------|------------------|
-| **Sample Duet** (Clarinet + Piano) | CC0 1.0 (Public Domain) | Yes |
-| Mozart K.622 Adagio | Derived from Mutopia Project (CC BY 3.0) — not redistributed | No (gitignored) |
-| Mozart K.581 Trio | MakeMusic, Inc. sample — not redistributed | No (gitignored) |
-
-The legacy samples above live in `public/scores/`. Verified CC0 MusicXML editions of Mozart K.622 (all three movements) and Beethoven Op.73 (movement II, combined clarinet part) are included in `public/repertoire/ensemble/`, with per-file metadata and hashes in `sources.json`.
-
-Scores use standard MusicXML with ConvoCerto annotations (Lead/Follow/Wait/Listen via rehearsal marks).
-
-## Development
-
-```bash
+```sh
 npm install
-npm run dev         # development server on :5173
-npm run build       # production build (SPA, static output in build/client/)
-npm run typecheck   # type checking
-npm test            # unit tests (Vitest)
-npm run e2e         # end-to-end tests (Playwright)
+npm run dev
 ```
 
-## Deployment
+Open <http://localhost:5173> and choose **Open your score** or **Try a starter score**. No separate repertoire download is needed for those two examples.
 
-The app builds as a static SPA. Deploy `build/client/` to any static hosting (Cloudflare Pages, Netlify, GitHub Pages, etc.). Ensure all routes fall back to `index.html` for client-side routing.
+To check the production build:
 
-## Tech Stack
+```sh
+npm run build
+npm start
+```
 
-| Technology | Purpose |
-|------------|---------|
-| React Router v7 | SPA framework |
-| Tone.js | Audio synthesis |
-| OpenSheetMusicDisplay | MusicXML rendering |
-| Web MIDI API | Instrument input |
-| MediaPipe Pose Landmarker | Gesture detection |
-| Vitest + Playwright | Testing |
-| Tailwind CSS + MUI | Styling |
+Open <http://127.0.0.1:4173>. This serves only `build/client` on this computer. See [Web serving](docs/web-serving.md) for ports, routing, headers and HTTPS hosting. A public host must serve from the domain root; repository-subpath deployment needs additional base-path support.
 
-## References
+On macOS:
 
-- Cancino-Chacón, C. E. et al. — [ACCompanion: Auto-Accompaniment](https://cpjku.github.io/accompanion/)
-- [Metronaut](https://metronautapp.com/) by Antescofo
-- [YAMAHA AI Ensemble](https://www.yamaha.com/ja/tech-design/research/technologies/muens/)
+```sh
+npm run build
+npm run native:build
+open build/native/ConvoCerto.app
+```
 
+The default Mac build uses a development ad hoc signature. It is not a notarized public release. The build targets the current machine's CPU and macOS 13 or later; the minimum target alone is not proof of testing on every OS version or architecture.
 
-## MusicXML concert practice
+## Check a release candidate
 
-手元でのWeb・Swift・ClariMate確認は [手元での確認手順](docs/local-verification.md) を参照。
+```sh
+npm run typecheck
+npm test
+npm run test:web-serving
+npm run e2e
+npm run verify:release
+```
 
-Open `/perform`. The MusicXML cards load full scores and render the selected part. Upload `.musicxml`, `.xml`, or `.mxl` to use another score. Save scores and rehearsal directions in the local browser library.
+`verify:release` saves logs and a source hash under `verification-results/`. On macOS it also builds the native app and checks CoreMIDI parsing, WKWebView playback, display-process recovery and isolated persistent storage. The persistence harness needs macOS 14 or later; the app's build target remains macOS 13. It uses dedicated test profiles, not personal practice data.
 
-- Choose the part or encoded voice/staff you play; the remaining ensemble plays sampled instruments.
-- Accompany with microphone/MIDI following, listen to all parts, or advance silently only after correct pitches.
-- Use count-in, metronome, tempo, transposition, tuning, seek, passage loops, part mute, score zoom and browser print/PDF.
-- Set phrase expression, waits and leadership by measure. Export rehearsal directions back to MusicXML. Display transposition does not rewrite the exported source XML.
-- Save response settings, record input-event takes and compare settings on identical input. Extract expression curves from your own reliably matched takes. This does not record audio or reproduce a named artist.
+After a successful full Mac verification, package that exact app:
 
-See [feature coverage](docs/musicxml-practice.md) and [ensemble model and limits](docs/ensemble-vision.md).
+```sh
+npm run native:package -- verification-results/<run>/report.json
+```
 
-`npm run ensemble:prepare` reproducibly checks source metadata and prepares bundled CC0 scores. Production builds explicitly exclude `repertoire/local`, including privately obtained editions whose distribution rights are unverified. Those local MIDI editions are optional and are not a public Brahms score catalogue.
+Packaging checks the source and bundle hashes, mounts the DMG, copies the app and exercises the installed copy. A stale verification report cannot authorize a new build. The default output is a development preview DMG, with version, architecture, minimum OS and SHA-256 in its package report.
 
-追加収録・ClariMate設定・クリック再生については [操作と収録状況](docs/collection-and-midi.md) を参照。現在はMusicXML 30譜、管弦楽編成の特集5譜、26種類の音源を収録。個別XMLと出典付きZIPを演奏画面からダウンロードできる。
+Browser tests use a dedicated development server on port 5187 with strict port binding. Do not run a production build or edit sources concurrently with final browser verification: generated public assets can trigger a reload. Tests that use the larger research corpus require those repository fixtures, including the source editions intentionally held out of the production library.
+
+Automated coverage includes artificial microphone streams, MIDI events, audio scheduling, notation, saved practice and recovery. It does **not** establish real-instrument tracking quality, perceived sound quality or success by an uninstructed first-time musician. [Human-session results](docs/acoustic-first-use-results.md) currently record **zero sessions**; [the observation plan](docs/acoustic-first-use-test.md) is ready to use.
+
+## Publication and saved data
+
+The intended release order is an HTTPS Web preview, then a Developer ID-signed and notarized Mac DMG on the same site. [Publication plan](docs/public-release-plan.md) covers signing, notarization, host requirements, manual updates and the remaining checks. No public deployment or notarized release has been completed.
+
+`release.config.json` defines the Mac version, build, minimum OS and bundle identifier. Developer ID builds require an explicitly selected valid signing identity and `--release`; they fail if signing is unavailable. Signing and notarization are separate operations. Never label an ad hoc preview or an unnotarized package as the public Mac release.
+
+The native app preserves its local origin across ordinary launches. Earlier development versions that used changing origins are not automatically migrated. Export important practice before replacing a development build. Web and Mac storage are separate; portable practice files transfer the score and current settings, but not cumulative practice history.
+
+[Data handling](public/privacy.html) describes local score and microphone processing, deletion and optional external services. Recent practice and explicitly saved library scores are independent: deleting one does not remove the other. Camera model downloads and optional browser speech recognition can require external connections.
+
+## Implementation and current limits
+
+The `/perform` workflow uses `ConcertEngine` with `OrchestraAudio` for sampled Web Audio playback. It matches the selected performer's pitch/onset events, bounds tempo corrections, and combines explicit score directions with live expression estimates. OpenSheetMusicDisplay renders the notation. Web MIDI and native CoreMIDI provide electronic input; the microphone path extracts a single pitched line locally.
+
+The legacy learning routes `/step1`–`/step3` use a separate demonstration engine and score follower; `/step4` opens the integrated practice screen. Their rule-based tempo hypotheses are not the implementation of the main concert workflow.
+
+Current limits include:
+
+- Monophonic pitched microphone input; chords and unpitched percussion are not supported for microphone following. Fixed-tempo practice and MIDI are separate options.
+- No trained model of a named performer. Experimental reference curves come from the user's own matched event takes, not an artist's audio recordings.
+- Supported articulation and phrase rules affect playback, but ornaments, trills, tremolo realization and automatic fermata extension are incomplete. Import warnings and unusual notation require review.
+- Event takes are not audio/video recordings. Cloud sync, freehand score drawing, universal musical grading and automatic updates are not implemented.
+- Real instruments, acoustics, input/output latency and musical naturalness still require live evaluation.
+
+See [practice feature coverage](docs/musicxml-practice.md), [ensemble model](docs/ensemble-vision.md), [audio quality plan](docs/audio-quality-plan.md) and [performer-model plan](docs/performer-model-plan.md).
+
+## Related work
+
+- [ACCompanion](https://cpjku.github.io/accompanion/)
+- [Metronaut](https://metronautapp.com/) — see the [source-backed comparison](docs/product-direction.md)
+- [Yamaha AI Ensemble](https://www.yamaha.com/ja/tech-design/research/technologies/muens/)

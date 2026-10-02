@@ -1,0 +1,6 @@
+{
+  "version": "0.1.0",
+  "build": "1",
+  "minimumOS": "13.0",
+  "bundleID": "tech.gawatech.convocerto.preview"
+}

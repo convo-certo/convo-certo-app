@@ -10,6 +10,10 @@ export function readRehearsalPlan(text: string, repertoireId: string, totalMeasu
     if (!value || !Number.isInteger(value.measureNumber) || value.measureNumber < 1 || value.measureNumber > totalMeasures || seen.has(value.measureNumber)) throw new Error("練習設定の小節番号が不正です。");
     seen.add(value.measureNumber);
     const annotation: MeasureAnnotation = { measureNumber: value.measureNumber };
+    if (value.memo != null) {
+      if (typeof value.memo !== "string" || value.memo.length > 120) throw new Error("メモは120文字以内にしてください。");
+      annotation.memo = value.memo;
+    }
     if (value.leader != null) {
       if (typeof value.leader !== "string" || !value.leader || value.leader.length > 200) throw new Error("主導者の指定が不正です。");
       annotation.leader = value.leader;
